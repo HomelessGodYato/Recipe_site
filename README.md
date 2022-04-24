@@ -23,7 +23,7 @@
 
 1. Change path to project path:
       
-       cd .\..\..\konwalia\  
+       cd .\..\..\pancakes\  
 
 2. Activate virtual environment: 
 
