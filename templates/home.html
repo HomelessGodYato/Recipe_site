@@ -2,9 +2,23 @@
 
 {% block content %}
 
-    <h1>Recipes:</h1>
-    {% for recipe in recipes %}
-        <p>{{ recipe }}</p>
-    {% endfor %}
+<h1>Recipes:</h1>
+{% for recipe in recipes %}
+<p>{{ recipe }}</p>
+{% endfor %}
+
+<!-- User registration and login links-->
+<div class='d-flex justify-content-center links'>
+    <br><br>
+    Already have an account? <a href="{% url 'login' %}" }
+                                class="ml-2">Sign in</a>
+
+</div>
+<div class='d-flex justify-content-center links'>
+    <br><br>
+    Don`t have an account ? <a href="{% url 'register' %}" }
+                               class="ml-2">Sign up</a>
+
+</div>
 
 {% endblock content %}
