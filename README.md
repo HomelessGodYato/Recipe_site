@@ -1,4 +1,4 @@
-# Pancakes
+~~# Pancakes
 
 ## Useful and powerful links:
 
@@ -7,48 +7,60 @@
 ## Technologies
 * Python 3.10.2
 * Django 4.0.3
-
+* Docker 20.10.13 
 
 ## Prerequisite
 
 1. Python
 2. pip
-3. Your favorite IDE
+3. Docker
+4. Your favorite IDE
+5. Optional pgAdmin environment
 
 ## First steps
 
 1. clone repository
 
+         git clone https://github.com/PRz-IO/p01gr02-przepisy-zespol-gr02.git
+
+2. Start containers
+
+         docker-compose up -d
+
+3. When it is done, you have to press Ctrl+C to cancel process, after that you will have to make migrations
+
+         docker-compose run web python manage.py makemigrations
+
+4.  Apply migration:
+
+         docker-compose run web python manage.py migrate
+
 ## Run
 
 1. Change path to project path:
       
-       cd .\..\..\pancakes\  
+       cd .\..\..\pancakes\
 
-2. Activate virtual environment: 
-
-        .\.venv\Scripts\activate 
-
-3. Start application:
+2. Start db container:
    
-         python .\manage.py runserver
+         docker-compose up db 
+3. Start web container:
 
-4. Deactivate environment:
+         docker-compose up web
 
-         deactivate
+4. App is listening on address "http://localhost:8000/"
 
 ## Migration
 When you change structure of models(adding a field, deleting a model, etc.). You have to to make migration.
 
 1. Make migration:
 
-        python .\manage.py makemigrations mainApp
+        docker-compose run web python manage.py makemigrations
 
 2. Apply migration:
 
-        python .\manage.py migreate
-
+        docker-compose run web python manage.py migrate
 
 ## TODO
 
-* split unit and integration tests
+* split unit and integration tests~~
