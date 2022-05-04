@@ -1,0 +1,24 @@
+<div>
+    Przepis:
+    <p>nazwa: {{recipe.name}}</p>
+    <p>date_create: {{recipe.date_create}}</p>
+    <p>cooking_time: {{recipe.cooking_time}}</p>
+    <p>image</p> <img src="{{ recipe.image.image.url }}" height="100px" alt="img"/>
+
+    <div>
+        <h1>Categories</h1>
+        {% for category in recipe.categories %}
+        <p>category: {{category.name}}</p>
+        {% endfor %}
+    </div>
+    <hr/>
+    <div>
+        <h1>Stages</h1>
+        <hr/>
+        {% for stage in recipe.stages %}
+        {% include "recipe/recipe_stage_template.html" with stage=stage %}
+        {% endfor %}
+    </div>
+
+
+</div>
