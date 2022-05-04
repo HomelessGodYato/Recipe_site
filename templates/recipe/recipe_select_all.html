@@ -1,0 +1,14 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+<h1>Select all</h1>
+
+<div>
+    {% for recipe in recipe_list %}
+    {% include "recipe/recipe_simple_template.html" with recipe=recipe %}
+    {% endfor %}
+</div>
+
+
+{% endblock content %}
