@@ -15,6 +15,7 @@ urlpatterns = [
          views.activation, name='activate'),
 
     path('recipe_create/', views.create_recipe_view, name="recipe_create"),
+    path('recipe_simple_create/', views.recipe_create_simple_view, name="recipe_simple_create"),
     path('recipe/', views.recipe_select_all_view, name="recipe_select_all"),
     path('recipe/<str:pk>', views.recipe_select_view, name="recipe_select"),
 
