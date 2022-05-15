@@ -102,38 +102,24 @@ def logout_user(request):
     logout(request)
     return redirect('login')
 
-
+#=========================================================================================
 def create_recipe_view(request):
     form = RecipeFormFirst()
     if request.method == "POST":
         if request.POST.get("ACTION") == "FIRST":
             form = RecipeFormFirst(request.POST)
             if form.is_valid():
-                # create image
-                imageObject = RecipeImage(image=request.FILES["image"])
-                imageObject.save()
-                # create recipe
-                name = form.cleaned_data['name']
-                cooking_time = form.cleaned_data['cooking_time']
-                recipeObject = Recipe(name=name,
-                                      date_create=now(),
-                                      cooking_time=cooking_time,
-                                      image=imageObject)
-                recipeObject.save()
-
+                recipeObject = SaveRecipeSimple(
+                    name=form.cleaned_data['name'],
+                    date_create=now(),
+                    cooking_time=form.cleaned_data['cooking_time'],
+                    image=request.FILES["image"],
+                    categories=None)
                 # data for the next stage
-                recipe_stage_form = RecipeFormStage(None)
-                recipeStageIngredient = modelformset_factory(Ingredient, form=RecipeStageIngredientForm, extra=0)
-                formset = recipeStageIngredient(request.POST or None)
-                context = {
-                    'form': recipe_stage_form,
-                    'recipe': recipeObject,
-                    'formset': formset,
-                }
+                context = CreateContextForRecipeStage(recipeObject)
                 return render(request, 'recipe/create_recipe_stage.html', context)
             else:
                 # data for the same stage
-                print("error", form.errors)
                 context = {
                     'form': form,
                     'error': form.errors
@@ -148,14 +134,7 @@ def create_recipe_view(request):
                 recipeObject, recipeStageObject = saveRecipeStage(recipe_stage_form, request)
 
                 # data for the next stage
-                recipe_stage_form = RecipeFormStage(None)
-                recipeStageIngredient = modelformset_factory(Ingredient, form=RecipeStageIngredientForm, extra=0)
-                formset = recipeStageIngredient(None)
-                context = {
-                    'form': recipe_stage_form,
-                    'recipe': recipeObject,
-                    'formset': formset,
-                }
+                context = CreateContextForRecipeStage(recipeObject)
                 return render(request, 'recipe/create_recipe_stage.html', context)
             else:
                 print(recipe_stage_form.errors)
@@ -227,6 +206,17 @@ def create_recipe_view(request):
     return render(request, 'recipe/create_recipe_first.html', context)
 
 
+def CreateContextForRecipeStage(recipeObject,request):
+    recipe_stage_form = RecipeFormStage(request.POST or None)
+    recipeStageIngredient = modelformset_factory(Ingredient, form=RecipeStageIngredientForm, extra=0)
+    formset = recipeStageIngredient(None)
+    return {
+        'form': recipe_stage_form,
+        'recipe': recipeObject,
+        'formset': formset,
+    }
+
+
 def recipe_select_all_view(request):
     recipe_list = []
     for recipe in Recipe.objects.all():
@@ -250,26 +240,14 @@ def recipe_create_simple_view(request):
     if request.method == "POST":
         form = RecipeForm(request.POST)
         if form.is_valid():
-            # createimage
-            image = RecipeImage(image=request.FILES["image"])
-            image.save()
-            # create recipe
-            name = form.cleaned_data['name']
-            cooking_time = form.cleaned_data['cooking_time']
-            categories = form.cleaned_data['categories']
-            recipe = Recipe(name=name,
-                            date_create=now(),
-                            cooking_time=cooking_time,
-                            image=image)
-            recipe.save()
-            # add categories
-            for category in categories:
-                recipe.categories.add(category)
-            recipe.save()
-
+            SaveRecipeSimple(name=form.cleaned_data['name'],
+                             date_create=now(),
+                             cooking_time=form.cleaned_data['cooking_time'],
+                             image=request.FILES["image"],
+                             categories=form.cleaned_data['categories'])
         else:
             print("error", form.errors)
-        return redirect("recipe_create")
+        return redirect("home")
     context = {
         'form': form
     }
@@ -277,6 +255,25 @@ def recipe_create_simple_view(request):
 
 
 ##=========================================================================================
+
+
+def SaveRecipeSimple(name, date_create, cooking_time, image, categories):
+    # createimage
+    image = RecipeImage(image=image)
+    image.save()
+    # create recipe
+    recipeObject = Recipe(name=name,
+                          date_create=date_create,
+                          cooking_time=cooking_time,
+                          image=image)
+    recipeObject.save()
+    # add categories
+    if categories:
+        for category in categories:
+            recipeObject.categories.add(category)
+        recipeObject.save()
+    return recipeObject
+
 
 def saveRecipeStage(recipe_stage_form, request):
     # create image
