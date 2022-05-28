@@ -1,0 +1,20 @@
+<div>
+    Przepis:
+    <p>nazwa: {{recipe.title}}</p>
+    <p>date_create: {{recipe.date_create}}</p>
+    <p>cooking_time: {{recipe.cooking_time}}</p>
+    <p>image</p> <img src="{{ recipe.image.image.url }}" height="100px" alt="img"/>
+    <div>
+        <h1>Categories</h1>
+        {% for category in recipe.categories %}
+        <p>category: {{category.title}}</p>
+        {% endfor %}
+    </div>
+    <div>
+        <h1>Tags</h1>
+        {% for tag in recipe.tags %}
+        <p>tag: {{tag.title}}</p>
+        {% endfor %}
+    </div>
+    <hr/>
+</div>
