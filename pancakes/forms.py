@@ -2,7 +2,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django import forms
 
-from .models import RecipeCategory, Recipe, RecipeStage, Ingredient
+from .models import RecipeCategory, Recipe, RecipeStage, Ingredient, RecipeTag
 
 
 class CreateUserForm(UserCreationForm):
@@ -18,7 +18,7 @@ class CreateUserForm(UserCreationForm):
 
 class CustomCategory(forms.ModelMultipleChoiceField):
     def label_from_instance(self, category):
-        return "%s" % category.name
+        return "%s" % category.title
 
 
 # ===========================================================================
@@ -28,11 +28,11 @@ class RecipeFormFirst(forms.ModelForm):
 
     class Meta:
         model = Recipe
-        fields = ["name", "cooking_time", "image"]
+        fields = ["title", "cooking_time", "image"]
 
 
 class RecipeFormStage(forms.ModelForm):
-    image = forms.ImageField(required=False)
+    image = forms.ImageField(required=False, )
 
     class Meta:
         model = RecipeStage
@@ -44,17 +44,21 @@ class RecipeFormLast(forms.ModelForm):
         queryset=RecipeCategory.objects.all(),
         widget=forms.CheckboxSelectMultiple
     )
+    tags = CustomCategory(
+        queryset=RecipeTag.objects.all(),
+        widget=forms.CheckboxSelectMultiple
+    )
 
     class Meta:
         model = Recipe
-        fields = ["categories"]
+        fields = ["categories", "tags"]
 
 
 # ====================================================================
 class RecipeStageIngredientForm(forms.ModelForm):
     class Meta:
         model = Ingredient
-        fields = ["name", "amount", "unit"]
+        fields = ["title", "amount", "unit"]
 
 
 class RecipeForm(forms.ModelForm):
@@ -66,4 +70,6 @@ class RecipeForm(forms.ModelForm):
 
     class Meta:
         model = Recipe
-        fields = ["name", "cooking_time", "image", "categories"]
+        fields = ["title", "cooking_time", "image", "categories"]
+
+# ====================================================================

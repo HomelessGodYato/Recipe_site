@@ -8,7 +8,13 @@
     <div>
         <h1>Categories</h1>
         {% for category in recipe.categories %}
-        <p>category: {{category.name}}</p>
+        <p>category: {{category.title}}</p>
+        {% endfor %}
+    </div>
+    <div>
+        <h1>Tags</h1>
+        {% for tag in recipe.tags %}
+        <p>tag: {{tag.title}}</p>
         {% endfor %}
     </div>
     <hr/>

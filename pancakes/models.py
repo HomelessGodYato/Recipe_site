@@ -39,17 +39,17 @@ class RecipeImage(models.Model):
 
 
 class RecipeCategory(models.Model):
-    name = models.CharField(max_length=254)
+    title = models.CharField(max_length=254)
 
 
 class RecipeTag(models.Model):
-    name = models.CharField(max_length=254)
+    title = models.CharField(max_length=254)
 
 
 class Recipe(models.Model):
     author = models.ForeignKey(to=User, on_delete=models.CASCADE)
     date_create = models.DateTimeField(auto_now_add=True)
-    name = models.CharField(max_length=254)
+    title = models.CharField(max_length=254)
     cooking_time = models.IntegerField()
     image = models.ForeignKey(to=RecipeImage, on_delete=models.CASCADE, null=True, blank=True)
     categories = models.ManyToManyField(to=RecipeCategory, through='RecipeRecipeCategory')
@@ -75,7 +75,7 @@ class RecipeStage(models.Model):
 
 class Ingredient(models.Model):
     recipe_stage = models.ForeignKey(to=RecipeStage, on_delete=models.CASCADE, null=True)
-    name = models.CharField(max_length=254)
+    title = models.CharField(max_length=254)
     unit = models.CharField(max_length=254)
     amount = models.CharField(max_length=254)
 
