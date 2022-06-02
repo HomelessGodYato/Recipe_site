@@ -81,8 +81,8 @@ class RecipeIngredient(models.Model):
 
 
 class RecipeStageRecipeIngredient(models.Model):
-    stage = models.ForeignKey(RecipeStage, on_delete=models.CASCADE())
-    ingredient = models.ForeignKey(RecipeIngredient, on_delete=models.CASCADE())
+    stage = models.ForeignKey(RecipeStage, on_delete=models.CASCADE)
+    ingredient = models.ForeignKey(RecipeIngredient, on_delete=models.CASCADE)
     amount = models.CharField(max_length=254)
     is_required=models.BooleanField(default=True)
 

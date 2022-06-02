@@ -2,7 +2,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django import forms
 
-from .models import RecipeCategory, Recipe, RecipeStage, Ingredient, RecipeTag
+from .models import RecipeCategory, Recipe, RecipeStage, RecipeIngredient, RecipeTag
 
 
 class CreateUserForm(UserCreationForm):
@@ -57,8 +57,8 @@ class RecipeFormLast(forms.ModelForm):
 # ====================================================================
 class RecipeStageIngredientForm(forms.ModelForm):
     class Meta:
-        model = Ingredient
-        fields = ["title", "amount", "unit"]
+        model = RecipeIngredient
+        fields = ["title", "unit"]
 
 
 class RecipeForm(forms.ModelForm):

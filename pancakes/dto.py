@@ -1,4 +1,4 @@
-from pancakes.models import RecipeRecipeCategory, RecipeStage, Ingredient, RecipeImage, Recipe, RecipeCategory, \
+from pancakes.models import RecipeRecipeCategory, RecipeStage, RecipeIngredient, RecipeImage, Recipe, RecipeCategory, \
     RecipeRecipeTag
 from typing import TypedDict, List
 
@@ -103,7 +103,7 @@ def getRecipeSimpleDTO(recipe):
 
 def getStageDTO(stage):
     ingredient_list = []
-    for iter in Ingredient.objects.filter(recipe_stage=stage):
+    for iter in RecipeIngredient.objects.filter(recipe_stage=stage):
         ingredient_list.append(getIngredientDTO(iter))
     stage = StageDTO(
         id=stage.id,

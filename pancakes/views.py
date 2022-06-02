@@ -15,7 +15,7 @@ from .dto import getRecipeDTO, getRecipeSimpleDTO
 from .forms import CreateUserForm, RecipeForm, RecipeStageIngredientForm, RecipeFormFirst, RecipeFormStage, \
     RecipeFormLast
 from .tokens import account_activation_token
-from .models import Recipe, RecipeStage, Ingredient, RecipeImage, RecipeCategory, RecipeRecipeCategory
+from .models import Recipe, RecipeStage, RecipeIngredient, RecipeImage, RecipeCategory, RecipeRecipeCategory
 from django.forms.models import modelformset_factory
 
 from django.utils.timezone import now
@@ -121,7 +121,7 @@ def create_recipe_view(request):
                     categories=None)
                 # data for the next stage
                 recipe_stage_form = RecipeFormStage(None)
-                recipeStageIngredient = modelformset_factory(Ingredient, form=RecipeStageIngredientForm, extra=0)
+                recipeStageIngredient = modelformset_factory(RecipeIngredient, form=RecipeStageIngredientForm, extra=0)
                 formset = recipeStageIngredient(None)
                 context={
                     'form': recipe_stage_form,
@@ -139,14 +139,14 @@ def create_recipe_view(request):
 
         if request.POST.get("ACTION") == "STAGE":
             recipe_stage_form = RecipeFormStage(request.POST)
-            recipeStageIngredient = modelformset_factory(Ingredient, form=RecipeStageIngredientForm, extra=0)
+            recipeStageIngredient = modelformset_factory(RecipeIngredient, form=RecipeStageIngredientForm, extra=0)
             formset = recipeStageIngredient(None)
             if recipe_stage_form.is_valid():
                 recipeObject, recipeStageObject = saveRecipeStage(recipe_stage_form, request)
 
                 # data for the next stage
                 recipe_stage_form = RecipeFormStage(request.POST or None)
-                recipeStageIngredient = modelformset_factory(Ingredient, form=RecipeStageIngredientForm, extra=0)
+                recipeStageIngredient = modelformset_factory(RecipeIngredient, form=RecipeStageIngredientForm, extra=0)
                 formset = recipeStageIngredient(None)
                 context= {
                     'form': recipe_stage_form,
@@ -158,7 +158,7 @@ def create_recipe_view(request):
                 print(recipe_stage_form.errors)
                 # data for the same stage
                 recipe_stage_form = RecipeFormStage(request.POST or None)
-                recipeStageIngredient = modelformset_factory(Ingredient, form=RecipeStageIngredientForm, extra=0)
+                recipeStageIngredient = modelformset_factory(RecipeIngredient, form=RecipeStageIngredientForm, extra=0)
                 formset = recipeStageIngredient(request.POST or None)
                 recipeObject = Recipe.objects.get(id=request.POST.get('recipe_id'))
 
@@ -171,7 +171,7 @@ def create_recipe_view(request):
 
         if request.POST.get("ACTION") == "LAST_STAGE":
             recipe_stage_form = RecipeFormStage(request.POST)
-            recipeStageIngredient = modelformset_factory(Ingredient, form=RecipeStageIngredientForm, extra=0)
+            recipeStageIngredient = modelformset_factory(RecipeIngredient, form=RecipeStageIngredientForm, extra=0)
             formset = recipeStageIngredient(None)
             if recipe_stage_form.is_valid():
                 recipeObject, recipeStageObject = saveRecipeStage(recipe_stage_form, request)
@@ -187,7 +187,7 @@ def create_recipe_view(request):
                 print(recipe_stage_form.errors)
                 # data for the same stage
                 recipe_stage_form = RecipeFormStage(request.POST or None)
-                recipeStageIngredient = modelformset_factory(Ingredient, form=RecipeStageIngredientForm, extra=0)
+                recipeStageIngredient = modelformset_factory(RecipeIngredient, form=RecipeStageIngredientForm, extra=0)
                 formset = recipeStageIngredient(request.POST or None)
                 recipeObject = Recipe.objects.get(id=request.POST.get('recipe_id'))
 
@@ -230,7 +230,7 @@ def create_recipe_view(request):
 
 def CreateContextForRecipeStage(recipeObject, request):
     recipe_stage_form = RecipeFormStage(request.POST or None)
-    recipeStageIngredient = modelformset_factory(Ingredient, form=RecipeStageIngredientForm, extra=0)
+    recipeStageIngredient = modelformset_factory(RecipeIngredient, form=RecipeStageIngredientForm, extra=0)
     formset = recipeStageIngredient(None)
     return {
         'form': recipe_stage_form,
@@ -330,7 +330,7 @@ def saveRecipeStage(recipe_stage_form, request):
         title = request.POST.get(f'form-{iter}-title')
         amount = request.POST.get(f'form-{iter}-amount')
         unit = request.POST.get(f'form-{iter}-unit')
-        ingredient = Ingredient(
+        ingredient = RecipeIngredient(
             recipe_stage=recipeStageObject,
             title=title,
             amount=amount,
