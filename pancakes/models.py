@@ -65,6 +65,8 @@ class RecipeRecipeTag(models.Model):
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
     tag = models.ForeignKey(RecipeTag, on_delete=models.CASCADE)
 
+#-----------------------------------------------------
+
 
 class RecipeStage(models.Model):
     recipe = models.ForeignKey(to=Recipe, on_delete=models.CASCADE, null=False)
@@ -73,13 +75,18 @@ class RecipeStage(models.Model):
     image = models.ForeignKey(to=RecipeImage, on_delete=models.CASCADE, null=True, blank=True)
 
 
-class Ingredient(models.Model):
-    recipe_stage = models.ForeignKey(to=RecipeStage, on_delete=models.CASCADE, null=True)
+class RecipeIngredient(models.Model):
     title = models.CharField(max_length=254)
     unit = models.CharField(max_length=254)
+
+
+class RecipeStageRecipeIngredient(models.Model):
+    stage = models.ForeignKey(RecipeStage, on_delete=models.CASCADE())
+    ingredient = models.ForeignKey(RecipeIngredient, on_delete=models.CASCADE())
     amount = models.CharField(max_length=254)
+    is_required=models.BooleanField(default=True)
 
-
+#-----------------------------------------------------
 class RecipeLike(models.Model):
     author = models.ForeignKey(to=User, on_delete=models.CASCADE)
     recipe = models.ForeignKey(to=Recipe, on_delete=models.CASCADE, null=False)
