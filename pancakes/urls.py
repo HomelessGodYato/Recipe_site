@@ -25,6 +25,11 @@ urlpatterns = [
     path('ingredient_form/', views.ingredient_form_view, name="ingredient_create"),
     path('ingredient_form/<str:id>', views.ingredient_form_view, name="ingredient_update"),
 
+    #-------------------------------------------STAGE----------------------------------------------
+    path('stage/', views.stage_show_all_view, name="stage_show_all"),
+    path('stage/<str:id>', views.stage_show_view, name="stage_show"),
+    path('stage_form/', views.stage_form_view, name="stage_create"),
+    path('stage_form/<str:id>', views.stage_form_view, name="stage_update"),
 
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

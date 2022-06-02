@@ -1,0 +1,19 @@
+<div>
+    <p>stage id {{stage.id}}</p>
+    <p>cooking_time: {{stage.cooking_time}}</p>
+    <p>image:<img src="{{ stage.image.image.url }}" height="100px" alt="stage"/></p>
+    <h1>Ingredients</h1>
+    {{ingredients_extend_list}}
+    <div>
+        {% for ingredient in stage.ingredients_extended_list %}
+        <div>
+            <h3>skladnik id {{ingredient.id}}</h3>
+            <p>name: {{ingredient.title}}</p>
+            <p>unit: {{ingredient.unit}}</p>
+            <p>amount: {{ingredient.amount}}</p>
+            <p>is_required: {{ingredient.is_required}}</p>
+        </div>
+        {% endfor %}
+    </div>
+    <hr/>
+</div>

@@ -1,0 +1,16 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+<h1>Etapy</h1>
+
+<div>
+    {% for stage in stages_list %}
+
+    {% include "stage/stage_show_template.html" with stage=stage %}
+
+    {% endfor %}
+</div>
+
+
+{% endblock content %}
