@@ -19,4 +19,12 @@ urlpatterns = [
     path('recipe/', views.recipe_select_all_view, name="recipe_select_all"),
     path('recipe/<str:pk>', views.recipe_select_view, name="recipe_select"),
 
+    #-------------------------------------------INGREDIENT----------------------------------------------
+    path('ingredient/', views.ingredient_show_all_view, name="ingredient_show_all"),
+    path('ingredient/<str:id>', views.ingredient_show_view, name="ingredient_show"),
+    path('ingredient_form/', views.ingredient_form_view, name="ingredient_create"),
+    path('ingredient_form/<str:id>', views.ingredient_form_view, name="ingredient_update"),
+
+
+
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

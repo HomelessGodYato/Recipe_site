@@ -20,15 +20,19 @@ class RecipeIngredientController:
             return {
                 "id": object.id,
                 "title": object.title,
-                "unit": object.unit,
-                "amount": object.amount
+                "unit": object.unit
             }
         else:
             return None
 
-    def new(self, title, unit):
-        print(self.CONTROLLER_NAME, "new", title, unit)
-        object = RecipeIngredient.objects.create(title=title, unit=unit)
+    def create(self, title, unit):
+        print(self.CONTROLLER_NAME, "create", title, unit)
+        return RecipeIngredient.objects.create(title=title, unit=unit)
+
+    def create_and_save(self, title, unit):
+        print(self.CONTROLLER_NAME, "create_and_save", title, unit)
+        object = self.create(title=title, unit=unit)
+        object = self.save(object)
         return object
 
     def save(self, object):
@@ -41,36 +45,42 @@ class RecipeIngredientController:
         print(self.CONTROLLER_NAME, "all")
         return RecipeIngredient.objects.all()
 
-    def one_by_id(self, id):
-        print(self.CONTROLLER_NAME, "one_by_id", id)
-        object = RecipeIngredient.objects.get(id=id)
-        if object is not None:
+    def find_one_by_id(self, id):
+        print(self.CONTROLLER_NAME, "find_one_by_id", id)
+        try:
+            object = RecipeIngredient.objects.get(id=id)
             return object
-        else:
+        except RecipeIngredient.DoesNotExist:
             return None
 
-    def one_by_title_and_unit(self, title, unit):
-        print(self.CONTROLLER_NAME, "one_by_title_and_unit", title, unit)
-        objects_set = RecipeIngredient.objects.filter(title=title, unit=unit)
-        if len(objects_set) > 0:
-            return objects_set[0]
-        else:
+    def find_one_by_title_and_unit(self, title, unit):
+        print(self.CONTROLLER_NAME, "find_one_by_title_and_unit", title, unit)
+        try:
+            objects_set = RecipeIngredient.objects.filter(title=title, unit=unit)
+            if len(objects_set) > 0:
+                return objects_set[0]
+            else:
+                return None
+        except RecipeIngredient.DoesNotExist:
             return None
 
     def delete(self, id):
         print(self.CONTROLLER_NAME, "delete", id)
-        RecipeIngredient.objects.delete(id)
-        return id
+        try:
+            RecipeIngredient.objects.delete(id)
+            return id
+        except RecipeIngredient.DoesNotExist:
+            return None
 
     def valid(self, title, unit):
-        if len(title) > 3:
+        if len(title) < 3:
             return ERROR_TOO_SHORT.format("tytuł", 3)
-        if len(unit) > 3:
+        elif len(unit) < 1:
             return ERROR_TOO_SHORT.format("jednostak", 1)
         return ""
 
     def update(self, id, title, unit):
-        object = RecipeIngredient.objects.get(id=id)
+        object = self.find_one_by_id(id=id)
         if object is not None:
             object.title = title
             object.unit = unit

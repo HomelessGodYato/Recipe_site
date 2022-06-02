@@ -1,0 +1,9 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+<h1>Składnik</h1>
+
+{% include "ingredient/ingredient_show_template.html" with ingredient=ingredient error=error %}
+
+{% endblock content %}

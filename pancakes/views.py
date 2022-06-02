@@ -11,6 +11,7 @@ from django.template.loader import render_to_string
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 
+from .controllers import RecipeIngredientController
 from .dto import getRecipeDTO, getRecipeSimpleDTO
 from .forms import CreateUserForm, RecipeForm, RecipeStageIngredientForm, RecipeFormFirst, RecipeFormStage, \
     RecipeFormLast
@@ -103,6 +104,83 @@ def logout_user(request):
     return redirect('login')
 
 
+TITLE = "title"
+UNIT = "unit"
+
+INGREDIENT = "ingredient"
+INGREDIENTS_LIST = "ingredients_list"
+ERROR = "error"
+
+ACTION = "ACTION"
+ACTION_CREATE = "ACTION_CREATE"
+ACTION_UPDATE = "ACTION_UPDATE"
+
+recipe_ingredient_controller = RecipeIngredientController()
+
+
+# ======================================INGREDIENT===================================================
+
+def ingredient_show_all_view(request):
+    object_list = recipe_ingredient_controller.all()
+    context = {
+        INGREDIENTS_LIST: recipe_ingredient_controller.DTO_list(object_list)
+    }
+    return render(request, 'ingredient/ingredient_show_all.html', context)
+
+
+def ingredient_show_view(request, id):
+    object = recipe_ingredient_controller.find_one_by_id(id)
+    context = {
+        INGREDIENT: recipe_ingredient_controller.DTO(object)
+    }
+    return render(request, 'ingredient/ingredient_show.html', context)
+
+
+def ingredient_form_view(request, id=0):
+    print("id",id)
+    if request.method == "POST":
+        action = request.POST.get(ACTION)
+        title = request.POST.get(TITLE)
+        unit = request.POST.get(UNIT)
+        error = recipe_ingredient_controller.valid(title=title, unit=unit)
+        if error == "":
+            if action == ACTION_CREATE:
+                print("ACTION_CREATE")
+                object = recipe_ingredient_controller.create_and_save(title=title, unit=unit)
+                return redirect("ingredient_show", id=object.id)
+            elif action == ACTION_UPDATE:
+                print("ACTION_UPDATE",id)
+                recipe_ingredient_controller.update(id, title=title, unit=unit)
+                print("ACTION_UPDATE")
+                return redirect("ingredient_show", id=id)
+        else:
+            context = {
+                ERROR: error,
+                INGREDIENT: {
+                    TITLE: title,
+                    UNIT: unit
+                }
+            }
+            return render(request, 'ingredient/ingredient_form.html', context)
+
+    # data
+    if id != 0:
+        # update
+        ingredientObj = recipe_ingredient_controller.find_one_by_id(id)
+        if ingredientObj is not None: #else create
+            ingredient = recipe_ingredient_controller.DTO(ingredientObj)
+            context = {
+                ACTION: ACTION_UPDATE,
+                INGREDIENT: ingredient,
+            }
+            return render(request, 'ingredient/ingredient_form.html', context)
+
+    # create
+    context = {
+        ACTION: ACTION_CREATE
+    }
+    return render(request, 'ingredient/ingredient_form.html',context)
+
 # =========================================================================================
 
 def create_recipe_view(request):
@@ -123,7 +201,7 @@ def create_recipe_view(request):
                 recipe_stage_form = RecipeFormStage(None)
                 recipeStageIngredient = modelformset_factory(RecipeIngredient, form=RecipeStageIngredientForm, extra=0)
                 formset = recipeStageIngredient(None)
-                context={
+                context = {
                     'form': recipe_stage_form,
                     'recipe': recipeObject,
                     'formset': formset,
@@ -148,7 +226,7 @@ def create_recipe_view(request):
                 recipe_stage_form = RecipeFormStage(request.POST or None)
                 recipeStageIngredient = modelformset_factory(RecipeIngredient, form=RecipeStageIngredientForm, extra=0)
                 formset = recipeStageIngredient(None)
-                context= {
+                context = {
                     'form': recipe_stage_form,
                     'recipe': recipeObject,
                     'formset': formset,
@@ -250,7 +328,6 @@ def recipe_select_all_view(request):
     return render(request, 'recipe/recipe_select_all.html', context)
 
 
-
 def recipe_select_view(request, pk):
     recipe = getRecipeDTO(Recipe.objects.get(id=pk))
     context = {
@@ -282,11 +359,12 @@ def recipe_create_simple_view(request):
 
 from pathlib import Path
 
+
 def SaveRecipeSimple(user, title, date_create, cooking_time, image, categories):
     # createimage
     print("image", image)
     if image == None:
-        image ='default/recipe_default_image.png'
+        image = 'default/recipe_default_image.png'
     image = RecipeImage(image=image)
     image.save()
     # create recipe
@@ -306,9 +384,9 @@ def SaveRecipeSimple(user, title, date_create, cooking_time, image, categories):
 
 def saveRecipeStage(recipe_stage_form, request):
     # create image
-    image=request.FILES.get("image")
+    image = request.FILES.get("image")
     if image == None:
-        image ='default/recipe_default_image.png'
+        image = 'default/recipe_default_image.png'
     imageObject = RecipeImage(image=image)
     imageObject.save()
     # create recipe stage

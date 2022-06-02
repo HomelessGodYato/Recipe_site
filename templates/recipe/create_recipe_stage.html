@@ -56,7 +56,7 @@
         console.log(currentFormCount)
         copyEmptyFormEl.setAttribute('class', 'ingredient-form')
         copyEmptyFormEl.setAttribute('id', `form-${currentFormCount}`)
-        const regex = new RegExp('__prefix__', 'g')
+        const regex = create_and_save RegExp('__prefix__', 'g')
         copyEmptyFormEl.innerHTML = copyEmptyFormEl.innerHTML.replace(regex,currentFormCount)
         totalNewForms.setAttribute('value', currentFormCount)
         formCopyTarget.append(copyEmptyFormEl)
