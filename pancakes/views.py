@@ -5,20 +5,29 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import EmailMessage
+from django.forms.models import modelformset_factory
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
+from django.urls import reverse_lazy
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.timezone import now
+from django.views.generic.edit import DeleteView
 
 from .dto import getRecipeDTO, getRecipeSimpleDTO
 from .forms import CreateUserForm, RecipeForm, RecipeStageIngredientForm, RecipeFormFirst, RecipeFormStage, \
     RecipeFormLast
+from .models import Recipe, RecipeStage, Ingredient, RecipeImage
 from .tokens import account_activation_token
-from .models import Recipe, RecipeStage, Ingredient, RecipeImage, RecipeCategory, RecipeRecipeCategory
-from django.forms.models import modelformset_factory
 
-from django.utils.timezone import now
+
+#  =========================================================================================
+#  ======================================USER ==============================================
+
+class CustomUSerDeleteView(DeleteView):
+    model = User
+    success_url = reverse_lazy('home')
 
 
 def home_page(request):
@@ -37,9 +46,10 @@ def register_page(request):
                 user = form.save(commit=False)
                 user.is_active = False
                 user.save()
+
                 current_site = get_current_site(request)
                 mail_subject = 'Activate your account.'
-                message = render_to_string('registration_login/acc_activation.html', {
+                message = render_to_string('user/registration_login/acc_activation.html', {
                     'user': user,
                     'domain': current_site.domain,
                     'uid': urlsafe_base64_encode(force_bytes(user.pk)),
@@ -54,7 +64,7 @@ def register_page(request):
             else:
                 form = CreateUserForm()
     context = {"form": form}
-    return render(request, 'registration_login/register.html', context)
+    return render(request, 'user/registration_login/register.html', context)
 
 
 def activation(request, uidb64, token):
@@ -68,7 +78,7 @@ def activation(request, uidb64, token):
         user.save()
         login(request, user)
         # return redirect('home')
-        return render(request, 'registration_login/registration_successful.html', {})
+        return render(request, 'user/registration_login/registration_successful.html', {})
     else:
         return HttpResponse('Activation link is invalid!')
 
@@ -88,21 +98,22 @@ def login_page(request):
                 return redirect('user')  # any page you want @user_page just for test
             else:
                 messages.info(request, 'Username or password is incorrect')
-                return render(request, 'registration_login/login.html', context)
+                return render(request, 'user/registration_login/login.html', context)
 
-        return render(request, 'registration_login/login.html', context)
+        return render(request, 'user/registration_login/login.html', context)
 
 
 @login_required(login_url='login')
 def user_main_page(request):
-    return render(request, 'registration_login/user_main.html')
+    return render(request, 'user/registration_login/user_main.html')
 
 
 def logout_user(request):
     logout(request)
     return redirect('login')
 
-#=========================================================================================
+
+# =========================================================================================
 def create_recipe_view(request):
     form = RecipeFormFirst()
     if request.method == "POST":
@@ -206,7 +217,7 @@ def create_recipe_view(request):
     return render(request, 'recipe/create_recipe_first.html', context)
 
 
-def CreateContextForRecipeStage(recipeObject,request):
+def CreateContextForRecipeStage(recipeObject, request):
     recipe_stage_form = RecipeFormStage(request.POST or None)
     recipeStageIngredient = modelformset_factory(Ingredient, form=RecipeStageIngredientForm, extra=0)
     formset = recipeStageIngredient(None)
