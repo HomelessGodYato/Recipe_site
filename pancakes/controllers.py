@@ -27,7 +27,7 @@ class RecipeIngredientController:
 
     def create(self, title, unit):
         print(self.CONTROLLER_NAME, "create", title, unit)
-        return RecipeIngredient.objects.create(title=title, unit=unit)
+        return RecipeIngredient(title=title, unit=unit)
 
     def create_and_save(self, title, unit):
         print(self.CONTROLLER_NAME, "create_and_save", title, unit)
@@ -112,7 +112,7 @@ class RecipeImageController:
 
     def create(self, image):
         print(self.CONTROLLER_NAME, "create", image)
-        return RecipeImage.objects.create(image=image)
+        return RecipeImage(image=image)
 
     def create_and_save(self, image):
         print(self.CONTROLLER_NAME, "create_and_save", image)
@@ -152,11 +152,12 @@ class RecipeImageController:
     def update(self, id, image):  # TODO nie wiem czy działa
         object = self.find_one_by_id(id=id)
         if object is not None:
-            object.image = image
-            self.save(object)
+            self.delete(id)
+            self.create_and_save(image=image)
             return object
         else:
-            return None
+            self.create_and_save(image=image)
+            return object
 
 
 class RecipeStageRecipeIngredientController:
@@ -202,12 +203,23 @@ class RecipeStageRecipeIngredientController:
         else:
             return None
 
+    def DTO_extend_field(self, title, unit, amount, is_required, id=0, stage_id=0, ingredient_id=0):
+        return {
+            "id": id,
+            "stage_id": stage_id,
+            "ingredient_id": ingredient_id,
+            "title": title,
+            "unit": unit,
+            "amount": amount,
+            "is_required": is_required
+        }
+
     def create(self, stage, ingredient, amount, is_required):
         print(self.CONTROLLER_NAME, "create", stage, ingredient, amount, is_required)
-        return RecipeStageRecipeIngredient.objects.create(stage=stage,
-                                                          ingredient=ingredient,
-                                                          amount=amount,
-                                                          is_required=is_required)
+        return RecipeStageRecipeIngredient(stage=stage,
+                                           ingredient=ingredient,
+                                           amount=amount,
+                                           is_required=is_required)
 
     def create_and_save(self, stage, ingredient, amount, is_required):
         print(self.CONTROLLER_NAME, "create_and_save", stage, ingredient, amount, is_required)
@@ -254,11 +266,11 @@ class RecipeStageRecipeIngredientController:
         return ""
 
     def valid_extend(self, title, unit, amount, is_required):
-        if len(title)<3:
+        if len(title) < 3:
             return ERROR_TOO_SHORT.format("tytuł", 3)
-        if len(unit)<1:
+        if len(unit) < 1:
             return ERROR_TOO_SHORT.format("jednostka", 1)
-        if len(amount)<0:
+        if len(amount) < 0:
             return ERROR_IS_LESS_THAN_ZERO.format("ilość")
         return ""
 
@@ -300,19 +312,45 @@ class RecipeStageController:
         else:
             return None
 
-    def add_ingredient_to_stage(self, stageObject, ingredientObject, amount, is_required):
-        print(self.CONTROLLER_NAME, "add_ingredient_to_stage", stageObject, ingredientObject, amount, is_required)
+    def add_ingredient_to_stage(self, stageObject, title, unit, amount, is_required):
+        print(self.CONTROLLER_NAME, "add_ingredient_to_stage", stageObject, title, unit, amount, is_required)
+        recipe_ingredient_object = recipe_ingredient_controller. \
+            find_one_by_title_and_unit(title=title,
+                                       unit=unit)
+        if recipe_ingredient_object is None:
+            recipe_ingredient_object = recipe_ingredient_controller. \
+                create_and_save(title=title,
+                                unit=unit)
+
         object = recipe_stage_recipe_ingredient_controller.create_and_save(stage=stageObject,
-                                                                           ingredient=ingredientObject,
+                                                                           ingredient=recipe_ingredient_object,
                                                                            amount=amount,
                                                                            is_required=is_required)
+        return object
+
+    def update_ingredient_in_stage(self, id, stageObject, title, unit, amount, is_required):
+        print(self.CONTROLLER_NAME, "update_ingredient_in_stage", id, stageObject, title, unit, amount, is_required)
+        recipe_ingredient_object = recipe_ingredient_controller. \
+            find_one_by_title_and_unit(title=title,
+                                       unit=unit)
+        if recipe_ingredient_object is None:
+            recipe_ingredient_object = recipe_ingredient_controller. \
+                create_and_save(title=title,
+                                unit=unit)
+
+        object = recipe_stage_recipe_ingredient_controller.update(id=id,
+                                                                  stage=stageObject,
+                                                                  ingredient=recipe_ingredient_object,
+                                                                  amount=amount,
+                                                                  is_required=is_required)
+        return object
 
     def create(self, recipe, cooking_time, description, image):
         print(self.CONTROLLER_NAME, "create", recipe, cooking_time, description, image)
-        return RecipeStage.objects.create(recipe=recipe,
-                                          cooking_time=cooking_time,
-                                          description=description,
-                                          image=image)
+        return RecipeStage(recipe=recipe,
+                           cooking_time=cooking_time,
+                           description=description,
+                           image=image)
 
     def create_and_save(self, recipe, cooking_time, description, image):
         print(self.CONTROLLER_NAME, "create_and_save", recipe, cooking_time, description, image)
