@@ -1,9 +1,9 @@
 <div>
-    <p>stage id {{stage.id}}</p>
-    <p>description: {{stage.description}}</p>
-    <p>cooking_time: {{stage.cooking_time}}</p>
-    <p>image:<img src="{{ stage.image.image.url }}" height="100px" alt="stage"/></p>
-    <h1>Ingredients</h1>
+    <p>recipe id {{recipe.id}}</p>
+    <p>title: {{recipe.title}}</p>
+    <p>cooking_time: {{recipe.cooking_time}}</p>
+    <p>image:<img src="{{ recipe.image.image.url }}" height="100px" alt="stage"/></p>
+    <h1>Stagees</h1>
     {{ingredients_extend_list}}
     <div>
         {% for ingredient in stage.ingredients_extended_list %}
@@ -16,5 +16,6 @@
         </div>
         {% endfor %}
     </div>
+    kategorie i tagi
     <hr/>
 </div>

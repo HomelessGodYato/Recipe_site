@@ -1,0 +1,8 @@
+<div>
+    {{error}}
+    <form action="./{{recipe.id}}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        categorie i tagi
+        <button type="submit" name="ACTION" value="{{ACTION}}">Zapisz</button>
+    </form>
+</div>

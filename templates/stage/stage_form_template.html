@@ -8,6 +8,8 @@
 <div>
     {{error}}
     <form action="./{{stage.id}}" method="post" enctype="multipart/form-data">
+        ---{{stage}}--
+        ---{{stage.id}}--
         {% csrf_token %}
         cooking_time:<input type="number" name="cooking_time" value="{{stage.cooking_time}}">
         description:<input type="text" name="description" value="{{stage.description}}">
@@ -15,41 +17,29 @@
 
         <div>
             <h3>skladniki</h3>
-            <div id="ingredient-form-1" class="hidden">
-                <h4>skladnik</h4>
-                tytył:<input type="text" name="ingredient_title_1" value="{{ingredients_extended_list.0.ingredient_title_1}}">
-                ilosc:<input type="number" name="ingredient_amount_1" value="{{ingredients_extended_list.0.ingredient_amount_1}}">
-                jednostak:<input type="text" name="ingredient_unit_1" value="{{ingredients_extended_list.0.ingredient_unit_1}}">
-                wymagany:<input type="checkbox" name="ingredient_is_require_1" {% if ingredients_extended_list.0.ingredient_is_require_1 %} checked {% endif%}>
-            </div>
-            <div id="ingredient-form-2" class="hidden">
-                <h4>skladnik</h4>
-                tytył:<input type="text" name="ingredient_title_2" value="{{ingredients_extended_list.1.ingredient_title_2}}">
-                ilosc:<input type="number" name="ingredient_amount_2" value="{{ingredients_extended_list.1.ingredient_amount_2}}">
-                jednostak:<input type="text" name="ingredient_unit_2" value="{{ingredients_extended_list.1.ingredient_unit_2}}">
-                wymagany:<input type="checkbox" name="ingredient_is_require_2" {% if ingredients_extended_list.1.ingredient_is_require_2 %} checked {% endif%}">
-            </div>
-            <div id="ingredient-form-3" class="hidden">
-                <h4>skladnik</h4>
-                tytył:<input type="text" name="ingredient_title_3" value="{{ingredients_extended_list.2.ingredient_title_3}}">
-                ilosc:<input type="number" name="ingredient_amount_3" value="{{ingredients_extended_list.2.ingredient_amount_3}}">
-                jednostak:<input type="text" name="ingredient_unit_3" value="{{ingredients_extended_list.2.ingredient_unit_3}}">
-                wymagany:<input type="checkbox" name="ingredient_is_require_3" {% if ingredients_extended_list.2.ingredient_is_require_3 %} checked {% endif%}">
-            </div>
-            <div id="ingredient-form-4" class="hidden">
-                <h4>skladnik</h4>
-                tytył:<input type="text" name="ingredient_title_4" value="{{ingredients_extended_list.3.ingredient_title_4}}">
-                ilosc:<input type="number" name="ingredient_amount_4" value="{{ingredients_extended_list.3.ingredient_amount_4}}">
-                jednostak:<input type="text" name="ingredient_unit_4" value="{{ingredients_extended_list.3.ingredient_unit_4}}">
-                wymagany:<input type="checkbox" name="ingredient_is_require_4" {% if ingredients_extended_list.3.ingredient_is_require_4 %} checked {% endif%}">
-            </div>
-            <div id="ingredient-form-5" class="hidden">
-                <h4>skladnik</h4>
-                tytył:<input type="text" name="ingredient_title_5" value="{{ingredients_extended_list.4.ingredient_title_5}}">
-                ilosc:<input type="number" name="ingredient_amount_5" value="{{ingredients_extended_list.4.ingredient_amount_5}}">
-                jednostak:<input type="text" name="ingredient_unit_5" value="{{ingredients_extended_list.4.ingredient_unit_5}}">
-                wymagany:<input type="checkbox" name="ingredient_is_require_5" {% if ingredients_extended_list.4.ingredient_is_require_5 %} checked {% endif%}">
-            </div>
+            --{{ingredients_extended_list}}--
+            {% for ingredient in ingredients_extended_list %}
+                <div id="ingredient-form-{{forloop.counter0}}" class="hidden">
+                    <h4>--skladnik {{forloop.counter0}}</h4>
+                    id:<input type="number" name="ingredient_id_{{forloop.counter0}}" value={{ingredient.id}}>
+                    tytył:<input type="text" name="ingredient_title_{{forloop.counter0}}" value="{{ingredient.title}}">
+                    ilosc:<input type="number" name="ingredient_amount_{{forloop.counter0}}" value={{ingredient.amount}}>
+                    jednostak:<input type="text" name="ingredient_unit_{{forloop.counter0}}" value="{{ingredient.unit}}">
+                    wymagany:<input type="checkbox" name="ingredient_is_required_{{forloop.counter0}}"
+                                    {% if ingredient.is_required %} checked {% endif%}>
+                </div>
+            {% endfor %}
+            {% for index in numberOfIngredientsRange %}
+                <div id="ingredient-form-{{index}}" class="hidden">
+                    <h4>skladnik {{index}}</h4>
+                    id:<input type="number" name="ingredient_id_{{index}}" value="0">
+                    tytył:<input type="text" name="ingredient_title_{{index}}" value="">
+                    ilosc:<input type="number" name="ingredient_amount_{{index}}" value="">
+                    jednostak:<input type="text" name="ingredient_unit_{{index}}" value="">
+                    wymagany:<input type="checkbox" name="ingredient_is_required_{{index}}">
+                </div>
+            {% endfor %}
+
             <button id="add-ingredient-btn" type="button">Dodaj składnik</button>
         </div>
 
@@ -71,10 +61,11 @@
             event.preventDefault()
         }
         if(numberOfIngrednients<numberOfIngrednientsMax){
-            numberOfIngrednients=numberOfIngrednients+1
+
 
             const element = document.getElementById(`ingredient-form-${numberOfIngrednients}`)
             element.classList.remove("hidden");
+            numberOfIngrednients=numberOfIngrednients+1
         }
     }
 

@@ -14,11 +14,15 @@ urlpatterns = [
     path('activate/<uidb64>[0-9A-Za-z_\-]+/<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20}/$',
          views.activation, name='activate'),
 
-    path('recipe_create/', views.create_recipe_view, name="recipe_create"),
-    path('recipe_simple_create/', views.recipe_create_simple_view, name="recipe_simple_create"),
-    path('recipe/', views.recipe_select_all_view, name="recipe_select_all"),
-    path('recipe/<str:pk>', views.recipe_select_view, name="recipe_select"),
-
+    # path('recipe_create/', views.create_recipe_view, name="recipe_create"),
+    # path('recipe_simple_create/', views.recipe_create_simple_view, name="recipe_simple_create"),
+    # path('recipe/', views.recipe_select_all_view, name="recipe_select_all"),
+    # path('recipe/<str:pk>', views.recipe_select_view, name="recipe_select"),
+    #-------------------------------------------STAGE----------------------------------------------
+    path('recipe/', views.recipe_show_all_view, name="recipe_show_all"),
+    path('recipe/<str:id>', views.recipe_show_view, name="recipe_show"),
+    path('recipe_form/', views.recipe_form_view, name="recipe_create"),
+    path('recipe_form/<str:id>', views.recipe_form_view, name="recipe_update"),
     #-------------------------------------------INGREDIENT----------------------------------------------
     path('ingredient/', views.ingredient_show_all_view, name="ingredient_show_all"),
     path('ingredient/<str:id>', views.ingredient_show_view, name="ingredient_show"),
