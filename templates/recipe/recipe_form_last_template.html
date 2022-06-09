@@ -7,12 +7,25 @@
         {% csrf_token %}
         categorie
         <div>
-            <input type="checkbox" id="vehicle1" name="vehicle1" value="Bike">
-            <label for="vehicle1"> I have a bike</label><br>
+            {% for category in categories_list %}
+            {{category}}
+                <input type="checkbox" id="category_id_{{category.id}}" name="category_id_{{category.id}}" value="{{category.id}}">
+                <label for="category_id_{{category.id}}">{{category.title}}</label><br>
+            {% endfor %}
         </div>
-        tagi
         <hr/>
-        recipe_id <input type="text" name="recipe_id" value="{{recipe_id}}">
+        tagi
+        <div>
+            {% for tag in tags_list %}
+            {{category}}
+                <input type="checkbox" id="tag_id_{{category.id}}" name="tag_id_{{tag.id}}" value="{{tag.id}}">
+                <label for="tag_id_{{category.id}}">{{tag.title}}</label><br>
+            {% endfor %}
+        </div>
+        <hr/>
+        NUMBER_OF_CATEGORIES <input type="number" name="NUMBER_OF_CATEGORIES" value="{{NUMBER_OF_CATEGORIES}}">
+        NUMBER_OF_TAGS <input type="number" name="NUMBER_OF_TAGS" value="{{NUMBER_OF_TAGS}}">
+        recipe_id <input type="number" name="recipe_id" value="{{recipe_id}}">
         ACTION: <input type="text" name="ACTION" value="{{ACTION}}">
         <button type="submit" name="{{RECIPE_FORM_STATE}}" value="{{RECIPE_FORM_STATE_LAST}}">RECIPE_FORM_STATE_LAST</button>
     </form>

@@ -1,5 +1,5 @@
 from pancakes.models import RecipeIngredient, RecipeImage, RecipeStageRecipeIngredient, RecipeStage, Recipe, \
-    RecipeCategory, RecipeTag
+    RecipeCategory, RecipeTag, RecipeRecipeCategory, RecipeRecipeTag
 
 ERROR_TOO_SHORT = "{} musi mieć przynajmniej {} znaki"
 ERROR_IS_LESS_THAN_ZERO = "{} musi być dodatnie"
@@ -385,7 +385,6 @@ class RecipeStageController:
             print(self.CONTROLLER_NAME, "find_one_by_id return NONE", )
             return None
 
-
     def find_all_by_recipe(self, recipe):
         print(self.CONTROLLER_NAME, "find_all_by_recipe", recipe)
         try:
@@ -439,11 +438,10 @@ class RecipeController:
 
     def DTO(self, object):
         if object is not None:
-            # ingredients_list = recipe_stage_recipe_ingredient_controller.find_all_by_stage(object)
-            # ingredients_DTO_list = recipe_stage_recipe_ingredient_controller.DTO_extend_list(ingredients_list)
             stages_list = recipe_stage_controller.find_all_by_recipe(recipe=object)
-
-            print("stages_list",recipe_stage_controller.DTO_list(stages_list))
+            tags_list = recipe_tag_controller.find_all_by_recipe(recipe_object=object)
+            categories_list = recipe_category_controller.find_all_by_recipe(recipe_object=object)
+            print("stages_list", recipe_stage_controller.DTO_list(stages_list))
             return {
                 "id": object.id,
                 "author": object.author,
@@ -451,9 +449,9 @@ class RecipeController:
                 "cooking_time": object.cooking_time,
                 "date_create": object.date_create,
                 "image": object.image,
-                "categories": [],  # TODO
-                "tags": [],  # TODO
-                "stages_list": recipe_stage_controller.DTO_list(stages_list),  # TODO
+                "categories_list": recipe_category_controller.DTO_list(categories_list),
+                "tags_list": recipe_category_controller.DTO_list(tags_list),
+                "stages_list": recipe_stage_controller.DTO_list(stages_list),
             }
         else:
             return None
@@ -529,6 +527,36 @@ class RecipeController:
         # else:
         #     return None
 
+    def add_category_to_recipe(self, recipeObject, categoryObject):
+        print(self.CONTROLLER_NAME, "add_category_to_recipe", recipeObject, categoryObject)
+        RecipeRecipeCategory.objects.create(recipe=recipeObject, category=categoryObject)
+
+    def add_tag_to_recipe(self, recipeObject, tagObject):
+        print(self.CONTROLLER_NAME, "add_tag_to_recipe", recipeObject, tagObject)
+        RecipeRecipeTag.objects.create(recipe=recipeObject, tag=tagObject)
+
+    def set_categories_to_recipe(self, recipe_object, categories_objects_list):
+        print(self.CONTROLLER_NAME, "set_categories_to_recipe", recipe_object, categories_objects_list)
+        for object in categories_objects_list:
+            RecipeRecipeCategory.objects.create(recipe=recipe_object, category=object)
+
+    def remove_all_categories_from_recipe(self, recipe_object, categories_objects_list):
+        print(self.CONTROLLER_NAME, "remove_all_categories_from_recipe", recipe_object, categories_objects_list)
+        objects_set = recipe_category_controller.find_all_by_recipe(recipe_object)
+        for object in objects_set:
+            recipe_category_controller.delete(object.id)
+
+    def set_tags_to_recipe(self, recipe_object, tags_objects_list):
+        print(self.CONTROLLER_NAME, "set_tags_to_recipe", recipe_object, tags_objects_list)
+        for object in tags_objects_list:
+            RecipeRecipeTag.objects.create(recipe=recipe_object, tag=object)
+
+    def remove_all_tags_from_recipe(self, recipe_object, tags_objects_list):
+        print(self.CONTROLLER_NAME, "remove_all_tags_from_recipe", recipe_object, tags_objects_list)
+        objects_set = recipe_tag_controller.find_all_by_recipe(recipe_object)
+        for object in objects_set:
+            recipe_tag_controller.delete(object.id)
+
 
 class RecipeCategoryController:
     def __init__(self):
@@ -589,6 +617,18 @@ class RecipeCategoryController:
         except RecipeCategory.DoesNotExist:
             return None
 
+    def find_all_by_recipe(self, recipe_object):
+        print(self.CONTROLLER_NAME, "find_all_by_recipe", recipe_object)
+        try:
+            objects_set = []
+            associative_objects_set = RecipeRecipeCategory.objects.filter(recipe=recipe_object)
+            for associative_object in associative_objects_set:
+                category_object = self.find_one_by_id(id=associative_object.category.id)
+                objects_set.append(category_object)
+            return objects_set
+        except RecipeRecipeCategory.DoesNotExist:
+            return None
+
     def delete(self, id):
         print(self.CONTROLLER_NAME, "delete", id)
         try:
@@ -611,7 +651,6 @@ class RecipeCategoryController:
             return object
         else:
             return None
-
 
 
 class RecipeTagController:
@@ -671,6 +710,18 @@ class RecipeTagController:
             else:
                 return None
         except RecipeTag.DoesNotExist:
+            return None
+
+    def find_all_by_recipe(self, recipe_object):
+        print(self.CONTROLLER_NAME, "find_all_by_recipe", recipe_object)
+        try:
+            objects_set = []
+            associative_objects_set = RecipeRecipeTag.objects.filter(recipe=recipe_object)
+            for associative_object in associative_objects_set:
+                tag_object = self.find_one_by_id(id=associative_object.tag.id)
+                objects_set.append(tag_object)
+            return objects_set
+        except RecipeRecipeTag.DoesNotExist:
             return None
 
     def delete(self, id):

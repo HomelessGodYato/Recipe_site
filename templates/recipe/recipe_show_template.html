@@ -8,12 +8,25 @@
     {{recipe.stages_list}}
     <div>
         <hr>
-
         {% for stage in recipe.stages_list %}
             {% include "stage/stage_show_template.html" with stage=stage %}
         {% endfor %}
     </div>
-    <hr>
-    kategorie i tagi
+    <h1>Kategorie</h1>
+    {{recipe.categories_list}}
+    <div>
+        {% for category in recipe.categories_list %}
+            <p>nazwa: {{category.title}}</p>
+        {% endfor %}
+    </div>
+    <h1>Tagi</h1>
+    {{recipe.tags_list}}
+    <div>
+        {% for tag in recipe.tags_list %}
+            <p>nazwa: {{tag.title}}</p>
+        {% endfor %}
+    </div>
+
+
     <hr>
 </div>

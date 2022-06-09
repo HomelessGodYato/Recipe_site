@@ -18,7 +18,7 @@ urlpatterns = [
     # path('recipe_simple_create/', views.recipe_create_simple_view, name="recipe_simple_create"),
     # path('recipe/', views.recipe_select_all_view, name="recipe_select_all"),
     # path('recipe/<str:pk>', views.recipe_select_view, name="recipe_select"),
-    #-------------------------------------------STAGE----------------------------------------------
+    #-------------------------------------------RECIPE----------------------------------------------
     path('recipe/', views.recipe_show_all_view, name="recipe_show_all"),
     path('recipe/<str:id>', views.recipe_show_view, name="recipe_show"),
     path('recipe_form/', views.recipe_form_view, name="recipe_create"),
