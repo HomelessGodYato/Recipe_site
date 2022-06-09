@@ -1,11 +1,15 @@
 <div>
-    {{RECIPE_FORM_STATE}}
-    {{error}}
-    <form action="./{{recipe.id}}" method="post" enctype="multipart/form-data">
+    ACTION:{{ACTION}}
+    <hr/>
+    error:{{error}}
+    <hr/>
+    <form action="./" method="post" enctype="multipart/form-data">
         {% csrf_token %}
+
         title:<input type="text" name="title" value="{{recipe.title}}">
         cooking_time:<input type="number" name="cooking_time" value="{{recipe.cooking_time}}">
         image:<input type="file" name="image" value="{{recipe.image}}" accept="image/*">
-        <button type="submit" name="ACTION" value="{{ACTION}}">Zapisz</button>
+        ACTION: <input type="text" name="ACTION" value="{{ACTION}}">
+        <button type="submit" name="{{RECIPE_FORM_STATE}}" value="{{RECIPE_FORM_STATE_FIRST}}">RECIPE_FORM_STATE_FIRST</button>
     </form>
 </div>

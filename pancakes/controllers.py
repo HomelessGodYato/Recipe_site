@@ -1,4 +1,5 @@
-from pancakes.models import RecipeIngredient, RecipeImage, RecipeStageRecipeIngredient, RecipeStage, Recipe
+from pancakes.models import RecipeIngredient, RecipeImage, RecipeStageRecipeIngredient, RecipeStage, Recipe, \
+    RecipeCategory, RecipeTag
 
 ERROR_TOO_SHORT = "{} musi mieć przynajmniej {} znaki"
 ERROR_IS_LESS_THAN_ZERO = "{} musi być dodatnie"
@@ -384,6 +385,15 @@ class RecipeStageController:
             print(self.CONTROLLER_NAME, "find_one_by_id return NONE", )
             return None
 
+
+    def find_all_by_recipe(self, recipe):
+        print(self.CONTROLLER_NAME, "find_all_by_recipe", recipe)
+        try:
+            objects_set = RecipeStage.objects.filter(recipe=recipe)
+            return objects_set
+        except RecipeStage.DoesNotExist:
+            return None
+
     def delete(self, id):
         print(self.CONTROLLER_NAME, "delete", id)
         try:
@@ -431,7 +441,9 @@ class RecipeController:
         if object is not None:
             # ingredients_list = recipe_stage_recipe_ingredient_controller.find_all_by_stage(object)
             # ingredients_DTO_list = recipe_stage_recipe_ingredient_controller.DTO_extend_list(ingredients_list)
-            # recipe_stage_controller.find_all_by_recipe() #TODO
+            stages_list = recipe_stage_controller.find_all_by_recipe(recipe=object)
+
+            print("stages_list",recipe_stage_controller.DTO_list(stages_list))
             return {
                 "id": object.id,
                 "author": object.author,
@@ -441,7 +453,7 @@ class RecipeController:
                 "image": object.image,
                 "categories": [],  # TODO
                 "tags": [],  # TODO
-                "stages_list": [],  # TODO
+                "stages_list": recipe_stage_controller.DTO_list(stages_list),  # TODO
             }
         else:
             return None
@@ -472,7 +484,7 @@ class RecipeController:
 
     def all(self):
         print(self.CONTROLLER_NAME, "all")
-        return RecipeStage.objects.all()
+        return Recipe.objects.all()
 
     def find_one_by_id(self, id):
         print(self.CONTROLLER_NAME, "find_one_by_id", id)
@@ -518,8 +530,177 @@ class RecipeController:
         #     return None
 
 
+class RecipeCategoryController:
+    def __init__(self):
+        self.CONTROLLER_NAME = "RecipeCategoryController"
+        pass
+
+    def DTO_list(self, list):
+        object_DTO_list = []
+        for object in list:
+            object_DTO_list.append(self.DTO(object))
+        return object_DTO_list
+
+    def DTO(self, object):
+        if object is not None:
+            return {
+                "id": object.id,
+                "title": object.title
+            }
+        else:
+            return None
+
+    def create(self, title):
+        print(self.CONTROLLER_NAME, "create", title)
+        return RecipeCategory(title=title)
+
+    def create_and_save(self, title):
+        print(self.CONTROLLER_NAME, "create_and_save", title)
+        object = self.create(title=title)
+        object = self.save(object)
+        return object
+
+    def save(self, object):
+        print(self.CONTROLLER_NAME, "save", object)
+        object.save()
+        print(self.CONTROLLER_NAME, "afrer save", object)
+        return object
+
+    def all(self):
+        print(self.CONTROLLER_NAME, "all")
+        return RecipeCategory.objects.all()
+
+    def find_one_by_id(self, id):
+        print(self.CONTROLLER_NAME, "find_one_by_id", id)
+        try:
+            object = RecipeCategory.objects.get(id=id)
+            return object
+        except RecipeCategory.DoesNotExist:
+            return None
+
+    def find_one_by_title(self, title):
+        print(self.CONTROLLER_NAME, "find_one_by_title", title)
+        try:
+            objects_set = RecipeCategory.objects.filter(title=title)
+            if len(objects_set) > 0:
+                return objects_set[0]
+            else:
+                return None
+        except RecipeCategory.DoesNotExist:
+            return None
+
+    def delete(self, id):
+        print(self.CONTROLLER_NAME, "delete", id)
+        try:
+            object = RecipeCategory.objects.get(id=id)
+            object.delete()
+            return id
+        except RecipeCategory.DoesNotExist:
+            return None
+
+    def valid(self, title):
+        if len(title) < 3:
+            return ERROR_TOO_SHORT.format("tytuł", 3)
+        return ""
+
+    def update(self, id, title):
+        object = self.find_one_by_id(id=id)
+        if object is not None:
+            object.title = title
+            self.save(object)
+            return object
+        else:
+            return None
+
+
+
+class RecipeTagController:
+    def __init__(self):
+        self.CONTROLLER_NAME = "RecipeTagController"
+        pass
+
+    def DTO_list(self, list):
+        object_DTO_list = []
+        for object in list:
+            object_DTO_list.append(self.DTO(object))
+        return object_DTO_list
+
+    def DTO(self, object):
+        if object is not None:
+            return {
+                "id": object.id,
+                "title": object.title
+            }
+        else:
+            return None
+
+    def create(self, title):
+        print(self.CONTROLLER_NAME, "create", title)
+        return RecipeTag(title=title)
+
+    def create_and_save(self, title):
+        print(self.CONTROLLER_NAME, "create_and_save", title)
+        object = self.create(title=title)
+        object = self.save(object)
+        return object
+
+    def save(self, object):
+        print(self.CONTROLLER_NAME, "save", object)
+        object.save()
+        print(self.CONTROLLER_NAME, "afrer save", object)
+        return object
+
+    def all(self):
+        print(self.CONTROLLER_NAME, "all")
+        return RecipeTag.objects.all()
+
+    def find_one_by_id(self, id):
+        print(self.CONTROLLER_NAME, "find_one_by_id", id)
+        try:
+            object = RecipeTag.objects.get(id=id)
+            return object
+        except RecipeTag.DoesNotExist:
+            return None
+
+    def find_one_by_title(self, title):
+        print(self.CONTROLLER_NAME, "find_one_by_title", title)
+        try:
+            objects_set = RecipeTag.objects.filter(title=title)
+            if len(objects_set) > 0:
+                return objects_set[0]
+            else:
+                return None
+        except RecipeTag.DoesNotExist:
+            return None
+
+    def delete(self, id):
+        print(self.CONTROLLER_NAME, "delete", id)
+        try:
+            object = RecipeTag.objects.get(id=id)
+            object.delete()
+            return id
+        except RecipeTag.DoesNotExist:
+            return None
+
+    def valid(self, title):
+        if len(title) < 3:
+            return ERROR_TOO_SHORT.format("tytuł", 3)
+        return ""
+
+    def update(self, id, title):
+        object = self.find_one_by_id(id=id)
+        if object is not None:
+            object.title = title
+            self.save(object)
+            return object
+        else:
+            return None
+
+
 recipe_controller = RecipeController()
 recipe_ingredient_controller = RecipeIngredientController()
+recipe_tag_controller = RecipeTagController()
+recipe_category_controller = RecipeCategoryController()
 recipe_image_controller = RecipeImageController()
 recipe_stage_recipe_ingredient_controller = RecipeStageRecipeIngredientController()
 recipe_stage_controller = RecipeStageController()

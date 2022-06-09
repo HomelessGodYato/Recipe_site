@@ -1,0 +1,10 @@
+
+{% extends 'main.html' %}
+
+{% block content %}
+
+<h1>category form</h1>
+
+{% include "category/category_form_template.html" with category=category error=error ACTION=ACTION %}
+
+{% endblock content %}

@@ -1,0 +1,8 @@
+<div>
+    {{error}}
+    <form action="./{{tag.id}}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        tytył:<input type="text" name="title" value="{{tag.title}}">
+        <button type="submit" name="ACTION" value="{{ACTION}}">Zapisz</button>
+    </form>
+</div>

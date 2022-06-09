@@ -1,0 +1,16 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+<h1>tagi</h1>
+
+<div>
+    {% for tag in tags_list %}
+
+    {% include "tag/tag_show_template.html" with tag=tag%}
+
+    {% endfor %}
+</div>
+
+
+{% endblock content %}

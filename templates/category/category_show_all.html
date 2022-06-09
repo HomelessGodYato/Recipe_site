@@ -1,0 +1,16 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+<h1>categories</h1>
+
+<div>
+    {% for category in categories_list %}
+
+    {% include "category/category_show_template.html" with category=category%}
+
+    {% endfor %}
+</div>
+
+
+{% endblock content %}

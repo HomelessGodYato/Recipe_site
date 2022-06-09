@@ -1,21 +1,19 @@
 <div>
+    <hr>
     <p>recipe id {{recipe.id}}</p>
     <p>title: {{recipe.title}}</p>
     <p>cooking_time: {{recipe.cooking_time}}</p>
     <p>image:<img src="{{ recipe.image.image.url }}" height="100px" alt="stage"/></p>
     <h1>Stagees</h1>
-    {{ingredients_extend_list}}
+    {{recipe.stages_list}}
     <div>
-        {% for ingredient in stage.ingredients_extended_list %}
-        <div>
-            <h3>skladnik id {{ingredient.id}}</h3>
-            <p>name: {{ingredient.title}}</p>
-            <p>unit: {{ingredient.unit}}</p>
-            <p>amount: {{ingredient.amount}}</p>
-            <p>is_required: {{ingredient.is_required}}</p>
-        </div>
+        <hr>
+
+        {% for stage in recipe.stages_list %}
+            {% include "stage/stage_show_template.html" with stage=stage %}
         {% endfor %}
     </div>
+    <hr>
     kategorie i tagi
-    <hr/>
+    <hr>
 </div>
