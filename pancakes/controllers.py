@@ -580,6 +580,7 @@ class RecipeController:
             for associative_object in associative_objects_set:
                 associative_object.delete()
 
+
 class RecipeCategoryController:
     def __init__(self):
         self.CONTROLLER_NAME = "RecipeCategoryController"

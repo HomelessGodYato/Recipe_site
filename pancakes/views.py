@@ -150,6 +150,7 @@ numberOfIngredientsRange = range(0, numberOfIngredientsMax)
 ACTION = "ACTION"
 ACTION_CREATE = "ACTION_CREATE"
 ACTION_UPDATE = "ACTION_UPDATE"
+ACTION_DELETE = "ACTION_DELETE"
 
 RECIPE_FORM_STATE = "RECIPE_FORM_STATE"
 RECIPE_FORM_STATE_FIRST = "RECIPE_FORM_STATE_FIRST"
@@ -218,6 +219,31 @@ def tag_form_view(request, id=0):
     return render(request, 'tag/tag_form.html', context)
 
 
+def tag_delete_view(request, id):
+    if id == 0:
+        return redirect(to="home")
+
+    if request.method == "POST":
+        action = request.POST.get(ACTION)
+        if action == ACTION_DELETE:
+            print("ACTION_DELETE")
+            recipe_tag_controller.delete(id)
+            return redirect("home")
+
+    object = recipe_tag_controller.find_one_by_id(id)
+    if object is None:
+        context = {
+            ERROR: "Nie ma rekordu o takim id",
+        }
+        return render(request, 'tag/tag_delete.html', context)
+
+    context = {
+        TAG: recipe_tag_controller.DTO(object),
+        ACTION: ACTION_DELETE
+    }
+    return render(request, 'tag/tag_delete.html', context)
+
+
 # ======================================CATEGORY===================================================
 
 def category_show_all_view(request):
@@ -276,6 +302,31 @@ def category_form_view(request, id=0):
         ACTION: ACTION_CREATE
     }
     return render(request, 'category/category_form.html', context)
+
+
+def category_delete_view(request, id):
+    if id == 0:
+        return redirect(to="home")
+
+    if request.method == "POST":
+        action = request.POST.get(ACTION)
+        if action == ACTION_DELETE:
+            print("ACTION_DELETE")
+            recipe_category_controller.delete(id)
+            return redirect("home")
+
+    object = recipe_category_controller.find_one_by_id(id)
+    if object is None:
+        context = {
+            ERROR: "Nie ma rekordu o takim id",
+        }
+        return render(request, 'category/category_delete.html', context)
+
+    context = {
+        CATEGORY: recipe_category_controller.DTO(object),
+        ACTION: ACTION_DELETE
+    }
+    return render(request, 'category/category_delete.html', context)
 
 
 # ======================================INGREDIENT===================================================
@@ -338,6 +389,31 @@ def ingredient_form_view(request, id=0):
         ACTION: ACTION_CREATE
     }
     return render(request, 'ingredient/ingredient_form.html', context)
+
+
+def ingredient_delete_view(request, id):
+    if id == 0:
+        return redirect(to="home")
+
+    if request.method == "POST":
+        action = request.POST.get(ACTION)
+        if action == ACTION_DELETE:
+            print("ACTION_DELETE")
+            recipe_ingredient_controller.delete(id)
+            return redirect("home")
+
+    object = recipe_ingredient_controller.find_one_by_id(id)
+    if object is None:
+        context = {
+            ERROR: "Nie ma rekordu o takim id",
+        }
+        return render(request, 'ingredient/ingredient_delete.html', context)
+
+    context = {
+        INGREDIENT: recipe_ingredient_controller.DTO(object),
+        ACTION: ACTION_DELETE
+    }
+    return render(request, 'ingredient/ingredient_delete.html', context)
 
 
 # ======================================recipe===================================================
@@ -434,7 +510,7 @@ def recipe_form_view(request, id=0):
                         ingredient_list)
                     if stage_object is not None:
                         stage = recipe_stage_controller.DTO(stage_object)
-                        print("stage",stage)
+                        print("stage", stage)
                         context[STAGE] = stage
                         context["stage_id"] = stage_object.id
                         context[INGREDIENTS_EXTENDED_LIST] = ingredient_extended_list
@@ -574,7 +650,8 @@ def recipe_form_view(request, id=0):
                     print("---------------------------------------------------")
                     context["id"] = id
                     recipe_object = recipe_controller.find_one_by_id(recipe_object.id)
-                    stage_object = recipe_stage_controller.find_one_by_recipe_and_order(recipe=recipe_object, order=int(order)+1)
+                    stage_object = recipe_stage_controller.find_one_by_recipe_and_order(recipe=recipe_object,
+                                                                                        order=int(order) + 1)
                     ingredient_list = recipe_stage_recipe_ingredient_controller.find_all_by_stage(stage_object)
                     ingredient_extended_list = recipe_stage_recipe_ingredient_controller.DTO_extend_list(
                         ingredient_list)
@@ -737,7 +814,7 @@ def recipe_form_view(request, id=0):
                     print("---------------------------------------------------")
                     context["id"] = id
                     recipe_categories = recipe_category_controller.find_all_by_recipe(recipe_object=recipe_object)
-                    print("recipe_categories",recipe_categories)
+                    print("recipe_categories", recipe_categories)
                     for category in category_objects_DTO_list:
                         for recipe_category in recipe_categories:
                             if recipe_category.id == category.get(ID):
@@ -839,3 +916,27 @@ def recipe_form_view(request, id=0):
 
     return render(request, 'recipe/recipe_form_first.html', context)
 
+
+def recipe_delete_view(request, id):
+    if id == 0:
+        return redirect(to="home")
+
+    if request.method == "POST":
+        action = request.POST.get(ACTION)
+        if action == ACTION_DELETE:
+            print("ACTION_DELETE")
+            recipe_controller.delete(id)
+            return redirect("home")
+
+    object = recipe_controller.find_one_by_id(id)
+    if object is None:
+        context = {
+            ERROR: "Nie ma rekordu o takim id",
+        }
+        return render(request, 'recipe/recipe_delete.html', context)
+
+    context = {
+        RECIPE: recipe_controller.DTO(object),
+        ACTION: ACTION_DELETE
+    }
+    return render(request, 'recipe/recipe_delete.html', context)
