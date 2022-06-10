@@ -11,18 +11,15 @@ from django.template.loader import render_to_string
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 
-from .controllers import RecipeIngredientController, recipe_ingredient_controller, recipe_image_controller, \
+from .controllers import recipe_ingredient_controller, recipe_image_controller, \
     recipe_stage_controller, recipe_stage_recipe_ingredient_controller, recipe_controller, recipe_tag_controller, \
     recipe_category_controller
-from .dto import getRecipeDTO, getRecipeSimpleDTO
-from .forms import CreateUserForm, RecipeForm, RecipeStageIngredientForm, RecipeFormFirst, RecipeFormStage, \
-    RecipeFormLast
+from .forms import CreateUserForm
 from .tokens import account_activation_token
-from .models import Recipe, RecipeStage, RecipeIngredient, RecipeImage, RecipeCategory, RecipeRecipeCategory
-from django.forms.models import modelformset_factory
 
 from django.utils.timezone import now
 
+from pancakes.constant import *
 
 def home_page(request):
     context = {"recipes": ['pancakes', 'donuts']}
@@ -106,59 +103,6 @@ def logout_user(request):
     return redirect('login')
 
 
-INGREDIENT_ID = "ingredient_id_{}"
-INGREDIENT_TITLE = "ingredient_title_{}"
-INGREDIENT_AMOUNT = "ingredient_amount_{}"
-INGREDIENT_UNIT = "ingredient_unit_{}"
-INGREDIENT_IS_REQUIRED = "ingredient_is_required_{}"
-
-CATEGORY_ID = "category_id_{}"
-TAG_ID = "tag_id_{}"
-
-ID = "id"
-TITLE = "title"
-UNIT = "unit"
-IMAGE = "image"
-AMOUNT = "amount"
-IS_REQUIRED = "is_required"
-COOKING_TIME = "cooking_time"
-STAGE = "stage"
-STAGES_LIST = "stages_list"
-RECIPE = "recipe"
-RECIPES_LIST = "recipes_list"
-INGREDIENT = "ingredient"
-DESCRIPTION = "description"
-ORDER = "order"
-TAG = "tag"
-CATEGORY = "category"
-
-INGREDIENTS_LIST = "ingredients_list"
-TAGS_LIST = "tags_list"
-CATEGORIES_LIST = "categories_list"
-INGREDIENTS_EXTENDED_LIST = "ingredients_extended_list"
-INGREDIENTS_EXTENDED_LIST_LENGTH = "ingredients_extended_list_length"
-
-ERROR = "error"
-NUMBER_OF_CATEGORIES = "NUMBER_OF_CATEGORIES"
-NUMBER_OF_TAGS = "NUMBER_OF_TAGS"
-
-NUMBER_OF_INGREDIENTS_MAX = "numberOfIngredientsMax"
-NUMBER_OF_INGREDIENTS_RANGE = "numberOfIngredientsRange"
-numberOfIngredientsMax = 5
-numberOfIngredientsRange = range(0, numberOfIngredientsMax)
-
-ACTION = "ACTION"
-ACTION_CREATE = "ACTION_CREATE"
-ACTION_UPDATE = "ACTION_UPDATE"
-ACTION_DELETE = "ACTION_DELETE"
-
-RECIPE_FORM_STATE = "RECIPE_FORM_STATE"
-RECIPE_FORM_STATE_FIRST = "RECIPE_FORM_STATE_FIRST"
-RECIPE_FORM_STATE_STAGE = "RECIPE_FORM_STATE_STAGE"
-RECIPE_FORM_STATE_LAST_STAGE = "RECIPE_FORM_STATE_LAST_STAGE"
-RECIPE_FORM_STATE_LAST = "RECIPE_FORM_STATE_LAST"
-
-
 # ======================================TAG===================================================
 
 def tag_show_all_view(request):
@@ -201,21 +145,19 @@ def tag_form_view(request, id=0):
             return render(request, 'tag/tag_form.html', context)
 
     # data
+    context = {
+        ACTION: ACTION_CREATE
+    }
+
     if id != 0:
         # update
         tagObj = recipe_tag_controller.find_one_by_id(id)
         if tagObj is not None:  # else create
             tag = recipe_tag_controller.DTO(tagObj)
-            context = {
-                ACTION: ACTION_UPDATE,
-                TAG: tag,
-            }
+            context[ACTION] = ACTION_UPDATE
+            context[TAG] = tag
             return render(request, 'tag/tag_form.html', context)
 
-    # create
-    context = {
-        ACTION: ACTION_CREATE
-    }
     return render(request, 'tag/tag_form.html', context)
 
 
@@ -233,7 +175,7 @@ def tag_delete_view(request, id):
     object = recipe_tag_controller.find_one_by_id(id)
     if object is None:
         context = {
-            ERROR: "Nie ma rekordu o takim id",
+            ERROR: ERROR_INVALID_ID.format("tagu", id)
         }
         return render(request, 'tag/tag_delete.html', context)
 
@@ -286,21 +228,19 @@ def category_form_view(request, id=0):
             return render(request, 'category/category_form.html', context)
 
     # data
+    context = {
+        ACTION: ACTION_CREATE
+    }
+
     if id != 0:
         # update
         categoryObj = recipe_category_controller.find_one_by_id(id)
         if categoryObj is not None:  # else create
             category = recipe_category_controller.DTO(categoryObj)
-            context = {
-                ACTION: ACTION_UPDATE,
-                CATEGORY: category,
-            }
+            context[ACTION] = ACTION_UPDATE
+            context[CATEGORY] = category
             return render(request, 'category/category_form.html', context)
 
-    # create
-    context = {
-        ACTION: ACTION_CREATE
-    }
     return render(request, 'category/category_form.html', context)
 
 
@@ -318,7 +258,7 @@ def category_delete_view(request, id):
     object = recipe_category_controller.find_one_by_id(id)
     if object is None:
         context = {
-            ERROR: "Nie ma rekordu o takim id",
+            ERROR: ERROR_INVALID_ID.format("kategorii", id)
         }
         return render(request, 'category/category_delete.html', context)
 
@@ -373,21 +313,19 @@ def ingredient_form_view(request, id=0):
             return render(request, 'ingredient/ingredient_form.html', context)
 
     # data
+    context = {
+        ACTION: ACTION_CREATE
+    }
+
     if id != 0:
         # update
         ingredientObj = recipe_ingredient_controller.find_one_by_id(id)
         if ingredientObj is not None:  # else create
             ingredient = recipe_ingredient_controller.DTO(ingredientObj)
-            context = {
-                ACTION: ACTION_UPDATE,
-                INGREDIENT: ingredient,
-            }
+            context[ACTION] = ACTION_UPDATE
+            context[INGREDIENT] = ingredient
             return render(request, 'ingredient/ingredient_form.html', context)
 
-    # create
-    context = {
-        ACTION: ACTION_CREATE
-    }
     return render(request, 'ingredient/ingredient_form.html', context)
 
 
@@ -405,7 +343,7 @@ def ingredient_delete_view(request, id):
     object = recipe_ingredient_controller.find_one_by_id(id)
     if object is None:
         context = {
-            ERROR: "Nie ma rekordu o takim id",
+            ERROR: ERROR_INVALID_ID.format("składniku", id)
         }
         return render(request, 'ingredient/ingredient_delete.html', context)
 
@@ -435,20 +373,16 @@ def recipe_show_view(request, id):
 
 
 def recipe_form_view(request, id=0):
-    print("----------------------RECIPE-------------------------")
     action = request.POST.get(ACTION)
     recipe_form_state = request.POST.get(RECIPE_FORM_STATE)
-    recipe_id = request.POST.get("recipe_id")
-    print("action,recipe_form_state,recipe_id", action, recipe_form_state, recipe_id)
-
+    recipe_id = request.POST.get(RECIPE_ID)
     if recipe_form_state == RECIPE_FORM_STATE_FIRST:  # FIRST -> STAGE
-        print("----------------------FIRST -> STAGE-------------------------")
         # save first and send stage
         if request.method == "POST":
             # image
             image = request.FILES.get(IMAGE)
             if image is None:
-                image = 'default/default.PNG'
+                image = DEFAULT_RECIPE_IMAGE_PATH
             error_image = recipe_image_controller.valid(image=image)
             # recipe
             author_object = request.user
@@ -463,7 +397,7 @@ def recipe_form_view(request, id=0):
                                                    image=image)
 
             if error_recipe == "" and error_image == "":
-                recipe_object = ''
+                recipe_object = '' # have to be previously declared
                 if action == ACTION_CREATE:
                     print("ACTION_CREATE")
                     # image
@@ -474,7 +408,6 @@ def recipe_form_view(request, id=0):
                                                                       cooking_time=cooking_time,
                                                                       date_create=date_create,
                                                                       image=image_object)
-                    print("recipe_object", recipe_object)
                 if action == ACTION_UPDATE:
                     print("ACTION_UPDATE")
                     recipe_object = recipe_controller.find_one_by_id(id=id)
@@ -486,23 +419,20 @@ def recipe_form_view(request, id=0):
                                                              title=title,
                                                              cooking_time=cooking_time,
                                                              image=image_object)
-                    print("recipe_object", recipe_object)
-
                 context = {
                     ACTION: action,
                     RECIPE_FORM_STATE: RECIPE_FORM_STATE,
                     RECIPE_FORM_STATE_STAGE: RECIPE_FORM_STATE_STAGE,
                     RECIPE_FORM_STATE_LAST_STAGE: RECIPE_FORM_STATE_LAST_STAGE,
 
-                    NUMBER_OF_INGREDIENTS_MAX: numberOfIngredientsMax,
-                    NUMBER_OF_INGREDIENTS_RANGE: range(0, numberOfIngredientsMax),
+                    NUMBER_OF_INGREDIENTS_MAX: number_of_ingredients_max,
+                    NUMBER_OF_INGREDIENTS_RANGE: range(0, number_of_ingredients_max),
                     INGREDIENTS_EXTENDED_LIST_LENGTH: 0,
                     ORDER: 1,
-                    "recipe_id": recipe_object.id
+                    RECIPE_ID: recipe_object.id
                 }
                 if id != 0:  # update
-                    print("---------------------------------------------------")
-                    context["id"] = id
+                    context[ID] = id
                     recipe_object = recipe_controller.find_one_by_id(recipe_object.id)
                     stage_object = recipe_stage_controller.find_one_by_recipe_and_order(recipe=recipe_object, order=1)
                     ingredient_list = recipe_stage_recipe_ingredient_controller.find_all_by_stage(stage_object)
@@ -510,14 +440,12 @@ def recipe_form_view(request, id=0):
                         ingredient_list)
                     if stage_object is not None:
                         stage = recipe_stage_controller.DTO(stage_object)
-                        print("stage", stage)
                         context[STAGE] = stage
-                        context["stage_id"] = stage_object.id
+                        context[STAGE_ID] = stage_object.id
                         context[INGREDIENTS_EXTENDED_LIST] = ingredient_extended_list
                         context[INGREDIENTS_EXTENDED_LIST_LENGTH] = len(ingredient_extended_list)
                         context[NUMBER_OF_INGREDIENTS_RANGE] = range(len(ingredient_extended_list),
-                                                                     numberOfIngredientsMax)
-                    print("context", context)
+                                                                     number_of_ingredients_max)
                 return render(request, 'recipe/recipe_form_stage.html', context)
             else:
                 # error
@@ -538,17 +466,16 @@ def recipe_form_view(request, id=0):
                     }
                 }
                 return render(request, 'recipe/recipe_form_first.html', context)
-    elif recipe_form_state == RECIPE_FORM_STATE_STAGE:
-        print("----------------------STAGE -> STAGE-------------------------")
+    elif recipe_form_state == RECIPE_FORM_STATE_STAGE: # STAGE -> STAGE
         if request.method == "POST":
             # image
             image = request.FILES.get(IMAGE)
             if image is None:
-                image = 'default/default.PNG'
+                image = DEFAULT_STAGE_IMAGE_PATH
             error_image = recipe_image_controller.valid(image=image)
             # stage
             recipe_object = recipe_controller.find_one_by_id(id=recipe_id)
-            stage_id = request.POST.get("stage_id")
+            stage_id = request.POST.get(STAGE_ID)
             cooking_time = request.POST.get(COOKING_TIME)
             description = request.POST.get(DESCRIPTION)
             order = request.POST.get(ORDER)
@@ -561,17 +488,16 @@ def recipe_form_view(request, id=0):
             ingredient_extended_list_validated = []
             ingredient_extended_list = []
             error_ingredient = ''
-            for index in numberOfIngredientsRange:
-                ingredient_id = request.POST.get(INGREDIENT_ID.format(index))
-                ingredient_title = request.POST.get(INGREDIENT_TITLE.format(index))
-                ingredient_amount = request.POST.get(INGREDIENT_AMOUNT.format(index))
-                ingredient_unit = request.POST.get(INGREDIENT_UNIT.format(index))
-                ingredient_is_require = request.POST.get(INGREDIENT_IS_REQUIRED.format(index))
+            for index in number_of_ingredients_range:
+                ingredient_id = request.POST.get(MODIFIABLE_FIELD_INGREDIENT_ID.format(index))
+                ingredient_title = request.POST.get(MODIFIABLE_FIELD_INGREDIENT_TITLE.format(index))
+                ingredient_amount = request.POST.get(MODIFIABLE_FIELD_INGREDIENT_AMOUNT.format(index))
+                ingredient_unit = request.POST.get(MODIFIABLE_FIELD_INGREDIENT_UNIT.format(index))
+                ingredient_is_require = request.POST.get(MODIFIABLE_FIELD_INGREDIENT_IS_REQUIRED.format(index))
                 if ingredient_is_require is None:
                     ingredient_is_require = False
                 else:
                     ingredient_is_require = True
-                # print("--", ingredient_id, ingredient_title, ingredient_amount, ingredient_unit, ingredient_is_require)
                 if ingredient_title != '' or ingredient_amount != '' or ingredient_unit != '':
 
                     ingredient_extended_list.append(
@@ -613,7 +539,6 @@ def recipe_form_view(request, id=0):
                                                                         amount=object.get(AMOUNT),
                                                                         is_required=object.get(IS_REQUIRED))
 
-                    print("recipe_object", recipe_object)
                 elif action == ACTION_UPDATE:
                     print("ACTION_UPDATE")
                     stage_object = recipe_stage_controller.find_one_by_id(stage_id)
@@ -640,15 +565,14 @@ def recipe_form_view(request, id=0):
                     RECIPE_FORM_STATE_STAGE: RECIPE_FORM_STATE_STAGE,
                     RECIPE_FORM_STATE_LAST_STAGE: RECIPE_FORM_STATE_LAST_STAGE,
 
-                    NUMBER_OF_INGREDIENTS_MAX: numberOfIngredientsMax,
-                    NUMBER_OF_INGREDIENTS_RANGE: range(0, numberOfIngredientsMax),
+                    NUMBER_OF_INGREDIENTS_MAX: number_of_ingredients_max,
+                    NUMBER_OF_INGREDIENTS_RANGE: range(0, number_of_ingredients_max),
                     INGREDIENTS_EXTENDED_LIST_LENGTH: 0,
                     ORDER: int(order) + 1,
-                    "recipe_id": recipe_object.id,
+                    RECIPE_ID: recipe_object.id,
                 }
                 if id != 0:  # update
-                    print("---------------------------------------------------")
-                    context["id"] = id
+                    context[ID] = id
                     recipe_object = recipe_controller.find_one_by_id(recipe_object.id)
                     stage_object = recipe_stage_controller.find_one_by_recipe_and_order(recipe=recipe_object,
                                                                                         order=int(order) + 1)
@@ -659,12 +583,11 @@ def recipe_form_view(request, id=0):
                     if stage_object is not None:
                         stage = recipe_stage_controller.DTO(stage_object)
                         context[STAGE] = stage
-                        context["stage_id"] = stage_object.id
+                        context[STAGE_ID] = stage_object.id
                         context[INGREDIENTS_EXTENDED_LIST] = ingredient_extended_list
                         context[INGREDIENTS_EXTENDED_LIST_LENGTH] = len(ingredient_extended_list)
                         context[NUMBER_OF_INGREDIENTS_RANGE] = range(len(ingredient_extended_list),
-                                                                     numberOfIngredientsMax)
-                    print("context", context)
+                                                                     number_of_ingredients_max)
                 return render(request, 'recipe/recipe_form_stage.html', context)
             else:
                 # error
@@ -676,7 +599,6 @@ def recipe_form_view(request, id=0):
                 elif error_ingredient != "":
                     error = error_ingredient
 
-                print("recipe_object", recipe_object)
                 context = {
                     ERROR: error,
                     ACTION: ACTION_CREATE,
@@ -691,23 +613,22 @@ def recipe_form_view(request, id=0):
                     },
                     INGREDIENTS_EXTENDED_LIST: ingredient_extended_list,
                     INGREDIENTS_EXTENDED_LIST_LENGTH: len(ingredient_extended_list),
-                    NUMBER_OF_INGREDIENTS_MAX: numberOfIngredientsMax,
-                    NUMBER_OF_INGREDIENTS_RANGE: range(len(ingredient_extended_list), numberOfIngredientsMax),
+                    NUMBER_OF_INGREDIENTS_MAX: number_of_ingredients_max,
+                    NUMBER_OF_INGREDIENTS_RANGE: range(len(ingredient_extended_list), number_of_ingredients_max),
                     ORDER: order,
-                    "recipe_id": recipe_object.id,
+                    RECIPE_ID: recipe_object.id,
                 }
                 return render(request, 'recipe/recipe_form_stage.html', context)
-    elif recipe_form_state == RECIPE_FORM_STATE_LAST_STAGE:
-        print("----------------------STAGE -> LAST-------------------------")
+    elif recipe_form_state == RECIPE_FORM_STATE_LAST_STAGE: # STAGE -> LAST
         if request.method == "POST":
             # image
             image = request.FILES.get(IMAGE)
             if image is None:
-                image = 'default/default.PNG'
+                image = DEFAULT_STAGE_IMAGE_PATH
             error_image = recipe_image_controller.valid(image=image)
             # stage
             recipe_object = recipe_controller.find_one_by_id(id=recipe_id)
-            stage_id = request.POST.get("stage_id")
+            stage_id = request.POST.get(STAGE_ID)
             cooking_time = request.POST.get(COOKING_TIME)
             description = request.POST.get(DESCRIPTION)
             order = request.POST.get(ORDER)
@@ -720,17 +641,16 @@ def recipe_form_view(request, id=0):
             ingredient_extended_list_validated = []
             ingredient_extended_list = []
             error_ingredient = ''
-            for index in numberOfIngredientsRange:
-                ingredient_id = request.POST.get(INGREDIENT_ID.format(index))
-                ingredient_title = request.POST.get(INGREDIENT_TITLE.format(index))
-                ingredient_amount = request.POST.get(INGREDIENT_AMOUNT.format(index))
-                ingredient_unit = request.POST.get(INGREDIENT_UNIT.format(index))
-                ingredient_is_require = request.POST.get(INGREDIENT_IS_REQUIRED.format(index))
+            for index in number_of_ingredients_range:
+                ingredient_id = request.POST.get(MODIFIABLE_FIELD_INGREDIENT_ID.format(index))
+                ingredient_title = request.POST.get(MODIFIABLE_FIELD_INGREDIENT_TITLE.format(index))
+                ingredient_amount = request.POST.get(MODIFIABLE_FIELD_INGREDIENT_AMOUNT.format(index))
+                ingredient_unit = request.POST.get(MODIFIABLE_FIELD_INGREDIENT_UNIT.format(index))
+                ingredient_is_require = request.POST.get(MODIFIABLE_FIELD_INGREDIENT_IS_REQUIRED.format(index))
                 if ingredient_is_require is None:
                     ingredient_is_require = False
                 else:
                     ingredient_is_require = True
-                # print("--", ingredient_id, ingredient_title, ingredient_amount, ingredient_unit, ingredient_is_require)
                 if ingredient_title != '' or ingredient_amount != '' or ingredient_unit != '':
 
                     ingredient_extended_list.append(
@@ -771,8 +691,6 @@ def recipe_form_view(request, id=0):
                                                                         unit=object.get(UNIT),
                                                                         amount=object.get(AMOUNT),
                                                                         is_required=object.get(IS_REQUIRED))
-
-                    print("recipe_object", recipe_object)
                 elif action == ACTION_UPDATE:
                     print("ACTION_UPDATE")
                     stage_object = recipe_stage_controller.find_one_by_id(stage_id)
@@ -808,24 +726,21 @@ def recipe_form_view(request, id=0):
                     TAGS_LIST: tag_objects_DTO_list,
                     NUMBER_OF_TAGS: len(tag_objects_list),
 
-                    "recipe_id": recipe_object.id,
+                    RECIPE_ID: recipe_object.id,
                 }
                 if id != 0:  # update
-                    print("---------------------------------------------------")
-                    context["id"] = id
+                    context[ID] = id
                     recipe_categories = recipe_category_controller.find_all_by_recipe(recipe_object=recipe_object)
-                    print("recipe_categories", recipe_categories)
                     for category in category_objects_DTO_list:
                         for recipe_category in recipe_categories:
                             if recipe_category.id == category.get(ID):
-                                category["is_checked"] = True
+                                category[IS_CHECKED] = True
                                 break
                     recipe_tags = recipe_tag_controller.find_all_by_recipe(recipe_object=recipe_object)
-                    print("recipe_tags", recipe_tags)
                     for tag in tag_objects_DTO_list:
                         for recipe_tag in recipe_tags:
                             if recipe_tag.id == tag.get(ID):
-                                tag["is_checked"] = True
+                                tag[IS_CHECKED] = True
                                 break
                 return render(request, 'recipe/recipe_form_last.html', context)
 
@@ -839,7 +754,6 @@ def recipe_form_view(request, id=0):
                 elif error_ingredient != "":
                     error = error_ingredient
 
-                print("recipe_object", recipe_object)
                 context = {
                     ERROR: error,
                     ACTION: ACTION_CREATE,
@@ -854,45 +768,41 @@ def recipe_form_view(request, id=0):
                     },
                     INGREDIENTS_EXTENDED_LIST: ingredient_extended_list,
                     INGREDIENTS_EXTENDED_LIST_LENGTH: len(ingredient_extended_list),
-                    NUMBER_OF_INGREDIENTS_MAX: numberOfIngredientsMax,
-                    NUMBER_OF_INGREDIENTS_RANGE: range(len(ingredient_extended_list), numberOfIngredientsMax),
+                    NUMBER_OF_INGREDIENTS_MAX: number_of_ingredients_max,
+                    NUMBER_OF_INGREDIENTS_RANGE: range(len(ingredient_extended_list), number_of_ingredients_max),
                     ORDER: order,
-                    "recipe_id": recipe_object.id,
+                    RECIPE_ID: recipe_object.id,
                 }
                 return render(request, 'recipe/recipe_form_stage.html', context)
-    elif recipe_form_state == RECIPE_FORM_STATE_LAST:
-        print("----------------------LAST -> END-------------------------")
+    elif recipe_form_state == RECIPE_FORM_STATE_LAST: # LAST -> END
         if request.method == "POST":
             # recipe
             recipe_object = recipe_controller.find_one_by_id(id=recipe_id)
-            # categoires
+            # categories
             number_of_categories = request.POST.get(NUMBER_OF_CATEGORIES)
             categories_objects_list = []
             for index in range(1, int(number_of_categories) + 1):
-                category_id = request.POST.get(CATEGORY_ID.format(index))
-                print(index, "category_id", category_id)
+                category_id = request.POST.get(MODIFIABLE_FIELD_CATEGORY.format(index))
                 if category_id is not None:
                     category_object = recipe_category_controller.find_one_by_id(id=category_id)
                     categories_objects_list.append(category_object)
-
             # tags
             number_of_tags = request.POST.get(NUMBER_OF_TAGS)
             tags_objects_list = []
             for index in range(1, int(number_of_tags) + 1):
-                tag_id = request.POST.get(TAG_ID.format(index))
-                print("tag_id", tag_id)
+                tag_id = request.POST.get(MODIFIABLE_FIELD_TAG.format(index))
                 if tag_id is not None:
                     tag_object = recipe_tag_controller.find_one_by_id(id=tag_id)
                     tags_objects_list.append(tag_object)
 
             if action == ACTION_CREATE:
-                print("ACTION_CREATE")
+                print("ACTION_CREATE",categories_objects_list,tags_objects_list)
                 recipe_controller.set_categories_to_recipe(recipe_object=recipe_object,
                                                            categories_objects_list=categories_objects_list)
                 recipe_controller.set_tags_to_recipe(recipe_object=recipe_object,
                                                      tags_objects_list=tags_objects_list)
             if action == ACTION_UPDATE:
-                print("ACTION_UPDATE")
+                print("ACTION_UPDATE",categories_objects_list,tags_objects_list)
                 recipe_controller.remove_all_categories_from_recipe(recipe_object=recipe_object)
                 recipe_controller.set_categories_to_recipe(recipe_object=recipe_object,
                                                            categories_objects_list=categories_objects_list)
@@ -900,7 +810,8 @@ def recipe_form_view(request, id=0):
                 recipe_controller.set_tags_to_recipe(recipe_object=recipe_object,
                                                      tags_objects_list=tags_objects_list)
             return redirect("recipe_show", id=recipe_id)
-    print("----------------------NONE -> FIRST-------------------------")
+
+    # NONE -> FIRST
     context = {
         ACTION: ACTION_CREATE,
         RECIPE_FORM_STATE: RECIPE_FORM_STATE,
@@ -911,7 +822,7 @@ def recipe_form_view(request, id=0):
         if recipe_object is not None:  # else create
             recipe = recipe_controller.DTO(recipe_object)
             context[ACTION] = ACTION_UPDATE
-            context["recipe_id"] = id
+            context[RECIPE_ID] = id
             context[RECIPE] = recipe
 
     return render(request, 'recipe/recipe_form_first.html', context)
@@ -931,7 +842,7 @@ def recipe_delete_view(request, id):
     object = recipe_controller.find_one_by_id(id)
     if object is None:
         context = {
-            ERROR: "Nie ma rekordu o takim id",
+            ERROR: ERROR_INVALID_ID.format("przepisu", id),
         }
         return render(request, 'recipe/recipe_delete.html', context)
 

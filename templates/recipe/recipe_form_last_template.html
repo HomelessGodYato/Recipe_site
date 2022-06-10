@@ -10,12 +10,12 @@
             {% for category in categories_list %}
             {{category}}
                 <input type="checkbox"
-                       id="category_id_{{category.id}}"
-                       name="category_id_{{category.id}}"
+                       id="category_{{ forloop.counter }}"
+                       name="category_{{ forloop.counter }}"s
                        value="{{category.id}}"
                        {% if category.is_checked %} checked {% endif%}
                 >
-                <label for="category_id_{{category.id}}">{{category.title}}</label><br>
+                <label for="category_{{ forloop.counter }}">{{category.title}}</label><br>
             {% endfor %}
         </div>
         <hr/>
@@ -24,17 +24,17 @@
             {% for tag in tags_list %}
             {{category}}
                 <input type="checkbox"
-                       id="tag_id_{{category.id}}"
-                       name="tag_id_{{tag.id}}"
+                       id="tag_{{ forloop.counter }}"
+                       name="tag_{{ forloop.counter }}"
                        value="{{tag.id}}"
                        {% if tag.is_checked %} checked {% endif%}
                 >
-                <label for="tag_id_{{category.id}}">{{tag.title}}</label><br>
+                <label for="tag_{{ forloop.counter }}">{{tag.title}}</label><br>
             {% endfor %}
         </div>
         <hr/>
-        NUMBER_OF_CATEGORIES <input type="number" name="NUMBER_OF_CATEGORIES" value="{{NUMBER_OF_CATEGORIES}}">
-        NUMBER_OF_TAGS <input type="number" name="NUMBER_OF_TAGS" value="{{NUMBER_OF_TAGS}}">
+        number_of_categories <input type="number" name="number_of_categories" value="{{number_of_categories}}">
+        number_of_tags <input type="number" name="number_of_tags" value="{{number_of_tags}}">
         recipe_id <input type="number" name="recipe_id" value="{{recipe_id}}">
         ACTION: <input type="text" name="ACTION" value="{{ACTION}}">
         <button type="submit" name="{{RECIPE_FORM_STATE}}" value="{{RECIPE_FORM_STATE_LAST}}">RECIPE_FORM_STATE_LAST</button>

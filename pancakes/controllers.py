@@ -1,15 +1,7 @@
 from pancakes.models import RecipeIngredient, RecipeImage, RecipeStageRecipeIngredient, RecipeStage, Recipe, \
     RecipeCategory, RecipeTag, RecipeRecipeCategory, RecipeRecipeTag
 
-ERROR_TOO_SHORT = "{} musi mieć przynajmniej {} znaki"
-ERROR_IS_LESS_THAN_ZERO = "{} musi być dodatnie"
-
-RECIPE_INGREDIENT_STATUS_DRAFT = "DRAFT"
-RECIPE_INGREDIENT_STATUS_APPROVED = "APPROVED"
-
-RECIPE_STATUS_DRAFT = "DRAFT"
-RECIPE_STATUS_APPROVED = "APPROVED"
-
+from pancakes.constant import *
 
 class RecipeIngredientController:
     def __init__(self):
