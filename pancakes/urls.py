@@ -42,11 +42,6 @@ urlpatterns = [
     path('tag_form/', views.tag_form_view, name="tag_create"),
     path('tag_form/<str:id>', views.tag_form_view, name="tag_update"),
 
-    #-------------------------------------------STAGE----------------------------------------------
-    path('stage/', views.stage_show_all_view, name="stage_show_all"),
-    path('stage/<str:id>', views.stage_show_view, name="stage_show"),
-    path('stage_form/', views.stage_form_view, name="stage_create"),
-    path('stage_form/<str:id>', views.stage_form_view, name="stage_update"),
 
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
