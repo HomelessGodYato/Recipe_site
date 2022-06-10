@@ -24,6 +24,12 @@ urlpatterns = [
     path('recipe_form/', views.recipe_form_view, name="recipe_create"),
     path('recipe_form/<str:id>', views.recipe_form_view, name="recipe_update"),
 
+    #-------------------------------------------INGREDIENT----------------------------------------------
+    path('ingredient/', views.ingredient_show_all_view, name="ingredient_show_all"),
+    path('ingredient/<str:id>', views.ingredient_show_view, name="ingredient_show"),
+    path('ingredient_form/', views.ingredient_form_view, name="ingredient_create"),
+    path('ingredient_form/<str:id>', views.ingredient_form_view, name="ingredient_update"),
+
     #-------------------------------------------CATEGORY----------------------------------------------
     path('category/', views.category_show_all_view, name="category_show_all"),
     path('category/<str:id>', views.category_show_view, name="category_show"),

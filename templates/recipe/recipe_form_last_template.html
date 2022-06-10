@@ -9,7 +9,12 @@
         <div>
             {% for category in categories_list %}
             {{category}}
-                <input type="checkbox" id="category_id_{{category.id}}" name="category_id_{{category.id}}" value="{{category.id}}">
+                <input type="checkbox"
+                       id="category_id_{{category.id}}"
+                       name="category_id_{{category.id}}"
+                       value="{{category.id}}"
+                       {% if category.is_checked %} checked {% endif%}
+                >
                 <label for="category_id_{{category.id}}">{{category.title}}</label><br>
             {% endfor %}
         </div>
@@ -18,7 +23,12 @@
         <div>
             {% for tag in tags_list %}
             {{category}}
-                <input type="checkbox" id="tag_id_{{category.id}}" name="tag_id_{{tag.id}}" value="{{tag.id}}">
+                <input type="checkbox"
+                       id="tag_id_{{category.id}}"
+                       name="tag_id_{{tag.id}}"
+                       value="{{tag.id}}"
+                       {% if tag.is_checked %} checked {% endif%}
+                >
                 <label for="tag_id_{{category.id}}">{{tag.title}}</label><br>
             {% endfor %}
         </div>

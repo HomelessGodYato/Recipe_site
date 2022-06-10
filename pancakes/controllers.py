@@ -4,6 +4,12 @@ from pancakes.models import RecipeIngredient, RecipeImage, RecipeStageRecipeIngr
 ERROR_TOO_SHORT = "{} musi mieć przynajmniej {} znaki"
 ERROR_IS_LESS_THAN_ZERO = "{} musi być dodatnie"
 
+RECIPE_INGREDIENT_STATUS_DRAFT = "DRAFT"
+RECIPE_INGREDIENT_STATUS_APPROVED = "APPROVED"
+
+RECIPE_STATUS_DRAFT = "DRAFT"
+RECIPE_STATUS_APPROVED = "APPROVED"
+
 
 class RecipeIngredientController:
     def __init__(self):
@@ -28,7 +34,7 @@ class RecipeIngredientController:
 
     def create(self, title, unit):
         print(self.CONTROLLER_NAME, "create", title, unit)
-        return RecipeIngredient(title=title, unit=unit)
+        return RecipeIngredient(title=title, unit=unit, status=RECIPE_INGREDIENT_STATUS_DRAFT)
 
     def create_and_save(self, title, unit):
         print(self.CONTROLLER_NAME, "create_and_save", title, unit)
@@ -86,6 +92,7 @@ class RecipeIngredientController:
         if object is not None:
             object.title = title
             object.unit = unit
+            object.status = RECIPE_INGREDIENT_STATUS_DRAFT
             self.save(object)
             return object
         else:
@@ -313,6 +320,7 @@ class RecipeStageController:
                 "cooking_time": object.cooking_time,
                 "description": object.description,
                 "image": object.image,
+                "order": object.order,
                 "ingredients_extended_list": ingredients_DTO_list,
             }
         else:
@@ -341,7 +349,8 @@ class RecipeStageController:
         if recipe_ingredient_object is None:
             recipe_ingredient_object = recipe_ingredient_controller.create_and_save(title=title,
                                                                                     unit=unit)
-        if id == 0:  # create
+
+        if int(id) == 0:  # create
             return recipe_stage_recipe_ingredient_controller.create_and_save(stage=stageObject,
                                                                              ingredient=recipe_ingredient_object,
                                                                              amount=amount,
@@ -353,16 +362,17 @@ class RecipeStageController:
                                                                     amount=amount,
                                                                     is_required=is_required)
 
-    def create(self, recipe, cooking_time, description, image):
-        print(self.CONTROLLER_NAME, "create", recipe, cooking_time, description, image)
+    def create(self, recipe, cooking_time, description, image, order):
+        print(self.CONTROLLER_NAME, "create", recipe, cooking_time, description, image, order)
         return RecipeStage(recipe=recipe,
                            cooking_time=cooking_time,
                            description=description,
-                           image=image)
+                           image=image,
+                           order=order)
 
-    def create_and_save(self, recipe, cooking_time, description, image):
-        print(self.CONTROLLER_NAME, "create_and_save", recipe, cooking_time, description, image)
-        object = self.create(recipe, cooking_time, description, image)
+    def create_and_save(self, recipe, cooking_time, description, image, order):
+        print(self.CONTROLLER_NAME, "create_and_save", recipe, cooking_time, description, image, order)
+        object = self.create(recipe, cooking_time, description, image, order)
         object = self.save(object)
         return object
 
@@ -385,6 +395,18 @@ class RecipeStageController:
             print(self.CONTROLLER_NAME, "find_one_by_id return NONE", )
             return None
 
+    def find_one_by_recipe_and_order(self, recipe, order):
+        print(self.CONTROLLER_NAME, "find_one_by_recipe_and_order", recipe, order)
+        try:
+            objects_set = RecipeStage.objects.filter(recipe=recipe, order=order)
+            if len(objects_set) > 0:
+                return objects_set[0]
+            else:
+                return None
+        except RecipeStage.DoesNotExist:
+            print(self.CONTROLLER_NAME, "find_one_by_recipe_and_order return NONE", )
+            return None
+
     def find_all_by_recipe(self, recipe):
         print(self.CONTROLLER_NAME, "find_all_by_recipe", recipe)
         try:
@@ -402,8 +424,8 @@ class RecipeStageController:
         except RecipeStage.DoesNotExist:
             return None
 
-    def valid(self, recipe, cooking_time, description, image):
-        print(self.CONTROLLER_NAME, "valid", recipe, cooking_time, description, image)
+    def valid(self, recipe, cooking_time, description, image, order):
+        print(self.CONTROLLER_NAME, "valid", recipe, cooking_time, description, image, order)
         # TODO valid recipe
         if int(cooking_time) < 0:
             return ERROR_IS_LESS_THAN_ZERO.format("czas gotowania")
@@ -411,14 +433,15 @@ class RecipeStageController:
             return ERROR_TOO_SHORT.format("opis", 3)
         return ""
 
-    def update(self, id, recipe, cooking_time, description, image):
-        print(self.CONTROLLER_NAME, "update", id, recipe, cooking_time, description, image)
+    def update(self, id, recipe, cooking_time, description, image, order):
+        print(self.CONTROLLER_NAME, "update", id, recipe, cooking_time, description, image, order)
         object = self.find_one_by_id(id=id)
         if object is not None:
             object.recipe = recipe
             object.cooking_time = cooking_time
             object.description = description
             object.image = image
+            object.order = order
             self.save(object)
             return object
         else:
@@ -449,6 +472,7 @@ class RecipeController:
                 "cooking_time": object.cooking_time,
                 "date_create": object.date_create,
                 "image": object.image,
+                "status": object.status,
                 "categories_list": recipe_category_controller.DTO_list(categories_list),
                 "tags_list": recipe_category_controller.DTO_list(tags_list),
                 "stages_list": recipe_stage_controller.DTO_list(stages_list),
@@ -456,21 +480,19 @@ class RecipeController:
         else:
             return None
 
-    def create(self, author, title, cooking_time, date_create, image, stages_list=[], categories=[], tags=[]):
-        print(self.CONTROLLER_NAME, "create", author, title, cooking_time, date_create, image, stages_list, categories,
-              tags)
+    def create(self, author, title, cooking_time, date_create, image):
+        print(self.CONTROLLER_NAME, "create", author, title, cooking_time, date_create, image)
         object = Recipe(author=author,
                         title=title,
                         cooking_time=cooking_time,
                         date_create=date_create,
-                        image=image)
-        # TODO
+                        image=image,
+                        status=RECIPE_STATUS_DRAFT)
         return object
 
-    def create_and_save(self, author, title, cooking_time, date_create, image, stages_list=[], categories=[], tags=[]):
-        print(self.CONTROLLER_NAME, "create_and_save", author, title, cooking_time, date_create, image, stages_list,
-              categories, tags)
-        object = self.create(author, title, cooking_time, date_create, image, stages_list=[], categories=[], tags=[])
+    def create_and_save(self, author, title, cooking_time, date_create, image):
+        print(self.CONTROLLER_NAME, "create_and_save", author, title, cooking_time, date_create, image)
+        object = self.create(author, title, cooking_time, date_create, image)
         object = self.save(object)
         return object
 
@@ -502,9 +524,8 @@ class RecipeController:
         except Recipe.DoesNotExist:
             return None
 
-    def valid(self, author, title, cooking_time, date_create, image, stages_list=[], categories=[], tags=[]):
-        print(self.CONTROLLER_NAME, "valid", author, title, cooking_time, date_create, image, stages_list, categories,
-              tags)
+    def valid(self, author, title, cooking_time, date_create, image):
+        print(self.CONTROLLER_NAME, "valid", author, title, cooking_time, date_create, image)
         # TODO
         if int(cooking_time) < 0:
             return ERROR_IS_LESS_THAN_ZERO.format("czas gotowania")
@@ -512,20 +533,18 @@ class RecipeController:
             return ERROR_TOO_SHORT.format("tytuł", 3)
         return ""
 
-    def update(self, id, author, title, cooking_time, date_create, image, stages_list=[], categories=[], tags=[]):
-        print(self.CONTROLLER_NAME, "update", id, author, title, cooking_time, date_create, image, stages_list,
-              categories, tags)
-        # TODO
-        # object = self.find_one_by_id(id=id)
-        # if object is not None:
-        #     object.recipe = recipe
-        #     object.cooking_time = cooking_time
-        #     object.description = description
-        #     object.image = image
-        #     self.save(object)
-        #     return object
-        # else:
-        #     return None
+    def update(self, id, author, title, cooking_time, image):
+        print(self.CONTROLLER_NAME, "update", id, author, title, cooking_time, image)
+        object = self.find_one_by_id(id=id)
+        if object is not None:
+            object.author = author
+            object.title = title
+            object.cooking_time = cooking_time
+            object.image = image
+            self.save(object)
+            return object
+        else:
+            return None
 
     def add_category_to_recipe(self, recipeObject, categoryObject):
         print(self.CONTROLLER_NAME, "add_category_to_recipe", recipeObject, categoryObject)
@@ -540,23 +559,26 @@ class RecipeController:
         for object in categories_objects_list:
             RecipeRecipeCategory.objects.create(recipe=recipe_object, category=object)
 
-    def remove_all_categories_from_recipe(self, recipe_object, categories_objects_list):
-        print(self.CONTROLLER_NAME, "remove_all_categories_from_recipe", recipe_object, categories_objects_list)
+    def remove_all_categories_from_recipe(self, recipe_object):
+        print(self.CONTROLLER_NAME, "remove_all_categories_from_recipe", recipe_object)
         objects_set = recipe_category_controller.find_all_by_recipe(recipe_object)
         for object in objects_set:
-            recipe_category_controller.delete(object.id)
+            associative_objects_set = RecipeRecipeCategory.objects.filter(recipe=recipe_object,category=object)
+            for associative_object in associative_objects_set:
+                associative_object.delete()
 
     def set_tags_to_recipe(self, recipe_object, tags_objects_list):
         print(self.CONTROLLER_NAME, "set_tags_to_recipe", recipe_object, tags_objects_list)
         for object in tags_objects_list:
             RecipeRecipeTag.objects.create(recipe=recipe_object, tag=object)
 
-    def remove_all_tags_from_recipe(self, recipe_object, tags_objects_list):
-        print(self.CONTROLLER_NAME, "remove_all_tags_from_recipe", recipe_object, tags_objects_list)
+    def remove_all_tags_from_recipe(self, recipe_object):
+        print(self.CONTROLLER_NAME, "remove_all_tags_from_recipe", recipe_object)
         objects_set = recipe_tag_controller.find_all_by_recipe(recipe_object)
         for object in objects_set:
-            recipe_tag_controller.delete(object.id)
-
+            associative_objects_set = RecipeRecipeTag.objects.filter(recipe=recipe_object,tag=object)
+            for associative_object in associative_objects_set:
+                associative_object.delete()
 
 class RecipeCategoryController:
     def __init__(self):
