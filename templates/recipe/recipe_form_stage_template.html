@@ -162,8 +162,10 @@ function autocomplete(inp, arr) {
       }
   }
   inp.addEventListener("input", aa);
+  inp.addEventListener("change", removeValueFromUnitFild);
   inp.addEventListener("focusin", aa);
   inp.addEventListener("focusout",closeAllLists);
+
 
 
   /*
@@ -221,16 +223,21 @@ function autocomplete(inp, arr) {
     }
   }
   function closeAllLists(elmnt) {
-
-    console.log("closeAllLists "+ elmnt +" "+ inp)
     var x = document.getElementsByClassName("autocomplete-items");
     for (var i = 0; i < x.length; i++) {
         if (elmnt != x[i] && elmnt != inp) {
             x[i].parentNode.removeChild(x[i]);
         }
     }
+  }
 
-
+  function removeValueFromUnitFild(e){
+    console.log("---"+e.target.id)
+    var id = e.target.id.split('_')[2]
+    element = document.getElementById(`ingredient_unit_${id}`)
+    if(element){
+        element.value=''
+    }
   }
 }
 
