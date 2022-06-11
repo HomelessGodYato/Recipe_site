@@ -18,7 +18,6 @@ from django.views.generic.edit import DeleteView
 from .controllers import recipe_ingredient_controller, recipe_image_controller, \
     recipe_stage_controller, recipe_stage_recipe_ingredient_controller, recipe_controller, recipe_tag_controller, \
     recipe_category_controller
-from .models import Recipe, RecipeStage, Ingredient, RecipeImage
 from .forms import CreateUserForm
 from .tokens import account_activation_token
 
