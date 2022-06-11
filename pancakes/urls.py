@@ -4,13 +4,16 @@ from . import views
 
 from django.conf import settings
 from django.conf.urls.static import static
+from .views import CustomUSerDeleteView
 
 urlpatterns = [
-    path('', views.home_page, name="home"),
+    path('home/', views.home_page, name="home"),
+
     path('register/', views.register_page, name="register"),
     path('login/', views.login_page, name="login"),
     path('logout/', views.logout_user, name="logout"),
     path('user/', views.user_main_page, name="user"),
+    path('user/<int:pk>/delete/', CustomUSerDeleteView.as_view(template_name ='user/modifications/delete.html') , name="delete_user"),
     path('activate/<uidb64>[0-9A-Za-z_\-]+/<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20}/$',
          views.activation, name='activate'),
 

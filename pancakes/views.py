@@ -5,19 +5,30 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import EmailMessage
+from django.forms.models import modelformset_factory
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
+from django.urls import reverse_lazy
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.timezone import now
+from django.views.generic.edit import DeleteView
 
 from .controllers import recipe_ingredient_controller, recipe_image_controller, \
     recipe_stage_controller, recipe_stage_recipe_ingredient_controller, recipe_controller, recipe_tag_controller, \
     recipe_category_controller
+from .models import Recipe, RecipeStage, Ingredient, RecipeImage
 from .forms import CreateUserForm
 from .tokens import account_activation_token
 
-from django.utils.timezone import now
+
+#  =========================================================================================
+#  ======================================USER ==============================================
+
+class CustomUSerDeleteView(DeleteView):
+    model = User
+    success_url = reverse_lazy('home')
 
 from pancakes.constant import *
 
@@ -37,9 +48,10 @@ def register_page(request):
                 user = form.save(commit=False)
                 user.is_active = False
                 user.save()
+
                 current_site = get_current_site(request)
                 mail_subject = 'Activate your account.'
-                message = render_to_string('registration_login/acc_activation.html', {
+                message = render_to_string('user/registration_login/acc_activation.html', {
                     'user': user,
                     'domain': current_site.domain,
                     'uid': urlsafe_base64_encode(force_bytes(user.pk)),
@@ -54,7 +66,7 @@ def register_page(request):
             else:
                 form = CreateUserForm()
     context = {"form": form}
-    return render(request, 'registration_login/register.html', context)
+    return render(request, 'user/registration_login/register.html', context)
 
 
 def activation(request, uidb64, token):
@@ -68,7 +80,7 @@ def activation(request, uidb64, token):
         user.save()
         login(request, user)
         # return redirect('home')
-        return render(request, 'registration_login/registration_successful.html', {})
+        return render(request, 'user/registration_login/registration_successful.html', {})
     else:
         return HttpResponse('Activation link is invalid!')
 
@@ -88,14 +100,14 @@ def login_page(request):
                 return redirect('user')  # any page you want @user_page just for test
             else:
                 messages.info(request, 'Username or password is incorrect')
-                return render(request, 'registration_login/login.html', context)
+                return render(request, 'user/registration_login/login.html', context)
 
-        return render(request, 'registration_login/login.html', context)
+        return render(request, 'user/registration_login/login.html', context)
 
 
 @login_required(login_url='login')
 def user_main_page(request):
-    return render(request, 'registration_login/user_main.html')
+    return render(request, 'user/registration_login/user_main.html')
 
 
 def logout_user(request):

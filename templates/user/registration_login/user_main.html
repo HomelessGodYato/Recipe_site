@@ -1,0 +1,14 @@
+<span>You are logged in, {{request.user}} </span>
+
+{% block logout %}
+<span><a href="{% url 'logout' %}"><br><br>Logout</a></span>
+
+{%endblock logout %}
+
+{% block delete-user %}
+<br>
+<br>
+<br>
+<a href = "{% url 'delete_user' request.user.pk%}">DELETE YOUR ACCOUNT</a>
+
+{% endblock delete-user %}
