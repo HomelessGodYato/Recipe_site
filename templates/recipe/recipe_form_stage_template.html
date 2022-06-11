@@ -2,12 +2,15 @@
     .hidden{
         display:none
     }
-
-
+    .dont_touch{
+        color:red
+    }
+    .dont_touch::before {
+	    content: "TEGO NIE POWINNO BYĆ WIDAĆ";
+	}
+}
 </style>
 <div>
-
-    ACTION:{{ACTION}}
     <hr/>
     error:{{error}}
     <hr/>
@@ -19,43 +22,41 @@
 
         <div>
             <h3>skladniki</h3>
-            --{{ingredients_extended_list}}--
             {% for ingredient in ingredients_extended_list %}
                 <div id="ingredient-form-{{forloop.counter0}}" class="hidden">
-                    <h4>--skladnik {{forloop.counter0}}</h4>
-                    id:<input type="number" name="ingredient_id_{{forloop.counter0}}" value={{ingredient.id}}>
                     tytył:<input type="text" name="ingredient_title_{{forloop.counter0}}" value="{{ingredient.title}}">
                     ilosc:<input type="number" name="ingredient_amount_{{forloop.counter0}}" value={{ingredient.amount}}>
                     jednostak:<input type="text" name="ingredient_unit_{{forloop.counter0}}" value="{{ingredient.unit}}">
                     wymagany:<input type="checkbox" name="ingredient_is_required_{{forloop.counter0}}"
                                     {% if ingredient.is_required %} checked {% endif%}>
+                    <div class="hidden dont_touch"> id:<input type="number" name="ingredient_id_{{forloop.counter0}}" value={{ingredient.id}}></div>
                 </div>
             {% endfor %}
-            -----------------------------
             {% for index in number_of_ingredients_range %}
                 <div id="ingredient-form-{{index}}" class="hidden">
-                    <h4>skladnik {{index}}</h4>
-                    id:<input type="number" name="ingredient_id_{{index}}" value="0">
+
                     tytył:<input type="text" name="ingredient_title_{{index}}" value="">
                     ilosc:<input type="number" name="ingredient_amount_{{index}}" value="">
                     jednostak:<input type="text" name="ingredient_unit_{{index}}" value="">
                     wymagany:<input type="checkbox" name="ingredient_is_required_{{index}}">
+                    <div class="hidden dont_touch"> id:<input type="number" name="ingredient_id_{{index}}" value="0"></div>
                 </div>
             {% endfor %}
 
             <button id="add-ingredient-btn" type="button">Dodaj składnik</button>
         </div>
-        <hr/>
-        stage_id <input type="number" name="stage_id" value="{{stage_id}}">
-        order <input type="number" name="order" value="{{order}}">
-        recipe_id <input type="text" name="recipe_id" value="{{recipe_id}}">
-        ACTION: <input type="text" name="ACTION" value="{{ACTION}}">
-        <button type="submit" name="{{RECIPE_FORM_STATE}}" value="{{RECIPE_FORM_STATE_STAGE}}">Dodaj etap</button>
+        <div class="hidden dont_touch">
+            stage_id <input type="number" name="stage_id" value="{{stage_id}}">
+            order <input type="number" name="order" value="{{order}}">
+            recipe_id <input type="text" name="recipe_id" value="{{recipe_id}}">
+            ACTION: <input type="text" name="ACTION" value="{{ACTION}}">
+        </div>
+        <hr>
+        <button type="submit" name="{{RECIPE_FORM_STATE}}" value="{{RECIPE_FORM_STATE_STAGE}}">Następny etap</button>
         <button type="submit" name="{{RECIPE_FORM_STATE}}" value="{{RECIPE_FORM_STATE_LAST_STAGE}}">Zapisz</button>
     </form>
 </div>
 <script>
-
     const addIngredientBtn = document.getElementById('add-ingredient-btn')
     var numberOfIngrednients = 0
     const numberOfIngrednientsMax = {{number_of_ingredients_max}}

@@ -377,7 +377,7 @@ def recipe_form_view(request, id=0):
     recipe_form_state = request.POST.get(RECIPE_FORM_STATE)
     recipe_id = request.POST.get(RECIPE_ID)
     if recipe_form_state == RECIPE_FORM_STATE_FIRST:  # FIRST -> STAGE
-        # save first and send stage
+        # save first and send stage_object
         if request.method == "POST":
             # image
             image = request.FILES.get(IMAGE)
@@ -435,7 +435,7 @@ def recipe_form_view(request, id=0):
                     context[ID] = id
                     recipe_object = recipe_controller.find_one_by_id(recipe_object.id)
                     stage_object = recipe_stage_controller.find_one_by_recipe_and_order(recipe=recipe_object, order=1)
-                    ingredient_list = recipe_stage_recipe_ingredient_controller.find_all_by_stage(stage_object)
+                    ingredient_list = recipe_stage_recipe_ingredient_controller.find_all_by_stage(stage_object=stage_object)
                     ingredient_extended_list = recipe_stage_recipe_ingredient_controller.DTO_extend_list(
                         ingredient_list)
                     if stage_object is not None:
@@ -473,7 +473,7 @@ def recipe_form_view(request, id=0):
             if image is None:
                 image = DEFAULT_STAGE_IMAGE_PATH
             error_image = recipe_image_controller.valid(image=image)
-            # stage
+            # stage_object
             recipe_object = recipe_controller.find_one_by_id(id=recipe_id)
             stage_id = request.POST.get(STAGE_ID)
             cooking_time = request.POST.get(COOKING_TIME)
@@ -484,6 +484,7 @@ def recipe_form_view(request, id=0):
                                                         description=description,
                                                         image=image,
                                                         order=order)
+            print("---", recipe_object,stage_id,cooking_time,description,order)
             # ingredients
             ingredient_extended_list_validated = []
             ingredient_extended_list = []
@@ -525,7 +526,7 @@ def recipe_form_view(request, id=0):
                     print("ACTION_CREATE")
                     # image
                     image_object = recipe_image_controller.create_and_save(image=image)
-                    # stage
+                    # stage_object
                     stage_object = recipe_stage_controller.create_and_save(recipe=recipe_object,
                                                                            cooking_time=cooking_time,
                                                                            description=description,
@@ -544,7 +545,7 @@ def recipe_form_view(request, id=0):
                     stage_object = recipe_stage_controller.find_one_by_id(stage_id)
                     # image
                     image_object = recipe_image_controller.update(id=stage_object.image.id, image=image)
-                    # stage
+                    # stage_object
                     stage_object = recipe_stage_controller.update(id=stage_id,
                                                                   recipe=recipe_object,
                                                                   cooking_time=cooking_time,
@@ -626,7 +627,7 @@ def recipe_form_view(request, id=0):
             if image is None:
                 image = DEFAULT_STAGE_IMAGE_PATH
             error_image = recipe_image_controller.valid(image=image)
-            # stage
+            # stage_object
             recipe_object = recipe_controller.find_one_by_id(id=recipe_id)
             stage_id = request.POST.get(STAGE_ID)
             cooking_time = request.POST.get(COOKING_TIME)
@@ -678,7 +679,7 @@ def recipe_form_view(request, id=0):
                     print("ACTION_CREATE")
                     # image
                     image_object = recipe_image_controller.create_and_save(image=image)
-                    # stage
+                    # stage_object
                     stage_object = recipe_stage_controller.create_and_save(recipe=recipe_object,
                                                                            cooking_time=cooking_time,
                                                                            description=description,
@@ -696,7 +697,7 @@ def recipe_form_view(request, id=0):
                     stage_object = recipe_stage_controller.find_one_by_id(stage_id)
                     # image
                     image_object = recipe_image_controller.update(id=stage_object.image.id, image=image)
-                    # stage
+                    # stage_object
                     stage_object = recipe_stage_controller.update(id=stage_id,
                                                                   recipe=recipe_object,
                                                                   cooking_time=cooking_time,

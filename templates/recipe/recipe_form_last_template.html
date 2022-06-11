@@ -1,14 +1,24 @@
+<style>
+    .hidden{
+        display:none
+    }
+    .dont_touch{
+        color:red
+    }
+    .dont_touch::before {
+	    content: "TEGO NIE POWINNO BYĆ WIDAĆ";
+	}
+}
+</style>
 <div>
-    ACTION:{{ACTION}}
     <hr/>
     error:{{error}}
     <hr/>
     <form action="./" method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        categorie
+        <h3>categorie</h3>
         <div>
             {% for category in categories_list %}
-            {{category}}
                 <input type="checkbox"
                        id="category_{{ forloop.counter }}"
                        name="category_{{ forloop.counter }}"s
@@ -19,10 +29,9 @@
             {% endfor %}
         </div>
         <hr/>
-        tagi
+        <h3>tagi</h3>
         <div>
             {% for tag in tags_list %}
-            {{category}}
                 <input type="checkbox"
                        id="tag_{{ forloop.counter }}"
                        name="tag_{{ forloop.counter }}"
@@ -33,10 +42,12 @@
             {% endfor %}
         </div>
         <hr/>
-        number_of_categories <input type="number" name="number_of_categories" value="{{number_of_categories}}">
-        number_of_tags <input type="number" name="number_of_tags" value="{{number_of_tags}}">
-        recipe_id <input type="number" name="recipe_id" value="{{recipe_id}}">
-        ACTION: <input type="text" name="ACTION" value="{{ACTION}}">
-        <button type="submit" name="{{RECIPE_FORM_STATE}}" value="{{RECIPE_FORM_STATE_LAST}}">RECIPE_FORM_STATE_LAST</button>
+        <div class="hidden dont_touch">
+            number_of_categories <input type="number" name="number_of_categories" value="{{number_of_categories}}">
+            number_of_tags <input type="number" name="number_of_tags" value="{{number_of_tags}}">
+            recipe_id <input type="number" name="recipe_id" value="{{recipe_id}}">
+            ACTION: <input type="text" name="ACTION" value="{{ACTION}}">
+        </div>
+        <button type="submit" name="{{RECIPE_FORM_STATE}}" value="{{RECIPE_FORM_STATE_LAST}}">Zapisz</button>
     </form>
 </div>

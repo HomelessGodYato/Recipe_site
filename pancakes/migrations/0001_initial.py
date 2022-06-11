@@ -84,7 +84,7 @@ class Migration(migrations.Migration):
                 ('amount', models.CharField(max_length=254)),
                 ('is_required', models.BooleanField(default=True)),
                 ('ingredient', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='pancakes.recipeingredient')),
-                ('stage', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='pancakes.recipestage')),
+                ('stage_object', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='pancakes.recipestage')),
             ],
         ),
         migrations.CreateModel(
