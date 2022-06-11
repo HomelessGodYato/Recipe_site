@@ -377,7 +377,6 @@ def recipe_form_view(request, id=0):
     recipe_form_state = request.POST.get(RECIPE_FORM_STATE)
     recipe_id = request.POST.get(RECIPE_ID)
     if recipe_form_state == RECIPE_FORM_STATE_FIRST:  # FIRST -> STAGE
-        # save first and send stage_object
         if request.method == "POST":
             # image
             image = request.FILES.get(IMAGE)
@@ -419,7 +418,11 @@ def recipe_form_view(request, id=0):
                                                              title=title,
                                                              cooking_time=cooking_time,
                                                              image=image_object)
+
+
+                ingredient_list = recipe_ingredient_controller.all()
                 context = {
+                    "ingredients_list_to_autocomplete": recipe_ingredient_controller.DTO_list(ingredient_list),
                     ACTION: action,
                     RECIPE_FORM_STATE: RECIPE_FORM_STATE,
                     RECIPE_FORM_STATE_STAGE: RECIPE_FORM_STATE_STAGE,
@@ -484,7 +487,6 @@ def recipe_form_view(request, id=0):
                                                         description=description,
                                                         image=image,
                                                         order=order)
-            print("---", recipe_object,stage_id,cooking_time,description,order)
             # ingredients
             ingredient_extended_list_validated = []
             ingredient_extended_list = []
@@ -560,7 +562,9 @@ def recipe_form_view(request, id=0):
                                                                            unit=object.get(UNIT),
                                                                            amount=object.get(AMOUNT),
                                                                            is_required=object.get(IS_REQUIRED))
+                ingredient_list = recipe_ingredient_controller.all()
                 context = {
+                    "ingredients_list_to_autocomplete": recipe_ingredient_controller.DTO_list(ingredient_list),
                     ACTION: action,
                     RECIPE_FORM_STATE: RECIPE_FORM_STATE,
                     RECIPE_FORM_STATE_STAGE: RECIPE_FORM_STATE_STAGE,
@@ -599,8 +603,9 @@ def recipe_form_view(request, id=0):
                     error = error_stage
                 elif error_ingredient != "":
                     error = error_ingredient
-
+                ingredient_list = recipe_ingredient_controller.all()
                 context = {
+                    "ingredients_list_to_autocomplete": recipe_ingredient_controller.DTO_list(ingredient_list),
                     ERROR: error,
                     ACTION: ACTION_CREATE,
                     RECIPE_FORM_STATE: RECIPE_FORM_STATE,

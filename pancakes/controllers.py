@@ -497,7 +497,7 @@ class RecipeStageRecipeIngredientController:
 
     def valid(self, stage, ingredient, amount, is_required):
         if SHOW_LOGGING: print(self.CONTROLLER_NAME, "valid", stage, ingredient, amount, is_required)
-        if int(amount) < 0:
+        if amount == '' or int(amount) < 0:
             return ERROR_IS_LESS_THAN_ZERO.format("ilość")
         return ""
 
@@ -657,7 +657,7 @@ class RecipeStageController:
 
     def valid(self, recipe, cooking_time, description, image, order):
         if SHOW_LOGGING: print(self.CONTROLLER_NAME, "valid", recipe, cooking_time, description, image, order)
-        if int(cooking_time) < 0:
+        if cooking_time == '' or int(cooking_time) < 0:
             return ERROR_IS_LESS_THAN_ZERO.format("czas gotowania")
         if len(description) < self.DESCRIPTION_MIN_LENGTH:
             return ERROR_TOO_SHORT.format("opis", self.DESCRIPTION_MIN_LENGTH)
@@ -762,7 +762,7 @@ class RecipeController:
             return ERROR_TOO_SHORT.format("tytuł", self.TITLE_MIN_LENGTH)
         if len(title) > self.TITLE_MAX_LENGTH:
             return ERROR_TOO_LONG.format("tytuł", self.TITLE_MAX_LENGTH)
-        if int(cooking_time) < 0:
+        if cooking_time == '' or int(cooking_time) < 0:
             return ERROR_IS_LESS_THAN_ZERO.format("czas gotowania")
         return ""
 
@@ -812,6 +812,18 @@ class RecipeController:
             associative_objects_set = RecipeRecipeTag.objects.filter(recipe=recipe_object, tag=object)
             for associative_object in associative_objects_set:
                 associative_object.delete()
+
+    def set_status(self, recipe_object, status):
+        if SHOW_LOGGING: print(self.CONTROLLER_NAME, "set_status", recipe_object, status)
+        if recipe_object is not None:
+            if status == RECIPE_STATUS_DRAFT:
+                recipe_object.status = RECIPE_STATUS_DRAFT
+            elif status == RECIPE_STATUS_APPROVED:
+                recipe_object.status = RECIPE_STATUS_APPROVED
+            self.save(recipe_object)
+            return recipe_object
+        else:
+            return None
 
 
 recipe_controller = RecipeController()
