@@ -1,0 +1,13 @@
+{% extends 'main.html' %}
+
+{% block content %}
+<h1>Przepisy</h1>
+
+<div>
+    {% for recipe in recipes_list %}
+    {% include "recipe/recipe_show_template.html" with recipe=recipe %}
+    {% endfor %}
+</div>
+
+
+{% endblock content %}

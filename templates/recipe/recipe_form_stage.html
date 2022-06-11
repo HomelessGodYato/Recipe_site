@@ -1,0 +1,9 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+<h1>recipe stage</h1>
+
+{% include "recipe/recipe_form_stage_template.html" with recipe=recipe error=error ACTION=ACTION %}
+
+{% endblock content %}

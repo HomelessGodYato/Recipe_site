@@ -1,0 +1,16 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+<h1>Składniki</h1>
+
+<div>
+    {% for ingredient in ingredients_list %}
+
+    {% include "ingredient/ingredient_show_template.html" with ingredient=ingredient error=error %}
+
+    {% endfor %}
+</div>
+
+
+{% endblock content %}

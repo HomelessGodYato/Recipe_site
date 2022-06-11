@@ -1,0 +1,9 @@
+<div>
+    {{error}}
+    <form action="./{{ingredient.id}}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        tytył:<input type="text" name="title" value="{{ingredient.title}}">
+        jednostak:<input type="text" name="unit" value="{{ingredient.unit}}">
+        <button type="submit" name="ACTION" value="{{ACTION}}">Zapisz</button>
+    </form>
+</div>

@@ -1,0 +1,19 @@
+
+{% extends 'main.html' %}
+
+{% block content %}
+
+    <h1>usuwanie tagu</h1>
+
+    {% if error%}
+        {{error}}
+    {% else  %}
+        <p>Czy na pewno chcesz usunąć tag?</p>
+            <form action="./{{tag.id}}" method="post" >
+                {% csrf_token %}
+                <button type="submit" name="ACTION" value="{{ACTION}}">Usuń</button>
+            </form>
+        {% include "tag/tag_show_template.html" with tag=tag %}
+    {% endif %}
+
+{% endblock content %}

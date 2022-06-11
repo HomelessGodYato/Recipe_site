@@ -1,0 +1,19 @@
+
+{% extends 'main.html' %}
+
+{% block content %}
+
+    <h1>usuwanie przepisu</h1>
+
+    {% if error%}
+        {{error}}
+    {% else  %}
+        <p>Czy na pewno chcesz usunąć przepis?</p>
+            <form action="./{{recipe.id}}" method="post" >
+                {% csrf_token %}
+                <button type="submit" name="ACTION" value="{{ACTION}}">Usuń</button>
+            </form>
+        {% include "recipe/recipe_show_template.html" with recipe=recipe %}
+    {% endif %}
+
+{% endblock content %}

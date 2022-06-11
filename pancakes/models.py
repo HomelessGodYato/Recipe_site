@@ -23,6 +23,7 @@ class Article(models.Model):
 class ArticleComment(models.Model):
     author = models.ForeignKey(to=User, on_delete=models.CASCADE)
     article = models.ForeignKey(to=Article, on_delete=models.CASCADE, null=False)
+    date_create = models.DateTimeField(auto_now_add=True)
     description = models.CharField(max_length=8191)
 
 
@@ -55,6 +56,8 @@ class Recipe(models.Model):
     categories = models.ManyToManyField(to=RecipeCategory, through='RecipeRecipeCategory')
     tags = models.ManyToManyField(to=RecipeTag, through='RecipeRecipeTag')
 
+    status = models.CharField(max_length=254)
+
 
 class RecipeRecipeCategory(models.Model):
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
@@ -65,21 +68,29 @@ class RecipeRecipeTag(models.Model):
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
     tag = models.ForeignKey(RecipeTag, on_delete=models.CASCADE)
 
+#-----------------------------------------------------
+
 
 class RecipeStage(models.Model):
     recipe = models.ForeignKey(to=Recipe, on_delete=models.CASCADE, null=False)
     cooking_time = models.IntegerField()
     description = models.CharField(max_length=8191)
     image = models.ForeignKey(to=RecipeImage, on_delete=models.CASCADE, null=True, blank=True)
+    order = models.IntegerField()
 
 
-class Ingredient(models.Model):
-    recipe_stage = models.ForeignKey(to=RecipeStage, on_delete=models.CASCADE, null=True)
+class RecipeIngredient(models.Model):
     title = models.CharField(max_length=254)
     unit = models.CharField(max_length=254)
+    status = models.CharField(max_length=254)
+
+class RecipeStageRecipeIngredient(models.Model):
+    stage = models.ForeignKey(RecipeStage, on_delete=models.CASCADE)
+    ingredient = models.ForeignKey(RecipeIngredient, on_delete=models.CASCADE)
     amount = models.CharField(max_length=254)
+    is_required=models.BooleanField(default=True)
 
-
+#-----------------------------------------------------
 class RecipeLike(models.Model):
     author = models.ForeignKey(to=User, on_delete=models.CASCADE)
     recipe = models.ForeignKey(to=Recipe, on_delete=models.CASCADE, null=False)
@@ -95,3 +106,4 @@ class RecipeComment(models.Model):
     author = models.ForeignKey(to=User, on_delete=models.CASCADE)
     recipe = models.ForeignKey(to=Recipe, on_delete=models.CASCADE, null=False)
     description = models.CharField(max_length=8191)
+    date_create = models.DateTimeField(auto_now_add=True)

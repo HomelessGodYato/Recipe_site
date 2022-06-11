@@ -1,0 +1,51 @@
+<div>
+    <hr>
+    <h1>Przepis</h1>
+    <p>recipe id {{recipe.id}}</p>
+    <p>title: {{recipe.title}}</p>
+    <p>cooking_time: {{recipe.cooking_time}}</p>
+    <p>image:<img src="{{ recipe.image.image.url }}" height="100px" alt="stage"/></p>
+    <h2>Stagees</h2>
+    {{recipe.stages_list}}
+    <div>
+        <hr>
+        {% for stage in recipe.stages_list %}
+        <div>
+            <h3>stage id {{stage.id}}</h3>
+            <p>order: {{stage.order}}</p>
+            <p>description: {{stage.description}}</p>
+            <p>cooking_time: {{stage.cooking_time}}</p>
+            <p>image:<img src="{{ stage.image.image.url }}" height="100px" alt="stage"/></p>
+            <h4>Ingredients</h4>
+            {{ingredients_extend_list}}
+            <div>
+                {% for ingredient in stage.ingredients_extended_list %}
+                <div>
+                    <h4>skladnik id {{ingredient.id}}</h4>
+                    <p>name: {{ingredient.title}}</p>
+                    <p>unit: {{ingredient.unit}}</p>
+                    <p>amount: {{ingredient.amount}}</p>
+                    <p>is_required: {{ingredient.is_required}}</p>
+                </div>
+                {% endfor %}
+            </div>
+            <hr/>
+        </div>
+        {% endfor %}
+    </div>
+    <h3>Kategorie</h3>
+    {{recipe.categories_list}}
+    <div>
+        {% for category in recipe.categories_list %}
+            <p>nazwa: {{category.title}}</p>
+        {% endfor %}
+    </div>
+    <h3>Tagi</h3>
+    {{recipe.tags_list}}
+    <div>
+        {% for tag in recipe.tags_list %}
+            <p>nazwa: {{tag.title}}</p>
+        {% endfor %}
+    </div>
+    <hr>
+</div>

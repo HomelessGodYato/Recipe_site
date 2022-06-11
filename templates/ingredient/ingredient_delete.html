@@ -1,0 +1,19 @@
+
+{% extends 'main.html' %}
+
+{% block content %}
+
+    <h1>usuwanie składnik</h1>
+
+    {% if error%}
+        {{error}}
+    {% else  %}
+        <p>Czy na pewno chcesz usunąć składnik?</p>
+            <form action="./{{ingredient.id}}" method="post" >
+                {% csrf_token %}
+                <button type="submit" name="ACTION" value="{{ACTION}}">Usuń</button>
+            </form>
+        {% include "ingredient/ingredient_show_template.html" with ingredient=ingredient %}
+    {% endif %}
+
+{% endblock content %}
