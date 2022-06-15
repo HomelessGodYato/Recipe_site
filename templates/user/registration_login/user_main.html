@@ -1,14 +1,30 @@
-<span>You are logged in, {{request.user}} </span>
+<span>You are logged in,</span>
+
+{% block user-profile %}
+<br>
+<span>Username: {{request.user}} </span>
+<br>
+<span>First name: {{request.user.first_name}} </span>
+<br>
+<span>Last name:{{request.user.last_name}} </span>
+<br>
+<span>Email: {{request.user.email}} </span>
+<br>
+
+{% endblock%}
 
 {% block logout %}
 <span><a href="{% url 'logout' %}"><br><br>Logout</a></span>
-
 {%endblock logout %}
 
 {% block delete-user %}
 <br>
 <br>
 <br>
-<a href = "{% url 'delete_user' request.user.pk%}">DELETE YOUR ACCOUNT</a>
+<a href="{% url 'delete_user' request.user.pk%}">DELETE YOUR ACCOUNT</a>
+<br>
+<br>
+<br>
+<a href="{% url 'edit_user'%}">UPDATE YOUR ACCOUNT</a>
 
 {% endblock delete-user %}
