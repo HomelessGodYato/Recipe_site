@@ -1,6 +1,7 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.contrib.auth.models import User
+from .models import Profile
 
 from .models import RecipeCategory, Recipe, RecipeStage, RecipeIngredient, RecipeTag
 
@@ -19,13 +20,40 @@ class CreateUserForm(UserCreationForm):
                   'password2']
 
 
-class CustomUserUpdateForm(forms.ModelForm):
+class UserEditForm(forms.ModelForm):
+    username = forms.CharField(max_length=100,
+                               required=True,
+                               widget=forms.TextInput(attrs={'class': 'form-control'}))
+    email = forms.EmailField(required=True,
+                             widget=forms.TextInput(attrs={'class': 'form-control'}))
+    first_name = forms.CharField(max_length=100, required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))
+    last_name = forms.CharField(max_length=100, required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))
+
     class Meta:
         model = User
         fields = ['username',
-                  'password',
+                    'email',
+                    'first_name',
+                    'last_name']
+
+
+class UserForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['username',
                   'email']
 
+
+class ProfileForm(forms.ModelForm):
+    class Meta:
+        model = Profile
+        fields = ['first_name',
+                  'last_name',
+                  'image',
+                  'facebook_link',
+                  'instagram_link',
+                  'twitter_link',
+                  'youtube_link']
 
 # ===========================================================================
 
