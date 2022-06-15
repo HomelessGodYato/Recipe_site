@@ -5,7 +5,6 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import EmailMessage
-from django.forms.models import modelformset_factory
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
@@ -13,12 +12,14 @@ from django.urls import reverse_lazy
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.timezone import now
+from django.views import generic
 from django.views.generic.edit import DeleteView
 
+from .constant import *
 from .controllers import recipe_ingredient_controller, recipe_image_controller, \
     recipe_stage_controller, recipe_stage_recipe_ingredient_controller, recipe_controller, recipe_tag_controller, \
     recipe_category_controller
-from .forms import CreateUserForm
+from .forms import CreateUserForm, UserEditForm
 from .tokens import account_activation_token
 
 
@@ -29,7 +30,15 @@ class CustomUSerDeleteView(DeleteView):
     model = User
     success_url = reverse_lazy('home')
 
-from pancakes.constant import *
+
+class CustomUserEditView(generic.UpdateView):
+    form = UserEditForm
+    template_name = 'user/modifications/update.html'
+    success_url = reverse_lazy('user')
+
+    def get_object(self):
+        return self.request.user
+
 
 def home_page(request):
     context = {"recipes": ['pancakes', 'donuts']}
@@ -107,6 +116,20 @@ def login_page(request):
 @login_required(login_url='login')
 def user_main_page(request):
     return render(request, 'user/registration_login/user_main.html')
+
+
+@login_required(login_url='login')
+def user_edit_view(request):
+    if request.method == 'POST':
+        user_form = UserEditForm(request.POST, instance=request.user)
+
+        if user_form.is_valid():
+            user_form.save()
+            messages.success(request, 'Your profile is updated successfully')
+            return redirect(to='user')
+    else:
+        user_form = UserEditForm(instance=request.user)
+    return render(request, 'user/modifications/update.html', {'user_form': user_form})
 
 
 def logout_user(request):
@@ -407,7 +430,7 @@ def recipe_form_view(request, id=0):
                                                    image=image)
 
             if error_recipe == "" and error_image == "":
-                recipe_object = '' # have to be previously declared
+                recipe_object = ''  # have to be previously declared
                 if action == ACTION_CREATE:
                     print("ACTION_CREATE")
                     # image
@@ -430,7 +453,6 @@ def recipe_form_view(request, id=0):
                                                              cooking_time=cooking_time,
                                                              image=image_object)
 
-
                 ingredient_list = recipe_ingredient_controller.all()
                 context = {
                     "ingredients_list_to_autocomplete": recipe_ingredient_controller.DTO_list(ingredient_list),
@@ -449,7 +471,8 @@ def recipe_form_view(request, id=0):
                     context[ID] = id
                     recipe_object = recipe_controller.find_one_by_id(recipe_object.id)
                     stage_object = recipe_stage_controller.find_one_by_recipe_and_order(recipe=recipe_object, order=1)
-                    ingredient_list = recipe_stage_recipe_ingredient_controller.find_all_by_stage(stage_object=stage_object)
+                    ingredient_list = recipe_stage_recipe_ingredient_controller.find_all_by_stage(
+                        stage_object=stage_object)
                     ingredient_extended_list = recipe_stage_recipe_ingredient_controller.DTO_extend_list(
                         ingredient_list)
                     if stage_object is not None:
@@ -480,7 +503,7 @@ def recipe_form_view(request, id=0):
                     }
                 }
                 return render(request, 'recipe/recipe_form_first.html', context)
-    elif recipe_form_state == RECIPE_FORM_STATE_STAGE: # STAGE -> STAGE
+    elif recipe_form_state == RECIPE_FORM_STATE_STAGE:  # STAGE -> STAGE
         if request.method == "POST":
             # image
             image = request.FILES.get(IMAGE)
@@ -636,7 +659,7 @@ def recipe_form_view(request, id=0):
                     RECIPE_ID: recipe_object.id,
                 }
                 return render(request, 'recipe/recipe_form_stage.html', context)
-    elif recipe_form_state == RECIPE_FORM_STATE_LAST_STAGE: # STAGE -> LAST
+    elif recipe_form_state == RECIPE_FORM_STATE_LAST_STAGE:  # STAGE -> LAST
         if request.method == "POST":
             # image
             image = request.FILES.get(IMAGE)
@@ -791,7 +814,7 @@ def recipe_form_view(request, id=0):
                     RECIPE_ID: recipe_object.id,
                 }
                 return render(request, 'recipe/recipe_form_stage.html', context)
-    elif recipe_form_state == RECIPE_FORM_STATE_LAST: # LAST -> END
+    elif recipe_form_state == RECIPE_FORM_STATE_LAST:  # LAST -> END
         if request.method == "POST":
             # recipe
             recipe_object = recipe_controller.find_one_by_id(id=recipe_id)
@@ -813,13 +836,13 @@ def recipe_form_view(request, id=0):
                     tags_objects_list.append(tag_object)
 
             if action == ACTION_CREATE:
-                print("ACTION_CREATE",categories_objects_list,tags_objects_list)
+                print("ACTION_CREATE", categories_objects_list, tags_objects_list)
                 recipe_controller.set_categories_to_recipe(recipe_object=recipe_object,
                                                            categories_objects_list=categories_objects_list)
                 recipe_controller.set_tags_to_recipe(recipe_object=recipe_object,
                                                      tags_objects_list=tags_objects_list)
             if action == ACTION_UPDATE:
-                print("ACTION_UPDATE",categories_objects_list,tags_objects_list)
+                print("ACTION_UPDATE", categories_objects_list, tags_objects_list)
                 recipe_controller.remove_all_categories_from_recipe(recipe_object=recipe_object)
                 recipe_controller.set_categories_to_recipe(recipe_object=recipe_object,
                                                            categories_objects_list=categories_objects_list)
