@@ -1,7 +1,8 @@
 import pathlib
-from django.db import models
-from django.contrib.auth.models import User
 import uuid
+
+from django.contrib.auth.models import User
+from django.db import models
 
 
 def recipe_image_upload_handler(instance, file_name):
@@ -68,7 +69,8 @@ class RecipeRecipeTag(models.Model):
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
     tag = models.ForeignKey(RecipeTag, on_delete=models.CASCADE)
 
-#-----------------------------------------------------
+
+# -----------------------------------------------------
 
 
 class RecipeStage(models.Model):
@@ -84,13 +86,15 @@ class RecipeIngredient(models.Model):
     unit = models.CharField(max_length=254)
     status = models.CharField(max_length=254)
 
+
 class RecipeStageRecipeIngredient(models.Model):
     stage = models.ForeignKey(RecipeStage, on_delete=models.CASCADE)
     ingredient = models.ForeignKey(RecipeIngredient, on_delete=models.CASCADE)
     amount = models.CharField(max_length=254)
-    is_required=models.BooleanField(default=True)
+    is_required = models.BooleanField(default=True)
 
-#-----------------------------------------------------
+
+# -----------------------------------------------------
 class RecipeLike(models.Model):
     author = models.ForeignKey(to=User, on_delete=models.CASCADE)
     recipe = models.ForeignKey(to=Recipe, on_delete=models.CASCADE, null=False)

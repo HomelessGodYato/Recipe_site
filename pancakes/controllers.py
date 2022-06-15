@@ -1,6 +1,6 @@
-from pancakes.models import RecipeIngredient, RecipeImage, RecipeStageRecipeIngredient, RecipeStage, Recipe, \
+from .models import RecipeIngredient, RecipeImage, RecipeStageRecipeIngredient, RecipeStage, Recipe, \
     RecipeCategory, RecipeTag, RecipeRecipeCategory, RecipeRecipeTag
-from pancakes.constant import *
+from .constant import *
 
 SHOW_LOGGING = False
 
