@@ -1,7 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.contrib.auth.models import User
-from .models import Profile
 
 from .models import RecipeCategory, Recipe, RecipeStage, RecipeIngredient, RecipeTag
 
@@ -43,17 +42,6 @@ class UserForm(forms.ModelForm):
         fields = ['username',
                   'email']
 
-
-class ProfileForm(forms.ModelForm):
-    class Meta:
-        model = Profile
-        fields = ['first_name',
-                  'last_name',
-                  'image',
-                  'facebook_link',
-                  'instagram_link',
-                  'twitter_link',
-                  'youtube_link']
 
 # ===========================================================================
 
