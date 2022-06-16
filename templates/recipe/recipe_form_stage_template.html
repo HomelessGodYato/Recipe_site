@@ -342,11 +342,8 @@ for (var i = 0; i < {{number_of_ingredients_max}}; i++) {
 }
 
 function changeUnits(event){
-    console.log(event.target.id)
     var id = event.target.id.split('_')[2]
-    console.log(id)
     var value = document.getElementById(`ingredient_title_${id}`).value
-    console.log(value)
 
     if(value != ''){
         new_array=[]
@@ -357,7 +354,6 @@ function changeUnits(event){
                 }
             }
         })
-        console.log(new_array)
         autocompleteForUnit(document.getElementById(`ingredient_unit_${id}`), new_array);
     }
 
