@@ -423,8 +423,6 @@ def recipe_form_view(request, id=0):
         if request.method == "POST":
             # image
             image = request.FILES.get(IMAGE)
-            if image is None:
-                image = DEFAULT_RECIPE_IMAGE_PATH
             error_image = recipe_image_controller.valid(image=image)
             # recipe
             author_object = request.user
@@ -443,6 +441,8 @@ def recipe_form_view(request, id=0):
                 if action == ACTION_CREATE:
                     print("ACTION_CREATE")
                     # image
+                    if image is None:
+                        image = DEFAULT_RECIPE_IMAGE_PATH
                     image_object = recipe_image_controller.create_and_save(image=image)
                     # recipe
                     recipe_object = recipe_controller.create_and_save(author=author_object,
@@ -454,7 +454,10 @@ def recipe_form_view(request, id=0):
                     print("ACTION_UPDATE")
                     recipe_object = recipe_controller.find_one_by_id(id=id)
                     # image
-                    image_object = recipe_image_controller.update(id=recipe_object.image.id, image=image)
+                    if image is not None:
+                        image_object = recipe_image_controller.update(id=recipe_object.image.id, image=image)
+                    else:
+                        image_object = recipe_image_controller.find_one_by_id(id=recipe_object.image.id)
                     # recipe
                     recipe_object = recipe_controller.update(id=id,
                                                              author=author_object,
@@ -516,8 +519,6 @@ def recipe_form_view(request, id=0):
         if request.method == "POST":
             # image
             image = request.FILES.get(IMAGE)
-            if image is None:
-                image = DEFAULT_STAGE_IMAGE_PATH
             error_image = recipe_image_controller.valid(image=image)
             # stage_object
             recipe_object = recipe_controller.find_one_by_id(id=recipe_id)
@@ -565,11 +566,12 @@ def recipe_form_view(request, id=0):
                                                                                            amount=ingredient_amount,
                                                                                            unit=ingredient_unit,
                                                                                            is_required=ingredient_is_require))
-
             if error_stage == "" and error_image == "" and error_ingredient == "":
                 if action == ACTION_CREATE or stage_id is None:
                     print("ACTION_CREATE")
                     # image
+                    if image is None:
+                        image = DEFAULT_RECIPE_IMAGE_PATH
                     image_object = recipe_image_controller.create_and_save(image=image)
                     # stage_object
                     stage_object = recipe_stage_controller.create_and_save(recipe=recipe_object,
@@ -584,12 +586,14 @@ def recipe_form_view(request, id=0):
                                                                         unit=object.get(UNIT),
                                                                         amount=object.get(AMOUNT),
                                                                         is_required=object.get(IS_REQUIRED))
-
                 elif action == ACTION_UPDATE:
                     print("ACTION_UPDATE")
                     stage_object = recipe_stage_controller.find_one_by_id(stage_id)
                     # image
-                    image_object = recipe_image_controller.update(id=stage_object.image.id, image=image)
+                    if image is not None:
+                        image_object = recipe_image_controller.update(id=stage_object.image.id, image=image)
+                    else:
+                        image_object = recipe_image_controller.find_one_by_id(id=stage_object.image.id)
                     # stage_object
                     stage_object = recipe_stage_controller.update(id=stage_id,
                                                                   recipe=recipe_object,
@@ -672,8 +676,6 @@ def recipe_form_view(request, id=0):
         if request.method == "POST":
             # image
             image = request.FILES.get(IMAGE)
-            if image is None:
-                image = DEFAULT_STAGE_IMAGE_PATH
             error_image = recipe_image_controller.valid(image=image)
             # stage_object
             recipe_object = recipe_controller.find_one_by_id(id=recipe_id)
@@ -726,6 +728,8 @@ def recipe_form_view(request, id=0):
                 if action == ACTION_CREATE or stage_id == '':
                     print("ACTION_CREATE")
                     # image
+                    if image is None:
+                        image = DEFAULT_RECIPE_IMAGE_PATH
                     image_object = recipe_image_controller.create_and_save(image=image)
                     # stage_object
                     stage_object = recipe_stage_controller.create_and_save(recipe=recipe_object,
@@ -744,7 +748,11 @@ def recipe_form_view(request, id=0):
                     print("ACTION_UPDATE")
                     stage_object = recipe_stage_controller.find_one_by_id(stage_id)
                     # image
-                    image_object = recipe_image_controller.update(id=stage_object.image.id, image=image)
+                    if image is not None:
+                        image_object = recipe_image_controller.update(id=stage_object.image.id, image=image)
+                    else:
+                        image_object = recipe_image_controller.find_one_by_id(id=stage_object.image.id)
+
                     # stage_object
                     stage_object = recipe_stage_controller.update(id=stage_id,
                                                                   recipe=recipe_object,
