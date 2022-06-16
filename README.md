@@ -3,6 +3,7 @@
 ## Useful and powerful links:
 
 * [Trello](https://trello.com/b/OrTDRL2A/projekt-przepi%C5%9Bnik)
+* [Produkcja](https://pancakes42.herokuapp.com)
 
 ## Technologies
 * Python 3.10.2
