@@ -1,3 +1,5 @@
+{% extends 'home.html' %}
+
 <h3>Register</h3>
 {% block content %}
 <form method="POST" action="">
@@ -7,11 +9,11 @@
         {{ field.label_tag }}<br>
         {{ field }}
         {% if field.help_text %}
-           <smal style = "display:none">{{ field.help_text }}</smal>
+        <smal style="display:none">{{ field.help_text }}</smal>
         {% endif %}
         {% for error in field.errors %}
-            <p style = "color: red"> {{error}}</p>
-        {% endfor %}
+    <p style="color: red"> {{error}}</p>
+    {% endfor %}
     </p>
     {% endfor %}
     <input type="submit" value="Sing Up">
