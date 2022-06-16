@@ -12,14 +12,13 @@ from django.urls import reverse_lazy
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.timezone import now
-from django.views import generic
 from django.views.generic.edit import DeleteView
 
 from .constant import *
 from .controllers import recipe_ingredient_controller, recipe_image_controller, \
     recipe_stage_controller, recipe_stage_recipe_ingredient_controller, recipe_controller, recipe_tag_controller, \
     recipe_category_controller
-from .forms import CreateUserForm, UserEditForm
+from .forms import CreateUserForm, UserEditForm, ProfileUpdateForm
 from .tokens import account_activation_token
 
 
@@ -30,11 +29,10 @@ class CustomUSerDeleteView(DeleteView):
     model = User
     success_url = reverse_lazy('home')
 
-
-class CustomUserEditView(generic.UpdateView):
-    form = UserEditForm
-    template_name = 'user/modifications/update.html'
-    success_url = reverse_lazy('user')
+    # class CustomUserEditView(generic.UpdateView):
+    #     form = UserEditForm
+    #     template_name = 'user/modifications/update.html'
+    #     success_url = reverse_lazy('user')
 
     def get_object(self):
         return self.request.user
@@ -114,22 +112,33 @@ def login_page(request):
 
 
 @login_required(login_url='login')
-def user_main_page(request):
-    return render(request, 'user/registration_login/user_main.html')
+def user_main_page(request, pk=None):
+    if pk:
+        user = User.objects.get(pk=pk)
+    else:
+        user = request.user
+    args = {'user': user}
+    return render(request, 'user/registration_login/user_main.html', args)
 
 
 @login_required(login_url='login')
 def user_edit_view(request):
-    if request.method == 'POST':
-        user_form = UserEditForm(request.POST, instance=request.user)
+    profile = request.user.userprofile
+    user = request.user
+    profile_form = ProfileUpdateForm(instance=profile)
+    user_form = UserEditForm(instance=user)
 
-        if user_form.is_valid():
+    if request.method == 'POST':
+        profile_form = ProfileUpdateForm(request.POST, request.FILES, instance=profile)
+        user_form = UserEditForm(request.POST, instance=user)
+        if profile_form.is_valid() and user_form.is_valid():
+            profile_form.save()
             user_form.save()
-            messages.success(request, 'Your profile is updated successfully')
-            return redirect(to='user')
-    else:
-        user_form = UserEditForm(instance=request.user)
-    return render(request, 'user/modifications/update.html', {'user_form': user_form})
+            return redirect('user')
+
+    context = {'profile_form': profile_form,
+               'user_form': user_form}
+    return render(request, 'user/modifications/update.html', context)
 
 
 def logout_user(request):
