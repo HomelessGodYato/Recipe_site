@@ -6,7 +6,7 @@ from . import views
 from .views import *
 
 urlpatterns = [
-                  path('home/', views.home_page, name="home"),
+                  path('', views.home_page, name="home"),
 
                   path('register/', views.register_page, name="register"),
                   path('login/', views.login_page, name="login"),
@@ -19,10 +19,6 @@ urlpatterns = [
                        views.activation, name='activate'),
                   path('user_edit/', views.user_edit_view, name="edit_user"),
 
-                  # path('recipe_create/', views.create_recipe_view, name="recipe_create"),
-                  # path('recipe_simple_create/', views.recipe_create_simple_view, name="recipe_simple_create"),
-                  # path('recipe/', views.recipe_select_all_view, name="recipe_select_all"),
-                  # path('recipe/<str:pk>', views.recipe_select_view, name="recipe_select"),
                   # -------------------------------------------RECIPE----------------------------------------------
                   path('recipe/', views.recipe_show_all_view, name="recipe_show_all"),
                   path('recipe/<str:id>', views.recipe_show_view, name="recipe_show"),
