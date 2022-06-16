@@ -9,30 +9,30 @@
 	    content: "TEGO NIE POWINNO BYĆ WIDAĆ";
 	}
 
-    .autocomplete {
+    .autocomplete-title {
       position: relative;
       display: inline-block;
     }
 
-    .autocomplete input {
+    .autocomplete-title input {
       border: 1px solid transparent;
       background-color: #f1f1f1;
       padding: 10px;
       font-size: 16px;
     }
 
-    .autocomplete input[type=text] {
+    .autocomplete-title input[type=text] {
       background-color: #f1f1f1;
       width: 100%;
     }
 
-    .autocomplete input[type=submit] {
+    .autocomplete-title input[type=submit] {
       background-color: DodgerBlue;
       color: #fff;
       cursor: pointer;
     }
 
-    .autocomplete .autocomplete-items {
+    .autocomplete-title .autocomplete-items-title {
       position: absolute;
       border: 1px solid #d4d4d4;
       border-bottom: none;
@@ -44,20 +44,71 @@
       right: 0;
     }
 
-    .autocomplete .autocomplete-items div {
+    .autocomplete-title .autocomplete-items-title div {
       padding: 10px;
       cursor: pointer;
       background-color: #fff;
       border-bottom: 1px solid #d4d4d4;
     }
 
-    /*when hovering an item:*/
-    .autocomplete .autocomplete-items div:hover {
+    .autocomplete-title .autocomplete-items-title div:hover {
       background-color: #e9e9e9;
     }
 
-    /*when navigating through the items using the arrow keys:*/
-    .autocomplete .autocomplete-active {
+    .autocomplete-title .autocomplete-active-title {
+      background-color: DodgerBlue !important;
+      color: #ffffff;
+    }
+
+
+
+    .autocomplete-unit {
+      position: relative;
+      display: inline-block;
+    }
+
+    .autocomplete-unit input {
+      border: 1px solid transparent;
+      background-color: #f1f1f1;
+      padding: 10px;
+      font-size: 16px;
+    }
+
+    .autocomplete-unit input[type=text] {
+      background-color: #f1f1f1;
+      width: 100%;
+    }
+
+    .autocomplete-unit input[type=submit] {
+      background-color: DodgerBlue;
+      color: #fff;
+      cursor: pointer;
+    }
+
+    .autocomplete-unit .autocomplete-items-unit {
+      position: absolute;
+      border: 1px solid #d4d4d4;
+      border-bottom: none;
+      border-top: none;
+      z-index: 99;
+      /*position the autocomplete items to be the same width as the container:*/
+      top: 100%;
+      left: 0;
+      right: 0;
+    }
+
+    .autocomplete-unit .autocomplete-items-unit div {
+      padding: 10px;
+      cursor: pointer;
+      background-color: #fff;
+      border-bottom: 1px solid #d4d4d4;
+    }
+
+    .autocomplete-unit .autocomplete-items-unit div:hover {
+      background-color: #e9e9e9;
+    }
+
+    .autocomplete-unit .autocomplete-active-unit {
       background-color: DodgerBlue !important;
       color: #ffffff;
     }
@@ -76,12 +127,18 @@
             <h3>skladniki</h3>
             {% for ingredient in ingredients_extended_list %}
                 <div id="ingredient-form-{{forloop.counter0}}" class="my_hidden">
-                    <div class="autocomplete" style="width:300px;">
-                        tytył:<input type="text" id="ingredient_title_{{forloop.counter0}}" name="ingredient_title_{{forloop.counter0}}" value="{{ingredient.title}}">
+                    <div class="autocomplete-title" style="width:300px;">
+                        tytył:<input type="text"
+                                     id="ingredient_title_{{forloop.counter0}}"
+                                     name="ingredient_title_{{forloop.counter0}}"
+                                     value="{{ingredient.title}}">
                     </div>
                     ilosc:<input type="number" name="ingredient_amount_{{forloop.counter0}}" value={{ingredient.amount}}>
-                    <div class="autocomplete" style="width:300px;">
-                        jednostak:<input type="text" id="ingredient_unit_{{forloop.counter0}}" name="ingredient_unit_{{forloop.counter0}}" value="{{ingredient.unit}}">
+                    <div class="autocomplete-unit" style="width:300px;">
+                        jednostak:<input type="text"
+                                         id="ingredient_unit_{{forloop.counter0}}"
+                                         name="ingredient_unit_{{forloop.counter0}}"
+                                         value="{{ingredient.unit}}">
                     </div>
                     wymagany:<input type="checkbox" name="ingredient_is_required_{{forloop.counter0}}"
                                     {% if ingredient.is_required %} checked {% endif%}>
@@ -90,12 +147,18 @@
             {% endfor %}
             {% for index in number_of_ingredients_range %}
                 <div id="ingredient-form-{{index}}" class="my_hidden">
-                    <div class="autocomplete" style="width:300px;">
-                        tytył:<input type="text" id="ingredient_title_{{index}}" name="ingredient_title_{{index}}" value="">
+                    <div class="autocomplete-title" style="width:300px;">
+                        tytył:<input type="text"
+                                     id="ingredient_title_{{index}}"
+                                     name="ingredient_title_{{index}}"
+                                     value="">
                     </div>
                     ilosc:<input type="number" name="ingredient_amount_{{index}}" value="">
-                    <div class="autocomplete" style="width:300px;">
-                        jednostak:<input type="text" id="ingredient_unit_{{index}}" name="ingredient_unit_{{index}}" value="">
+                    <div class="autocomplete-unit" style="width:300px;">
+                        jednostak:<input type="text"
+                                         id="ingredient_unit_{{index}}"
+                                         name="ingredient_unit_{{index}}"
+                                         value="">
                     </div>
 
                     wymagany:<input type="checkbox" name="ingredient_is_required_{{index}}">
@@ -117,130 +180,148 @@
     </form>
 </div>
 <script>
-function autocomplete(inp, arr) {
-  /*the autocomplete function takes two arguments,
-  the text field element and an array of possible autocompleted values:*/
+var number_of_fields_max=5
+function autocompleteForTitle(inp, arr) {
   var currentFocus;
-  /*execute a function when someone writes in the text field:*/
-  aa =function(e) {
+  fun = function(e) {
       var a, b, i, val = this.value;
-      /*close any already open lists of autocompleted values*/
       closeAllLists();
       if (!val) { val="";}
       currentFocus = -1;
-      /*create a DIV element that will contain the items (values):*/
       a = document.createElement("DIV");
-      a.setAttribute("id", this.id + "autocomplete-list");
-      a.setAttribute("class", "autocomplete-items");
-      /*append the DIV element as a child of the autocomplete container:*/
+      a.setAttribute("id", this.id + "autocomplete-list-title");
+      a.setAttribute("class", "autocomplete-items-title");
       this.parentNode.appendChild(a);
-      /*for each item in the array...*/
       var number_of_fields=0
-      var number_of_fields_max=3
       for (i = 0; i < arr.length; i++) {
-        /*check if the item starts with the same letters as the text field value:*/
-        if (arr[i].substr(0, val.length).toUpperCase() == val.toUpperCase()) {
+        if (arr[i].substr(0, val.length).toUpperCase() == val.toUpperCase() || val=="" ) {
             number_of_fields=number_of_fields+1
             if(number_of_fields>=number_of_fields_max){break}
-          /*create a DIV element for each matching element:*/
           b = document.createElement("DIV");
-          /*make the matching letters bold:*/
           b.innerHTML = "<strong>" + arr[i].substr(0, val.length) + "</strong>";
           b.innerHTML += arr[i].substr(val.length);
-          /*insert a input field that will hold the current array item's value:*/
           b.innerHTML += "<input type='hidden' value='" + arr[i] + "'>";
-          /*execute a function when someone clicks on the item value (DIV element):*/
           b.addEventListener("click", function(e) {
-              /*insert the value for the autocomplete text field:*/
               inp.value = this.getElementsByTagName("input")[0].value;
-              /*close the list of autocompleted values,
-              (or any other open lists of autocompleted values:*/
               closeAllLists();
-          },true);
+          });
           a.appendChild(b);
         }
       }
   }
-  inp.addEventListener("input", aa);
-  inp.addEventListener("change", removeValueFromUnitFild);
-  inp.addEventListener("focusin", aa);
-  inp.addEventListener("focusout",closeAllLists);
-
-
-
-  /*
-  function(e) {
-      console.log("==========",e);
-      //console.log("==========",inp.value);
-        //inp.value+="n"
-        //document.dispatchEvent(new KeyboardEvent('keydown', {'key': 'n'}))
-
-        var event = new Event('input', {
-            bubbles: true,
-            cancelable: true,
-        });
-      //inp.dispatchEvent(event);
-  }*/
-  /*execute a function presses a key on the keyboard:*/
+  inp.addEventListener("input", fun);
+  inp.addEventListener("click", fun);
   inp.addEventListener("keydown", function(e) {
-      var x = document.getElementById(this.id + "autocomplete-list");
+      var x = document.getElementById(this.id + "autocomplete-list-title");
       if (x) x = x.getElementsByTagName("div");
       if (e.keyCode == 40) {
-        /*If the arrow DOWN key is pressed,
-        increase the currentFocus variable:*/
         currentFocus++;
-        /*and and make the current item more visible:*/
         addActive(x);
-      } else if (e.keyCode == 38) { //up
-        /*If the arrow UP key is pressed,
-        decrease the currentFocus variable:*/
+      } else if (e.keyCode == 38) {
         currentFocus--;
-        /*and and make the current item more visible:*/
         addActive(x);
       } else if (e.keyCode == 13) {
-        /*If the ENTER key is pressed, prevent the form from being submitted,*/
         e.preventDefault();
         if (currentFocus > -1) {
-          /*and simulate a click on the "active" item:*/
           if (x) x[currentFocus].click();
         }
       }
   });
   function addActive(x) {
-    /*a function to classify an item as "active":*/
     if (!x) return false;
-    /*start by removing the "active" class on all items:*/
     removeActive(x);
     if (currentFocus >= x.length) currentFocus = 0;
     if (currentFocus < 0) currentFocus = (x.length - 1);
-    /*add class "autocomplete-active":*/
-    x[currentFocus].classList.add("autocomplete-active");
+    x[currentFocus].classList.add("autocomplete-active-title");
   }
   function removeActive(x) {
-    /*a function to remove the "active" class from all autocomplete items:*/
     for (var i = 0; i < x.length; i++) {
-      x[i].classList.remove("autocomplete-active");
+      x[i].classList.remove("autocomplete-active-title");
     }
   }
   function closeAllLists(elmnt) {
-    var x = document.getElementsByClassName("autocomplete-items");
+    var x = document.getElementsByClassName("autocomplete-items-title");
     for (var i = 0; i < x.length; i++) {
-        if (elmnt != x[i] && elmnt != inp) {
-            x[i].parentNode.removeChild(x[i]);
-        }
+      if (elmnt != x[i] && elmnt != inp) {
+        x[i].parentNode.removeChild(x[i]);
+      }
     }
   }
-
-  function removeValueFromUnitFild(e){
-    console.log("---"+e.target.id)
-    var id = e.target.id.split('_')[2]
-    element = document.getElementById(`ingredient_unit_${id}`)
-    if(element){
-        element.value=''
-    }
-  }
+  document.addEventListener("click", function (e) {
+      closeAllLists(e.target);
+  },true);
 }
-
+//=================================================================================================================
+function autocompleteForUnit(inp, arr) {
+  var currentFocus;
+  fun = function(e) {
+      var a, b, i, val = this.value;
+      closeAllLists();
+      if (!val) { val="";}
+      currentFocus = -1;
+      a = document.createElement("DIV");
+      a.setAttribute("id", this.id + "autocomplete-list-unit");
+      a.setAttribute("class", "autocomplete-items-unit");
+      this.parentNode.appendChild(a);
+      var number_of_fields=0
+      for (i = 0; i < arr.length; i++) {
+        if (arr[i].substr(0, val.length).toUpperCase() == val.toUpperCase() || val=="" ) {
+            number_of_fields=number_of_fields+1
+            if(number_of_fields>=number_of_fields_max){break}
+          b = document.createElement("DIV");
+          b.innerHTML = "<strong>" + arr[i].substr(0, val.length) + "</strong>";
+          b.innerHTML += arr[i].substr(val.length);
+          b.innerHTML += "<input type='hidden' value='" + arr[i] + "'>";
+          b.addEventListener("click", function(e) {
+              inp.value = this.getElementsByTagName("input")[0].value;
+              closeAllLists();
+          });
+          a.appendChild(b);
+        }
+      }
+  }
+  inp.addEventListener("input", fun);
+  inp.addEventListener("click", fun);
+  inp.addEventListener("keydown", function(e) {
+      var x = document.getElementById(this.id + "autocomplete-list-unit");
+      if (x) x = x.getElementsByTagName("div");
+      if (e.keyCode == 40) {
+        currentFocus++;
+        addActive(x);
+      } else if (e.keyCode == 38) {
+        currentFocus--;
+        addActive(x);
+      } else if (e.keyCode == 13) {
+        e.preventDefault();
+        if (currentFocus > -1) {
+          if (x) x[currentFocus].click();
+        }
+      }
+  });
+  function addActive(x) {
+    if (!x) return false;
+    removeActive(x);
+    if (currentFocus >= x.length) currentFocus = 0;
+    if (currentFocus < 0) currentFocus = (x.length - 1);
+    x[currentFocus].classList.add("autocomplete-active-unit");
+  }
+  function removeActive(x) {
+    for (var i = 0; i < x.length; i++) {
+      x[i].classList.remove("autocomplete-active-title");
+    }
+  }
+  function closeAllLists(elmnt) {
+    var x = document.getElementsByClassName("autocomplete-items-unit");
+    for (var i = 0; i < x.length; i++) {
+      if (elmnt != x[i] && elmnt != inp) {
+        x[i].parentNode.removeChild(x[i]);
+      }
+    }
+  }
+  document.addEventListener("click", function (e) {
+      closeAllLists(e.target);
+  },true);
+}
 //=================================================================================================================
 var ingredients_list_to_autocomplete={{ingredients_list_to_autocomplete|safe }}
 var titles_arr=[]
@@ -252,10 +333,11 @@ ingredients_list_to_autocomplete.forEach((item, index) =>{
 )
 console.log(titles_arr)
 console.log(units_arr)
+//=================================================================================================================
 
 
 for (var i = 0; i < {{number_of_ingredients_max}}; i++) {
-    autocomplete(document.getElementById(`ingredient_title_${i}`), titles_arr);
+    autocompleteForTitle(document.getElementById(`ingredient_title_${i}`), titles_arr);
     document.getElementById(`ingredient_unit_${i}`).addEventListener('focus',changeUnits)
 }
 
@@ -275,12 +357,8 @@ function changeUnits(event){
                 }
             }
         })
-
-        //new_array = titles_arr.filter(
-        //  (v) => v.toLowerCase().includes(value.toLowerCase())
-        //);
         console.log(new_array)
-        autocomplete(document.getElementById(`ingredient_unit_${id}`), new_array);
+        autocompleteForUnit(document.getElementById(`ingredient_unit_${id}`), new_array);
     }
 
 }
