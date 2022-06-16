@@ -1,16 +1,20 @@
 <span>You are logged in,</span>
 
 {% block user-profile %}
-<br>
-<span>Username: {{request.user}} </span>
-<br>
-<span>First name: {{request.user.first_name}} </span>
-<br>
-<span>Last name:{{request.user.last_name}} </span>
-<br>
-<span>Email: {{request.user.email}} </span>
-<br>
-
+<div>
+    <br>
+    <img class="rounded-circle account-img" src="{{ user.userprofile.profile_pic.url }}">
+    <p>Username: {{ user }}</p>
+    <p>First name: {{ user.first_name }}</p>
+    <p>Last name: {{ user.last_name }}</p>
+    <p>Email: {{ user.email }}</p>
+    <p>Bio: {{ user.userprofile.bio }}</p>
+    <p><a href = "{{ user.userprofile.facebook_link }}">Facebook</a></p>
+    <p><a href = "{{ user.userprofile.twitter_link }}">Twitter</a></p>
+    <p><a href = "{{ user.userprofile.instagram_link }}">Instagram</a></p>
+    <p><a href = "{{ user.userprofile.youtube_link }}">Youtube</a></p>
+    <br>
+</div>
 {% endblock%}
 
 {% block logout %}

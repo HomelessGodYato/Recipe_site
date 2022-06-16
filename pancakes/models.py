@@ -1,8 +1,38 @@
 import pathlib
 import uuid
 
+from PIL import Image
 from django.contrib.auth.models import User
 from django.db import models
+from django.db.models.signals import post_save
+
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    bio = models.CharField(max_length=200, default="")
+    facebook_link = models.URLField(default="")
+    instagram_link = models.URLField(default="")
+    twitter_link = models.URLField(default="")
+    youtube_link = models.URLField(default="")
+    profile_pic = models.ImageField(null=True, blank=True, default='default/default.PNG', upload_to='profile_pics')
+
+    def save(self, *args, **kwargs):
+        super().save()
+
+        img = Image.open(self.profile_pic.path)
+
+        if img.height > 100 or img.width > 100:
+            new_img = (100, 100)
+            img.thumbnail(new_img)
+            img.save(self.profile_pic.path)
+
+
+def create_profile(sender, **kwargs):
+    if kwargs['created']:
+        user_profile = UserProfile.objects.create(user=kwargs['instance'])
+
+
+post_save.connect(create_profile, sender=User)
 
 
 def recipe_image_upload_handler(instance, file_name):
