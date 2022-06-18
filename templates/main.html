@@ -27,7 +27,7 @@ parameters: - page_title - specifies the title of the page. The default value is
 		<link
 			rel="shortcut icon"
 			type="image/png"
-			href="{% static 'images/Hmph.ico' %}"
+			href="{% static 'img/Hmph.ico' %}"
 		/>
 	</head>
 	<body>
@@ -110,12 +110,16 @@ parameters: - page_title - specifies the title of the page. The default value is
 									<a href="{% url 'register' %}">Zarejestuj się</a>
 								</li>
 							</ul>
+							{% if user.is_authenticated %}
 							<ul class="dropdown">
-								<li class="profile-l not-visable"><a href="#">Profil</a></li>
-								<li class="profile-l not-visable">
-									<a href="#">Wyloguj się</a>
+								<li class="profile-l">
+									<a href="{% url 'login' %}">Profil</a>
+								</li>
+								<li class="profile-l">
+									<a href="{% url 'logout' %}">Wyloguj się</a>
 								</li>
 							</ul>
+							{% endif %}
 						</div>
 					</nav>
 				</div>

@@ -1,34 +1,99 @@
-<span>You are logged in,</span>
+{% extends 'main.html' %} {% block content %}
+<mian class="main">
+	<div class="main-profile">
+		<div class="first_row">
+			<h1 class="title profile-title">Panel użytkownika</h1>
+		</div>
+		<div class="second-row">
+			{% block user-profile %}
+			<div class="first-column">
+				<div class="profile-avatar">
+					<img
+						class="rounded-circle account-img avatar"
+						src="{{ user.userprofile.profile_pic.url }}"
+					/>
+				</div>
+				<div class="profile-links">
+					<a class="profile-link" href="#">Moje wpisy</a>
+					<a class="profile-link" href="#">Moje zapytania</a>
+					<a class="profile-link" href="#">Ostatnio odwiedzane</a>
+				</div>
+			</div>
+			<div class="second-column">
+				<div class="second-column-top">
+					<h3 class="title-profile-second">Informacje osobiste:</h3>
+					<p>Username: {{ user }}</p>
+					<p>First name: {{ user.first_name }}</p>
+					<p>Last name: {{ user.last_name }}</p>
+					<p>Email: {{ user.email }}</p>
+					<p>Bio: {{ user.userprofile.bio }}</p>
+				</div>
+				<div class="second-column-mid">
+					<h3 class="title-profile-second">Sociale:</h3>
+					<div class="socials">
+						<a class="link" href="{{ user.userprofile.youtube_link }}"
+							><i class="fa-brands fa-youtube"></i
+						></a>
+						<a class="link" href="{{ user.userprofile.instagram_link }}"
+							><i class="fa-brands fa-instagram"></i
+						></a>
+						<a class="link" href="{{ user.userprofile.facebook_link }}"
+							><i class="fa-brands fa-facebook-f"></i
+						></a>
+						<a class="link" href="{{ user.userprofile.twitter_link }}"
+							><i class="fa-brands fa-twitter"></i
+						></a>
+					</div>
+				</div>
+				<div class="second-column-bot">
+					<h3 class="title-profile-second">Edycja konta:</h3>
+					<a
+						href="{% url 'delete_user' request.user.pk%}"
+						class="profile-change-link"
+						>Usuń konto</a
+					>
+					<a href="{% url 'edit_user'%}" class="profile-change-link"
+						>Zmień dane</a
+					>
+				</div>
+			</div>
+			<div class="third-column"></div>
+		</div>
+		<div class="third_row">
+			<a href="{% url 'logout' %}" class="profile-logout">Wyloguj</a>
+		</div>
+	</div>
+	<!-- <div>
+		<br />
+		<img
+			class="rounded-circle account-img"
+			src="{{ user.userprofile.profile_pic.url }}"
+		/>
+		<p>Username: {{ user }}</p>
+		<p>First name: {{ user.first_name }}</p>
+		<p>Last name: {{ user.last_name }}</p>
+		<p>Email: {{ user.email }}</p>
+		<p>Bio: {{ user.userprofile.bio }}</p>
+		<p><a href="{{ user.userprofile.facebook_link }}">Facebook</a></p>
+		<p><a href="{{ user.userprofile.twitter_link }}">Twitter</a></p>
+		<p><a href="{{ user.userprofile.instagram_link }}">Instagram</a></p>
+		<p><a href="{{ user.userprofile.youtube_link }}">Youtube</a></p>
+		<br />
+	</div>
+	{% endblock%} {% block logout %}
+	<span
+		><a href="{% url 'logout' %}"><br /><br />Logout</a></span
+	>
+	{%endblock logout %} {% block delete-user %}
+	<br />
+	<br />
+	<br />
+	<a href="{% url 'delete_user' request.user.pk%}">DELETE YOUR ACCOUNT</a>
+	<br />
+	<br />
+	<br />
+	<a href="{% url 'edit_user'%}">UPDATE YOUR ACCOUNT</a>
 
-{% block user-profile %}
-<div>
-    <br>
-    <img class="rounded-circle account-img" src="{{ user.userprofile.profile_pic.url }}">
-    <p>Username: {{ user }}</p>
-    <p>First name: {{ user.first_name }}</p>
-    <p>Last name: {{ user.last_name }}</p>
-    <p>Email: {{ user.email }}</p>
-    <p>Bio: {{ user.userprofile.bio }}</p>
-    <p><a href = "{{ user.userprofile.facebook_link }}">Facebook</a></p>
-    <p><a href = "{{ user.userprofile.twitter_link }}">Twitter</a></p>
-    <p><a href = "{{ user.userprofile.instagram_link }}">Instagram</a></p>
-    <p><a href = "{{ user.userprofile.youtube_link }}">Youtube</a></p>
-    <br>
-</div>
-{% endblock%}
-
-{% block logout %}
-<span><a href="{% url 'logout' %}"><br><br>Logout</a></span>
-{%endblock logout %}
-
-{% block delete-user %}
-<br>
-<br>
-<br>
-<a href="{% url 'delete_user' request.user.pk%}">DELETE YOUR ACCOUNT</a>
-<br>
-<br>
-<br>
-<a href="{% url 'edit_user'%}">UPDATE YOUR ACCOUNT</a>
-
-{% endblock delete-user %}
+	{% endblock delete-user %} -->
+</mian>
+{% endblock content %}
