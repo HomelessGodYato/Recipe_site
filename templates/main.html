@@ -62,7 +62,7 @@ parameters: - page_title - specifies the title of the page. The default value is
 							</ul>
 						</div>
 						{% if user.is_authenticated %}
-						<a class="link-two" href="#">
+						<a class="link-two" href="{% url 'recipe_create' %}">
 							<div class="panel-two">
 								<div class="panel-icon panel-icon-two">
 									<i class="fa-solid fa-plus"></i>

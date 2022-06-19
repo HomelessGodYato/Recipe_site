@@ -122,25 +122,37 @@
             </div>
             <div class="col1-bot col1-bot-inner">
               {% for ingredient in ingredients_extended_list %}
-                  <div id="ingredient-form-{{forloop.counter0}}" class="my_hidden">
-                      <div class="autocomplete-title" style="width:300px;">
-                          tytył:<input type="text"
+                  <div id="ingredient-form-{{forloop.counter0}}" class="my_hidden ingredient-box">
+                      <div class="autocomplete-title">
+                        <div class="pool">
+                        <h3 class="ingredient-name">Tytuł:</h3>
+                          <input class="ingredient-input" type="text"
                                        id="ingredient_title_{{forloop.counter0}}"
                                        name="ingredient_title_{{forloop.counter0}}"
                                        value="{{ingredient.title}}">
+                        </div>
                       </div>
-                      ilosc:<input type="number" name="ingredient_amount_{{forloop.counter0}}" value={{ingredient.amount}}>
-                      <div class="autocomplete-unit" style="width:300px;">
-                          jednostak:<input type="text"
-                                           id="ingredient_unit_{{forloop.counter0}}"
-                                           name="ingredient_unit_{{forloop.counter0}}"
-                                           value="{{ingredient.unit}}">
+                      <div class="pool">
+                        <h3 class="ingredient-name">Ilość:</h3>
+                        <input class="ingredient-input" type="number" name="ingredient_amount_{{forloop.counter0}}" value={{ingredient.amount}}>
                       </div>
-                      wymagany:<input type="checkbox" name="ingredient_is_required_{{forloop.counter0}}"
-                                      {% if ingredient.is_required %} checked {% endif%}>
+                      <div class="autocomplete-unit">
+                        <div class="pool">
+                       <h3 class="ingredient-name">Jednostka:</h3>
+                       <input class="ingredient-input" type="text"
+                                            id="ingredient_unit_{{forloop.counter0}}"
+                                            name="ingredient_unit_{{forloop.counter0}}"
+                                            value="{{ingredient.unit}}">
+                       </div>
+                     </div>
+
+                     <div class="pool">
+                      <h3 class="ingredient-name">Wymagany:</h3><input type="checkbox" name="ingredient_is_required_{{forloop.counter0}}">
                       <div class="my_hidden dont_touch"> id:<input type="number" name="ingredient_id_{{forloop.counter0}}" value={{ingredient.id}}></div>
+                      </div>
                   </div>
               {% endfor %}
+              <!-- uzupełnij to wyżej  -->
               {% for index in number_of_ingredients_range %}
                   <div id="ingredient-form-{{index}}" class="my_hidden ingredient-box">
                       <div class="autocomplete-title">
@@ -184,7 +196,7 @@
         </div>
           <div class="step2-row1-col2">
             <h3 class="title-second recipe-title-second">Opis:</h3>
-            <input class="recipe-discribe" type="text" name="description" value="{{stage.description}}">
+            <textarea class="recipe-discribe" name="description" value="{{stage.description}}" ></textarea>
 
             <h3 class="title-second recipe-title-second">Zdjęcie:</h3>
                 <label class="picture">
