@@ -10,23 +10,29 @@
 	}
 </style>
 
-    <hr/>
-    {% if error %}<div class="....."> error </div>{% endif %}
-    <hr/>
+    <!-- <hr/> -->
+    <!-- <hr/> -->
     <form action="./{{recipe_id}}" method="post" enctype="multipart/form-data" class="form-recipe">
         {% csrf_token %}
         <div class="recipe-row-one">
             <div class="recipe-row-one-one">
-            <h3 class="title-second recipe-title-second">Nazwa dania:</h3><input class="recipe-input" placeholder="[nazwa dania]" type="text" name="title" value="{{recipe.title}}">
-            <h3 class="title-second recipe-title-second">Czas trwania:</h3><input class="recipe-input" placeholder="00:00" type="number" name="cooking_time" value="{{recipe.cooking_time}}">
+                <h3 class="title-second recipe-title-second">Nazwa dania:</h3>
+                <input class="recipe-input" placeholder="[nazwa dania]" type="text" name="title" value="{{recipe.title}}">
+                <h3 class="title-second recipe-title-second">Czas trwania:</h3>
+                <input class="recipe-input" placeholder="00:00" type="number" name="cooking_time" value="{{recipe.cooking_time}}">
             </div>
             <div class="recipe-row-one-two">
-                <h3 class="title-second recipe-title-second">Zdjęcie:</h3><input type="file" name="image" value="{{recipe.image}}" accept="image/*">
+                <h3 class="title-second recipe-title-second">Zdjęcie:</h3>
+                <label class="picture">
+                <input type="file" name="image" value="{{recipe.image}}" accept="image/*">
+                <i class="fa-solid fa-image"></i>
+                </label>
                 <div class="hidden dont_touch">ACTION: <input type="text" name="ACTION" value="{{ACTION}}"></div>
             </div>
         </div>
         <!-- <hr/> -->
         <div class="recipe-row-two">
-        <button type="submit" name="{{RECIPE_FORM_STATE}}" value="{{RECIPE_FORM_STATE_FIRST}}" class="recipe-btn">Dalej</button>
+            <button type="submit" name="{{RECIPE_FORM_STATE}}" value="{{RECIPE_FORM_STATE_FIRST}}" class="recipe-btn">Dalej</button>
         </div>
     </form>
+    {% if error %}<div class="error-info"> Błędne dane</div>{% endif %}
