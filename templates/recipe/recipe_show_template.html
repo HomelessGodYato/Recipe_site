@@ -40,7 +40,7 @@
                     {% for stage in recipe.stages_list %}
                     <div class="show-step">
                         <div class="stage-title">
-                        Etap {{stage.id}}
+                        Etap {{forloop.counter}}
                         </div>
                         <div class="show-time-step">
                             {{stage.cooking_time}} minut
