@@ -47,13 +47,13 @@
 				</div>
 				<div class="second-column-bot">
 					<h3 class="title-profile-second">Edycja konta:</h3>
+					<a href="{% url 'edit_user'%}" class="profile-change-link"
+						>Zmień dane</a
+					>
 					<a
 						href="{% url 'delete_user' request.user.pk%}"
 						class="profile-change-link"
 						>Usuń konto</a
-					>
-					<a href="{% url 'edit_user'%}" class="profile-change-link"
-						>Zmień dane</a
 					>
 				</div>
 			</div>

@@ -1,15 +1,32 @@
-{% extends 'main.html' %}
-
-{% block content %}
-    <h1>Przepisy</h1>
-
-    {% if error %}
-        {{error}}
-    {% else %}
-        <div>
+{% extends 'main.html' %} {% block content %}
+<main class="main">
+	<div class="show-all-cards">
+        <div class="card-title">
+            <h1 class="title-card">Przepisy:</h1>
+		</div>
+		{% csrf_token %}
+		<div class="show-cards">
             {% for recipe in recipes_list %}
-            {% include "recipe/recipe_show_template.html" with recipe=recipe %}
-            {% endfor %}
-        </div>
-    {% endif %}
+			<div class="show-card">
+                <a href="{% url 'recipe_show' id=recipe.id  %}" class="card-link">
+				<img
+					class="card-img"
+					src="{{ recipe.image.image.url }}"
+					alt="zdjecie"
+				/>
+                <div class="card-body">
+				    <h3 class="card-body-title">{{recipe.title}}</h3>
+				    <h3 class="card-body-time"><i class="fa-solid fa-clock"></i> {{recipe.cooking_time}} minut</h3>
+                    <div class="card-categories">
+                        {% for category in recipe.categories_list %}
+                            <div class="card-category">{{category.title}}</div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </a>
+			</div>
+			{% endfor %}
+		</div>
+	</div>
+</main>
 {% endblock content %}

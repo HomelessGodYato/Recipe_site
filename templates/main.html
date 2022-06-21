@@ -34,29 +34,106 @@ parameters: - page_title - specifies the title of the page. The default value is
 		<div class="layer">
 			<header class="header-desktop">
 				<div class="header-up">
+					<a href="{% url 'home' %}">
 					<div class="header__img">
-						<!-- <a href="{% url 'home' %}">xd</a> -->
 					</div>
+				</a>
 				</div>
 				<div class="header-down">
 					<nav class="navigation navigation-not-logged">
 						<div class="link-one link-one-other link-one-not-logged">
 							<div class="panel-one">
-								<div class="panel-icon"><i class="fa-solid fa-0"></i></div>
+								<div class="panel-icon"><i class="fa-solid fa-utensils"></i></div>
 								<div class="panel-text">przepisy</div>
 							</div>
 							<ul class="dropdown">
-								<li><a href="#">Typ dania</a></li>
-								<li><a href="#">Posiłek</a></li>
-								<li><a href="#">Kuchnie świata</a></li>
-								<li><a href="#">Okazje</a></li>
-								<li><a href="#">Rodzaj diety</a></li>
+								<li><a href="{% url 'recipe_show_all' %}">Wszystkie przepisy</a></li>
+								<li class="second-dropdown">Typ dania
+									<ul class="sec-dropdown">
+										<li><a href="{% url 'recipe_category_name_show_all' category_name='bowl'  %}">Bowl</a></li>
+										<li><a href="{% url 'recipe_category_name_show_all' category_name='ciasto'  %}">ciasto</a></li>
+										<li><a href="{% url 'recipe_category_name_show_all' category_name='desery'  %}">desery</a></li>
+										<li><a href="{% url 'recipe_category_name_show_all' category_name='dania główne'  %}">dania główne</a></li>
+										<li><a href="{% url 'recipe_category_name_show_all' category_name='galaretki'  %}">galaretki</a></li>
+										<li><a href="{% url 'recipe_category_name_show_all' category_name='kluski'  %}">kluski</a></li>
+										<li><a href="{% url 'recipe_category_name_show_all' category_name='naleśniki'  %}">naleśniki</a></li>
+										<li><a href="{% url 'recipe_category_name_show_all' category_name='owsianka'  %}">owsianka</a></li>
+										<li><a href="{% url 'recipe_category_name_show_all' category_name='pasztet'  %}">pasztet</a></li>
+										<li><a href="{% url 'recipe_category_name_show_all' category_name='pierogi'  %}">pierogi</a></li>
+										<li><a href="{% url 'recipe_category_name_show_all' category_name='placki'  %}">placki</a></li>
+										<li><a href="{% url 'recipe_category_name_show_all' category_name='przetwory'  %}">przetwory</a></li>
+										<li><a href="{% url 'recipe_category_name_show_all' category_name='sałatki'  %}">sałatki</a></li>
+										<li><a href="{% url 'recipe_category_name_show_all' category_name='wędliny'  %}">wędliny</a></li>
+										<li><a href="{% url 'recipe_category_name_show_all' category_name='zapiekanki'  %}">zapiekanki</a></li>
+									</ul>
+								</li>
+								<li class="second-dropdown">Posiłek
+									<ul class="sec-dropdown">
+									<li><a href="{% url 'recipe_category_name_show_all' category_name='szybka kuchnia'  %}">szybka kuchnia</a></li>
+										<li><a href="{% url 'recipe_category_name_show_all' category_name='do szkoły'  %}">do szkoły</a></li>
+										<li><a href="{% url 'recipe_category_name_show_all' category_name='do pracy'  %}">do pracy</a></li>
+										<li><a href="{% url 'recipe_category_name_show_all' category_name='kolacja'  %}">kolacja</a></li>
+										<li><a href="{% url 'recipe_category_name_show_all' category_name='lunch'  %}">lunch</a></li>
+										<li><a href="{% url 'recipe_category_name_show_all' category_name='obiad'  %}">obiad</a></li>
+										<li><a href="{% url 'recipe_category_name_show_all' category_name='śniadanie'  %}">śniadanie</a></li>
+										<li><a href="{% url 'recipe_category_name_show_all' category_name='podwieczorek'  %}">podwieczorek</a></li>
+										<li><a href="{% url 'recipe_category_name_show_all' category_name='przekąska'  %}">przekąska</a></li>
+										<li><a href="{% url 'recipe_category_name_show_all' category_name='do spiżarni'  %}">do spiżarni</a></li>
+										<li><a href="{% url 'recipe_category_name_show_all' category_name='napitki'  %}">napitki</a></li>
+									</ul>
+								</li>
+								<li class="second-dropdown">Kuchnie świata
+									<ul class="sec-dropdown">
+										<li><a href="{% url 'recipe_category_name_show_all' category_name='Afryka'  %}">Afryka</a></li>
+										<li><a href="{% url 'recipe_category_name_show_all' category_name='Ameryka Północna'  %}">Ameryka Północna</a></li>
+										<li><a href="{% url 'recipe_category_name_show_all' category_name='Ameryka Południowa'  %}">Ameryka Południowa</a></li>
+										<li><a href="{% url 'recipe_category_name_show_all' category_name='Australia'  %}">Australia</a></li>
+										<li><a href="{% url 'recipe_category_name_show_all' category_name='Azja'  %}">Azja</a></li>
+										<li><a href="{% url 'recipe_category_name_show_all' category_name='Europa'  %}">Europa</a></li>
+									</ul>
+								</li>
+								<li class="second-dropdown">Okazje
+									<ul class="sec-dropdown sec-dropdown-special">
+										<li><a href="{% url 'recipe_category_name_show_all' category_name='Andrzejki'  %}">Andrzejki</a></li>
+											<li><a href="{% url 'recipe_tag_name_show_all' tag_name='dzień kobiet'  %}">dzień kobiet</a></li>
+											<li><a href="{% url 'recipe_tag_name_show_all' tag_name='chrzciny'  %}">chrzciny</a></li>
+											<li><a href="{% url 'recipe_tag_name_show_all' tag_name='grill'  %}">grill</a></li>
+											<li><a href="{% url 'recipe_tag_name_show_all' tag_name='hallowen'  %}">hallowen</a></li>
+											<li><a href="{% url 'recipe_tag_name_show_all' tag_name='impreza'  %}">impreza</a></li>
+											<li><a href="{% url 'recipe_tag_name_show_all' tag_name='kranawał'  %}">kranawał</a></li>
+											<li><a href="{% url 'recipe_tag_name_show_all' tag_name='tłusty czwartek'  %}">tłusty czwartek</a></li>
+											<li><a href="{% url 'recipe_tag_name_show_all' tag_name='święta'  %}">święta</a></li>
+											<li><a href="{% url 'recipe_tag_name_show_all' tag_name='piknik'  %}">piknik</a></li>
+											<li><a href="{% url 'recipe_tag_name_show_all' tag_name='post'  %}">post</a></li>
+											<li><a href="{% url 'recipe_tag_name_show_all' tag_name='spotkanie rodzinne'  %}">spotkanie rodzinne</a></li>
+											<li><a href="{% url 'recipe_tag_name_show_all' tag_name='urodziny'  %}">urodziny</a></li>
+											<li><a href="{% url 'recipe_tag_name_show_all' tag_name='walentynki'  %}">walentynki</a></li>
+											<li><a href="{% url 'recipe_tag_name_show_all' tag_name='wielkanoc'  %}">wielkanoc</a></li>
+											<li><a href="{% url 'recipe_tag_name_show_all' tag_name='wesele'  %}">wesele</a></li>
+										</ul>
+								</li>
+								<li class="second-dropdown">
+									Rodzaj diety
+									<ul class="sec-dropdown">
+										<li><a href="{% url 'recipe_category_name_show_all' category_name='bez laktozy'  %}">bez laktozy</a></li>
+												<li><a href="{% url 'recipe_tag_name_show_all' tag_name='bezglutenowa'  %}">bezglutenowa</a></li>
+												<li><a href="{% url 'recipe_tag_name_show_all' tag_name='dieta cukrzycowa'  %}">dieta cukrzycowa</a></li>
+												<li><a href="{% url 'recipe_tag_name_show_all' tag_name='dieta hallal'  %}">dieta hallal</a></li>
+												<li><a href="{% url 'recipe_tag_name_show_all' tag_name='dieta hinduska'  %}">dieta hinduska</a></li>
+												<li><a href="{% url 'recipe_tag_name_show_all' tag_name='koszerna'  %}">koszerna</a></li>
+												<li><a href="{% url 'recipe_tag_name_show_all' tag_name='niskokaloryczna'  %}">niskokaloryczna</a></li>
+												<li><a href="{% url 'recipe_tag_name_show_all' tag_name='niskosodowa'  %}">niskosodowa</a></li>
+												<li><a href="{% url 'recipe_tag_name_show_all' tag_name='niskotłuszczowa'  %}">niskotłuszczowa</a></li>
+												<li><a href="{% url 'recipe_tag_name_show_all' tag_name='wegańska'  %}">wegańska</a></li>
+												<li><a href="{% url 'recipe_tag_name_show_all' tag_name='wegetariańska'  %}">wegetariańska</a></li>
+									</ul>
+								</li>
 								<li class="second-dropdown">
 									Inne
 									<ul class="sec-dropdown">
-										<li><a href="#">Dla dzieci</a></li>
-										<li><a href="#">Szybkie i proste</a></li>
-										<li><a href="#">Tanio</a></li>
+										<li><a href="{% url 'recipe_category_name_show_all' category_name='Dla dzieci'  %}">Dla dzieci</a></li>
+										<li><a href="{% url 'recipe_tag_name_show_all' tag_name='Szybkie i proste'  %}">Szybkie i proste</a></li>
+										<li><a href="{% url 'recipe_tag_name_show_all' tag_name='Tanio'  %}">Tanio</a></li>
 									</ul>
 								</li>
 							</ul>
@@ -73,7 +150,7 @@ parameters: - page_title - specifies the title of the page. The default value is
 
 						<a class="link-one link-one-other2" href="#">
 							<div class="panel-one">
-								<div class="panel-icon"><i class="ti ti-slice"></i></div>
+								<div class="panel-icon"><i class="ti ti-fridge"></i></div>
 								<div class="panel-text">
 									co masz <br />
 									w lodówce?
@@ -83,7 +160,7 @@ parameters: - page_title - specifies the title of the page. The default value is
 						{% endif %}
 						<a class="link-one link-one-not-logged" href="#">
 							<div class="panel-one">
-								<div class="panel-icon"><i class="ti ti-slice"></i></div>
+								<div class="panel-icon"><i class="fa-solid fa-comments"></i></div>
 								<div class="panel-text">forum</div>
 							</div>
 						</a>
@@ -98,8 +175,22 @@ parameters: - page_title - specifies the title of the page. The default value is
 						</a>
 						{% endif %}
 						<div class="link-one link-one-other link-one-not-logged">
+							{% if user.is_authenticated %}
 							<div class="panel-one">
-								<div class="panel-icon"><i class="ti ti-slice"></i></div>
+								<div class="panel-icon"><i class="fa-solid fa-user-check"></i></div>
+								<div class="panel-text">panel użytkownika</div>
+							</div>
+							<ul class="dropdown">
+								<li class="profile-l">
+									<a href="{% url 'login' %}">Profil</a>
+								</li>
+								<li class="profile-l">
+									<a href="{% url 'logout' %}">Wyloguj się</a>
+								</li>
+							</ul>
+							{% else %}
+							<div class="panel-one">
+								<div class="panel-icon"><i class="fa-solid fa-user-lock"></i></div>
 								<div class="panel-text">panel użytkownika</div>
 							</div>
 							<ul class="dropdown">
@@ -110,15 +201,7 @@ parameters: - page_title - specifies the title of the page. The default value is
 									<a href="{% url 'register' %}">Zarejestuj się</a>
 								</li>
 							</ul>
-							{% if user.is_authenticated %}
-							<ul class="dropdown">
-								<li class="profile-l">
-									<a href="{% url 'login' %}">Profil</a>
-								</li>
-								<li class="profile-l">
-									<a href="{% url 'logout' %}">Wyloguj się</a>
-								</li>
-							</ul>
+							
 							{% endif %}
 						</div>
 					</nav>
