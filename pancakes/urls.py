@@ -24,6 +24,8 @@ urlpatterns = [
                   path('recipe/<str:id>', views.recipe_show_view, name="recipe_show"),
                   path('recipes/category/<str:category_name>', views.recipe_category_name_show_all_view,
                        name="recipe_category_name_show_all"),
+                  path('recipes/title/', views.recipe_title_name_show_all_view2,
+                       name="recipe_title_name_show_all"),
                   path('recipes/title/<str:title_name>', views.recipe_title_name_show_all_view,
                        name="recipe_title_name_show_all"),
                   path('recipes/tag/<str:tag_name>', views.recipe_tag_name_show_all_view,

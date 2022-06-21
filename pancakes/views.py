@@ -451,6 +451,10 @@ def recipe_title_name_show_all_view(request, title_name=''):
     }
     return render(request, 'recipe/recipe_show_all.html', context)
 
+def recipe_title_name_show_all_view2(request):
+    title_name = request.POST.get(TITLE)
+    return recipe_title_name_show_all_view(request, title_name)
+
 
 def recipe_show_view(request, id):
     object = recipe_controller.find_one_by_id(id)
