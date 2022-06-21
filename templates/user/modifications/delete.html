@@ -10,7 +10,7 @@
 {% block content %}
 <main class="main">
     <div class="main-login">
-    <form method="post" class="form-delete">
+    <form method="post" class="form-delete" autocomplete="off">
         {% csrf_token %}
         <p class="info">Czy na pewno chcesz usunąć konto?</p>
         <button type="submit" class="btn btn-danger btn-delete">Usuń</button>

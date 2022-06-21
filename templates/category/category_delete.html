@@ -9,7 +9,7 @@
         {{error}}
     {% else  %}
         <p>Czy na pewno chcesz usunąć kategorie?</p>
-            <form action="./{{category.id}}" method="post" >
+            <form action="./{{category.id}}" method="post" autocomplete="off">
                 {% csrf_token %}
                 <button type="submit" name="ACTION" value="{{ACTION}}">Usuń</button>
             </form>

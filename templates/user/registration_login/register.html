@@ -2,7 +2,7 @@
 <main class="main">
 	<div class="main-login">
 		<h1 class="title">Zarejestuj się</h1>
-		<form method="POST" action="" class="form-register">
+		<form method="POST" action="" class="form-register" autocomplete="off">
 			{% csrf_token %} {% for field in form %}
 
 			<div class="form__div-register">
