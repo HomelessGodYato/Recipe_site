@@ -154,13 +154,17 @@ body {
 }
 .sec-dropdown {
 	position: absolute;
-	left: 0;
-	top: 100%;
+	left: 100%;
+	top: 0;
 	display: none;
 	width: 100%;
 	list-style-type: none;
 	text-align: center;
 }
+.sec-dropdown-special{
+	top:-300%;
+}
+
 .second-dropdown:hover {
 	background-color: rgb(170, 24, 23);
 	color: gold;
@@ -1351,8 +1355,6 @@ body {
 		padding: 10px 20px;
 	}
 	.sec-dropdown {
-		left: 100%;
-		top: 0;
 		width: 150px;
 	}
 	.second-dropdown {

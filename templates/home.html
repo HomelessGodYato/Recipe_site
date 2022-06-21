@@ -16,9 +16,9 @@
                 </form>
             </div>
             <div class="buttons">
-                <a class="button" href="#">Danie Główne</a>
-                <a class="button" href="#">Grill</a>
-                <a class="button" href="#">Szybkie i proste</a>
+                <a class="button" href="{% url 'recipe_tag_name_show_all' tag_name='danie główna'  %}">Danie Główne</a>
+                <a class="button" href="{% url 'recipe_tag_name_show_all' tag_name='grill'  %}">Grill</a>
+                <a class="button" href="{% url 'recipe_tag_name_show_all' tag_name='szybkie i proste'  %}">Szybkie i proste</a>
             </div>
         </div>
         <footer class="footer">
