@@ -407,6 +407,51 @@ def recipe_show_all_view(request):
     return render(request, 'recipe/recipe_show_all.html', context)
 
 
+def recipe_category_name_show_all_view(request, category_name=''):
+    category_object = recipe_category_controller.find_one_by_title(category_name)
+    recipe_list = []
+    error = ''
+    if category_object is not None:
+        recipe_list = recipe_controller.find_all_by_category(category_object)
+    else:
+        error = ERROR_THERE_IS_NOT_CATEGORY.format(category_name)
+
+    context = {
+        RECIPES_LIST: recipe_controller.DTO_list(recipe_list),
+        ERROR: error
+    }
+    return render(request, 'recipe/recipe_show_all.html', context)
+
+
+def recipe_tag_name_show_all_view(request, tag_name=''):
+    tag_object = recipe_tag_controller.find_one_by_title(tag_name)
+    recipe_list = []
+    error = ''
+    if tag_object is not None:
+        recipe_list = recipe_controller.find_all_by_tag(tag_object)
+    else:
+        error = ERROR_THERE_IS_NOT_TAG.format(tag_object)
+
+    context = {
+        RECIPES_LIST: recipe_controller.DTO_list(recipe_list),
+        ERROR: error
+    }
+    return render(request, 'recipe/recipe_show_all.html', context)
+
+
+def recipe_title_name_show_all_view(request, title_name=''):
+    error = ''
+    recipe_list = recipe_controller.find_all_by_title(title_name)
+    if len(recipe_list) == 0:
+        error = ERROR_THERE_IS_NOT_TITLE.format(title_name)
+
+    context = {
+        RECIPES_LIST: recipe_controller.DTO_list(recipe_list),
+        ERROR: error
+    }
+    return render(request, 'recipe/recipe_show_all.html', context)
+
+
 def recipe_show_view(request, id):
     object = recipe_controller.find_one_by_id(id)
     context = {
