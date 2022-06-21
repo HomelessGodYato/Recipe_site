@@ -2,8 +2,12 @@
 
 {% block content %}
 
-<h1>recipe</h1>
+<main class="main">
 
-{% include "recipe/recipe_show_template.html" with recipe=recipe %}
+    {% include "recipe/recipe_show_template.html" with recipe=recipe %}
+    
+</main>
+
+
 
 {% endblock content %}

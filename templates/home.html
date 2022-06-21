@@ -1,24 +1,33 @@
 {% extends 'main.html' %}
 
 {% block content %}
-
-<h1>Recipes:</h1>
-{% for recipe in recipes %}
-<p>{{ recipe }}</p>
-{% endfor %}
-
-<!-- User registration and login links-->
-<div class='d-flex justify-content-center links'>
-    <br><br>
-    Already have an account? <a href="{% url 'login' %}" }
-                                class="ml-2">Sign in</a>
-
-</div>
-<div class='d-flex justify-content-center links'>
-    <br><br>
-    Don`t have an account ? <a href="{% url 'register' %}" }
-                               class="ml-2">Sign up</a>
-
-</div>
+    <main class="main">
+        <div class="content">
+            <div class="searchBox">
+                <form method="POST">
+                    <input
+                        type="text"
+                        placeholder="Co chcesz ugotować?"
+                        class="search"
+                    />
+                    <button type="submit" class="icon">
+                    <i class="ti ti-slice"></i>
+                    </input>
+                </form>
+            </div>
+            <div class="buttons">
+                <a class="button" href="#">Danie Główne</a>
+                <a class="button" href="#">Grill</a>
+                <a class="button" href="#">Szybkie i proste</a>
+            </div>
+        </div>
+        <footer class="footer">
+            <a class="link" href="https://pl.pinterest.com"><i class="fa-brands fa-pinterest-p"></i></a>
+            <a class="link" href="https://www.youtube.com"><i class="fa-brands fa-youtube"></i></a>
+            <a class="link" href="https://www.instagram.com"><i class="fa-brands fa-instagram"></i></a>
+            <a class="link" href="https://www.facebook.com"><i class="fa-brands fa-facebook-f"></i></a>
+            <a class="link" href="https://twitter.com/home"><i class="fa-brands fa-twitter"></i></a>
+        </footer>
+    </main>
 
 {% endblock content %}

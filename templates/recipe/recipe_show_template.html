@@ -1,8 +1,68 @@
-<div>
-    <hr>
+<div class="recipe-show">
+	<div class="show-top">
+		<div class="show-top-left">
+			<div class="show-tags">
+				{% for tag in recipe.tags_list %}
+				<div class="show-tag">{{tag.title}}</div>
+				{% endfor %}
+			</div>
+			<h3 class="show-title">{{recipe.title}}</h3>
+            <div class="show-time">
+                {{recipe.cooking_time}} minut
+            </div>
+		</div>
+		<div class="show-top-right">
+            {% for category in recipe.categories_list %}
+            <div class="show-category">{{category.title}}</div>
+        {% endfor %}
+        </div>
+	</div>
+	<div class="show-mid">
+        <div class="show-mid-backgorund">
+            <div class="mid-image">
+                <img src="{{ recipe.image.image.url }}" alt="stage"/>
+            </div>
+            <div class="show-ingredients">
+                <ul class="ingredients-list">
+                    <h3 class="title-show">Składniki:</h3>
+                    {% for stage in recipe.stages_list %}
+                        {% for ingredient in stage.ingredients_extended_list %}
+                            <li class="ingredient-element">
+                                {{ingredient.amount}}
+                                {{ingredient.unit}}
+                                {{ingredient.title}}
+                            </li>
+                        {% endfor %}
+                    {% endfor %}
+                </ul>
+            </div>
+                <div class="show-steps">
+                    {% for stage in recipe.stages_list %}
+                    <div class="show-step">
+                        <div class="stage-title">
+                        Etap {{forloop.counter}}
+                        </div>
+                        <div class="show-time-step">
+                            {{stage.cooking_time}} minut
+                        </div>
+                        <div class="stage-description">
+                        {{stage.description}}
+                    </div>
+                        <div class="stage-image">
+                        <img src="{{ stage.image.image.url }}" alt="stage"/>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            
+        </div>
+    </div>
+        <div class="show-bot">
+			<a href="{% url 'home' %}" class="show-back">Powrót</a>
+		</div>
+	<!-- <hr>
     <h1>Przepis</h1>
     <p>recipe id {{recipe.id}}</p>
-    <p>title: {{recipe.title}}</p>
     <p>cooking_time: {{recipe.cooking_time}}</p>
     <p>image:<img src="{{ recipe.image.image.url }}" height="100px" alt="stage"/></p>
     <h2>Stagees</h2>
@@ -47,5 +107,5 @@
             <p>nazwa: {{tag.title}}</p>
         {% endfor %}
     </div>
-    <hr>
+    <hr> -->
 </div>
