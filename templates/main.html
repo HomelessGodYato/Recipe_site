@@ -34,19 +34,20 @@ parameters: - page_title - specifies the title of the page. The default value is
 		<div class="layer">
 			<header class="header-desktop">
 				<div class="header-up">
+					<a href="{% url 'home' %}">
 					<div class="header__img">
-						<!-- <a href="{% url 'home' %}">xd</a> -->
 					</div>
+				</a>
 				</div>
 				<div class="header-down">
 					<nav class="navigation navigation-not-logged">
 						<div class="link-one link-one-other link-one-not-logged">
 							<div class="panel-one">
-								<div class="panel-icon"><i class="fa-solid fa-0"></i></div>
+								<div class="panel-icon"><i class="fa-solid fa-utensils"></i></div>
 								<div class="panel-text">przepisy</div>
 							</div>
 							<ul class="dropdown">
-								<li><a href="#">Typ dania</a></li>
+								<li><a href="{% url 'recipe_show_all' %}">Wszystkie przepisy</a></li>
 								<li><a href="#">Posiłek</a></li>
 								<li><a href="#">Kuchnie świata</a></li>
 								<li><a href="#">Okazje</a></li>
@@ -73,7 +74,7 @@ parameters: - page_title - specifies the title of the page. The default value is
 
 						<a class="link-one link-one-other2" href="#">
 							<div class="panel-one">
-								<div class="panel-icon"><i class="ti ti-slice"></i></div>
+								<div class="panel-icon"><i class="ti ti-fridge"></i></div>
 								<div class="panel-text">
 									co masz <br />
 									w lodówce?
@@ -83,7 +84,7 @@ parameters: - page_title - specifies the title of the page. The default value is
 						{% endif %}
 						<a class="link-one link-one-not-logged" href="#">
 							<div class="panel-one">
-								<div class="panel-icon"><i class="ti ti-slice"></i></div>
+								<div class="panel-icon"><i class="fa-solid fa-comments"></i></div>
 								<div class="panel-text">forum</div>
 							</div>
 						</a>
@@ -98,8 +99,22 @@ parameters: - page_title - specifies the title of the page. The default value is
 						</a>
 						{% endif %}
 						<div class="link-one link-one-other link-one-not-logged">
+							{% if user.is_authenticated %}
 							<div class="panel-one">
-								<div class="panel-icon"><i class="ti ti-slice"></i></div>
+								<div class="panel-icon"><i class="fa-solid fa-user-check"></i></div>
+								<div class="panel-text">panel użytkownika</div>
+							</div>
+							<ul class="dropdown">
+								<li class="profile-l">
+									<a href="{% url 'login' %}">Profil</a>
+								</li>
+								<li class="profile-l">
+									<a href="{% url 'logout' %}">Wyloguj się</a>
+								</li>
+							</ul>
+							{% else %}
+							<div class="panel-one">
+								<div class="panel-icon"><i class="fa-solid fa-user-lock"></i></div>
 								<div class="panel-text">panel użytkownika</div>
 							</div>
 							<ul class="dropdown">
@@ -110,15 +125,7 @@ parameters: - page_title - specifies the title of the page. The default value is
 									<a href="{% url 'register' %}">Zarejestuj się</a>
 								</li>
 							</ul>
-							{% if user.is_authenticated %}
-							<ul class="dropdown">
-								<li class="profile-l">
-									<a href="{% url 'login' %}">Profil</a>
-								</li>
-								<li class="profile-l">
-									<a href="{% url 'logout' %}">Wyloguj się</a>
-								</li>
-							</ul>
+							
 							{% endif %}
 						</div>
 					</nav>
