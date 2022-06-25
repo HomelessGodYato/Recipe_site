@@ -213,7 +213,7 @@ def tag_delete_view(request, id):
         if action == ACTION_DELETE:
             print("ACTION_DELETE")
             recipe_tag_controller.delete(id)
-            return redirect("home")
+            return redirect("tag_show_all")
 
     object = recipe_tag_controller.find_one_by_id(id)
     if object is None:
@@ -296,7 +296,7 @@ def category_delete_view(request, id):
         if action == ACTION_DELETE:
             print("ACTION_DELETE")
             recipe_category_controller.delete(id)
-            return redirect("home")
+            return redirect("category_show_all")
 
     object = recipe_category_controller.find_one_by_id(id)
     if object is None:
@@ -458,7 +458,7 @@ def recipe_title_name_from_form_show_all_view(request):
 
 
 def recipe_user_id_show_all_view(request, id=0):
-    user_object =User.objects.get(id=id)
+    user_object = User.objects.get(id=id)
     recipe_list = []
     error = ''
     if user_object is not None:
