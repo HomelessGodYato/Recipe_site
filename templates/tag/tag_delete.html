@@ -2,18 +2,20 @@
 {% extends 'main.html' %}
 
 {% block content %}
-
-    <h1>usuwanie tagu</h1>
-
-    {% if error%}
-        {{error}}
-    {% else  %}
-        <p>Czy na pewno chcesz usunąć tag?</p>
-            <form action="./{{tag.id}}" method="post" autocomplete="off">
+    <main class="main">
+        <div class="main-login">
+            {% if error%}
+                <p class="info">{{error}}</p>
+                <p><a href="{% url 'home'  %}" class="btn btn-outline-primary comeback">Wróć do strony głównej</a></p>
+            {% else  %}
+            <form action="./{{tag.id}}" class="form-delete" method="post" autocomplete="off" >
                 {% csrf_token %}
-                <button type="submit" name="ACTION" value="{{ACTION}}">Usuń</button>
+                <p class="info">Czy na pewno chcesz usunąć tag?</p>
+                <button type="submit" name="ACTION" value="{{ACTION}}" class="btn btn-danger btn-delete">Usuń</button>
             </form>
-        {% include "tag/tag_show_template.html" with tag=tag %}
-    {% endif %}
-
+            <br><p class="info">Chcę zatrzymać tag</p>
+            <p><a href="{% url 'tag_show' id=tag.id %}" class="btn btn-outline-primary comeback">Wróć do tagów</a></p>
+            {% endif %}
+        </div>
+    </main>
 {% endblock content %}
