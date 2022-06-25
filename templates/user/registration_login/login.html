@@ -1,17 +1,44 @@
-<h3>LOGIN</h3>
+{% extends 'main.html' %} {% block content %}
+<main class="main">
+	<div class="main-login">
+		<h1 class="title">Zaloguj się</h1>
+		<h3 class="title-second">Przejdź do konta użytkownika</h3>
+		<form method="POST" action="" class="form-login" autocomplete="off">
+			{% csrf_token %}
+			<div class="form__div">
+				<input
+					type="text"
+					name="username"
+					class="form-control login-input"
+					autocomplete="off"
+				/>
+				<label for="" class="form-label">Username</label>
+			</div>
+			<div class="form__div">
+				<input
+					type="password"
+					name="password"
+					class="form-control login-input"
+					autocomplete="off"
+				/>
+				<label for="" class="form-label">Password</label>
+			</div>
+			<input
+				type="submit"
+				value="Zaloguj się"
+				class="form-button form-button-login"
+			/>
+			{% for message in messages%}
+			<p id="messages" class="message">{{message}}</p>
+			{% endfor %}
+			<div class="buttons-login">
+				<div class="btn-login"><a href="#">Odzyskiwanie hasła</a></div>
+				<div class="btn-login">
+					<a href="{% url 'register' %}" class="ml-2">Zarejestuj się</a>
+				</div>
+			</div>
+		</form>
+	</div>
+</main>
 
-<form method="POST" action="">
-    {% csrf_token %}
-    <input type="text" name="username" placeholder="Username..." class="form-control">
-    <br><br>
-    <input type="password" name="password" placeholder="Password..." class="form-control">
-    <br><br>
-    <input type="submit" value="Log In">
-    {% for message in messages%}
-    <p id="messages"> {{message}}</p>
-    {% endfor %}
-    <br><br>
-    Don`t have an account ? <a href="{% url 'register' %}" }
-                               class="ml-2">Sign up</a>
-
-</form>
+{% endblock content %}

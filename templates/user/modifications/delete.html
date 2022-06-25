@@ -4,15 +4,19 @@
 {% block title %}User Account Delete{% endblock title %}
 
 {% block delete-header %}
-<h1>Delete Account</h1>
+
 {% endblock delete-header %}
 
 {% block content %}
-<form method="post">
-    {% csrf_token %}
-    <p>Are you sure you want to delete your account?</p>
-    <button type="submit" class="btn btn-danger">DELETE</button>
-</form>
-<br><p>No keep my account</p>
-<p><a href="{% url 'user' %}" class="btn btn-outline-primary">Homepage</a></p>
+<main class="main">
+    <div class="main-login">
+    <form method="post" class="form-delete" autocomplete="off">
+        {% csrf_token %}
+        <p class="info">Czy na pewno chcesz usunąć konto?</p>
+        <button type="submit" class="btn btn-danger btn-delete">Usuń</button>
+    </form>
+    <br><p class="info">Chcę zatrzymać konto</p>
+    <p><a href="{% url 'user' %}" class="btn btn-outline-primary comeback">Profil</a></p>
+    </div>
+</main>
 {% endblock content %}

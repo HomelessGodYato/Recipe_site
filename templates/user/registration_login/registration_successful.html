@@ -1,3 +1,8 @@
-Thank you, now you can log in.
-<br><br>
-<a href="{% url 'login' %}">Log in</a>
+{% extends 'main.html' %} {% block content %}
+<main class="main">
+<div class="main-login">
+<p class="info">Thank you, now you can log in.</p>
+<a href="{% url 'login' %}" class="comeback">Log in</a>
+</div>
+</main>
+{% endblock content %}

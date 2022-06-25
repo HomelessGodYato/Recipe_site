@@ -1,7 +1,26 @@
 {%  extends 'home.html' %}
 {% block content %}
-
-<style>
+<main class="main">
+    <div class="main-login">
+        <a class="btn btn-warning title-modifi" href="{% url 'user' %}"> &#8592; Wróć do profilu</a>
+        <h3 class="title-second">Ustawienia konta</h3>
+            <div class="card card-body">
+                <img class="profile-pic avatar2" src="{{request.user.userprofile.profile_pic.url}}">
+            </div>
+    
+                <form method="POST" action="" enctype="multipart/form-data" class="form-register2" autocomplete="off">
+                    {% csrf_token %}
+                    <div class="forms">
+                        <div class="form">
+                    {{profile_form.as_p}}</div>
+                    <div class="form"> {{user_form.as_p}}</div>
+                </div>
+    
+                    <input class="btn btn-primary modifi-btn" type="submit" name="Update Information">
+                </form>
+    </div>
+</main>
+<!-- <style>
 	.profile-pic{
 		max-width: 200px;
 		max-height:200px;
@@ -35,7 +54,7 @@
             </form>
         </div>
     </div>
-</div>
+</div> -->
 
 
 {% endblock %}

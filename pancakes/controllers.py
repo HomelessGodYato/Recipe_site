@@ -738,6 +738,38 @@ class RecipeController:
         if SHOW_LOGGING: print(self.CONTROLLER_NAME, "all")
         return Recipe.objects.all()
 
+    def find_all_by_category(self, category_object):
+        if SHOW_LOGGING: print(self.CONTROLLER_NAME, "find_all_by_category", category_object)
+        try:
+            objects_set = []
+            associative_objects_set = RecipeRecipeCategory.objects.filter(category=category_object)
+            for associative_object in associative_objects_set:
+                recipe_object = self.find_one_by_id(id=associative_object.recipe.id)
+                objects_set.append(recipe_object)
+            return objects_set
+        except RecipeRecipeTag.DoesNotExist:
+            return None
+
+    def find_all_by_tag(self, tag_object):
+        if SHOW_LOGGING: print(self.CONTROLLER_NAME, "find_all_by_tag", tag_object)
+        try:
+            objects_set = []
+            associative_objects_set = RecipeRecipeTag.objects.filter(tag=tag_object)
+            for associative_object in associative_objects_set:
+                recipe_object = self.find_one_by_id(id=associative_object.recipe.id)
+                objects_set.append(recipe_object)
+            return objects_set
+        except RecipeRecipeTag.DoesNotExist:
+            return None
+
+    def find_all_by_title(self, title):
+        if SHOW_LOGGING: print(self.CONTROLLER_NAME, "find_all_by_title", title)
+        try:
+            objects_set = Recipe.objects.filter(title__contains=title)
+            return objects_set
+        except Recipe.DoesNotExist:
+            return None
+
     def find_one_by_id(self, id):
         if SHOW_LOGGING: print(self.CONTROLLER_NAME, "find_one_by_id", id)
         try:

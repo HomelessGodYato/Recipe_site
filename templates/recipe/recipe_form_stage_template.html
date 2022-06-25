@@ -17,13 +17,10 @@
     .autocomplete-title input {
       border: 1px solid transparent;
       background-color: #f1f1f1;
-      padding: 10px;
-      font-size: 16px;
     }
 
     .autocomplete-title input[type=text] {
       background-color: #f1f1f1;
-      width: 100%;
     }
 
     .autocomplete-title input[type=submit] {
@@ -45,7 +42,6 @@
     }
 
     .autocomplete-title .autocomplete-items-title div {
-      padding: 10px;
       cursor: pointer;
       background-color: #fff;
       border-bottom: 1px solid #d4d4d4;
@@ -70,13 +66,10 @@
     .autocomplete-unit input {
       border: 1px solid transparent;
       background-color: #f1f1f1;
-      padding: 10px;
-      font-size: 16px;
     }
 
     .autocomplete-unit input[type=text] {
       background-color: #f1f1f1;
-      width: 100%;
     }
 
     .autocomplete-unit input[type=submit] {
@@ -113,13 +106,105 @@
       color: #ffffff;
     }
 </style>
-<div>
-    <hr/>
-    error:{{error}}
-    <hr/>
-    <form action="./{{id}}" method="post" enctype="multipart/form-data" autocomplete="off" >
+
+    <form action="./{{id}}" method="post" enctype="multipart/form-data" autocomplete="off"  class="form-recipe" autocomplete="off">
         {% csrf_token %}
-        cooking_time:<input type="number" name="cooking_time" value="{{stage.cooking_time}}">
+        <div class="step2-row1">
+          <div class="step2-row1-col1">
+            <div class="col1-top">
+            <h3 class="title-second recipe-title-second">Czas trwania:</h3>
+            <input class="recipe-input" placeholder="[00:00]" type="number" name="cooking_time" value="{{stage.cooking_time}}">
+          </div>
+          <div class="col1-bot">
+              <div class="col1-top col1-top-inner">
+              <h3 class="title-second recipe-title-second">Skladniki:</h3>
+              <button id="add-ingredient-btn" type="button" class="recipe-btn recipe-btn-color recipe-btn-size2">Dodaj składnik</button>
+            </div>
+            <div class="col1-bot col1-bot-inner">
+              {% for ingredient in ingredients_extended_list %}
+                  <div id="ingredient-form-{{forloop.counter0}}" class="my_hidden ingredient-box">
+                      <div class="autocomplete-title">
+                        <div class="pool">
+                        <h3 class="ingredient-name">Tytuł:</h3>
+                          <input class="ingredient-input" type="text"
+                                       id="ingredient_title_{{forloop.counter0}}"
+                                       name="ingredient_title_{{forloop.counter0}}"
+                                       value="{{ingredient.title}}">
+                        </div>
+                      </div>
+                      <div class="pool">
+                        <h3 class="ingredient-name">Ilość:</h3>
+                        <input class="ingredient-input" type="number" name="ingredient_amount_{{forloop.counter0}}" value={{ingredient.amount}}>
+                      </div>
+                      <div class="autocomplete-unit">
+                        <div class="pool">
+                       <h3 class="ingredient-name">Jednostka:</h3>
+                       <input class="ingredient-input" type="text"
+                                            id="ingredient_unit_{{forloop.counter0}}"
+                                            name="ingredient_unit_{{forloop.counter0}}"
+                                            value="{{ingredient.unit}}">
+                       </div>
+                     </div>
+
+                     <div class="pool">
+                      <h3 class="ingredient-name">Wymagany:</h3><input type="checkbox" name="ingredient_is_required_{{forloop.counter0}}">
+                      <div class="my_hidden dont_touch"> id:<input type="number" name="ingredient_id_{{forloop.counter0}}" value={{ingredient.id}}></div>
+                      </div>
+                  </div>
+              {% endfor %}
+              <!-- uzupełnij to wyżej  -->
+              {% for index in number_of_ingredients_range %}
+                  <div id="ingredient-form-{{index}}" class="my_hidden ingredient-box">
+                      <div class="autocomplete-title">
+                        <div class="pool">
+                        <h3 class="ingredient-name">Tytuł:</h3>
+                          <input class="ingredient-input" type="text"
+                                       id="ingredient_title_{{index}}"
+                                       name="ingredient_title_{{index}}"
+                                       value="">
+                        </div>
+                      </div>
+                      <div class="pool">
+                      <h3 class="ingredient-name">Ilość:</h3>
+                      <input class="ingredient-input" type="number" name="ingredient_amount_{{index}}" value="">
+                    </div>
+                      <div class="autocomplete-unit">
+                       <div class="pool">
+                      <h3 class="ingredient-name">Jednostka:</h3>
+                      <input class="ingredient-input" type="text"
+                                           id="ingredient_unit_{{index}}"
+                                           name="ingredient_unit_{{index}}"
+                                           value="">
+                      </div>
+                    </div>
+                    <div class="pool">
+                      <h3 class="ingredient-name">Wymagany:</h3><input type="checkbox" name="ingredient_is_required_{{index}}">
+                      <div class="my_hidden dont_touch"> id:<input type="number" name="ingredient_id_{{index}}" value="0"></div>
+                      </div>
+                  </div>
+              {% endfor %}
+  
+             
+          </div>
+          <div class="my_hidden dont_touch">
+              stage_id <input type="number" name="stage_id" value="{{stage_id}}">
+              order <input type="number" name="order" value="{{order}}">
+              recipe_id <input type="text" name="recipe_id" value="{{recipe_id}}">
+              ACTION: <input type="text" name="ACTION" value="{{ACTION}}">
+          </div>
+          </div>
+        </div>
+          <div class="step2-row1-col2">
+            <h3 class="title-second recipe-title-second">Opis:</h3>
+            <textarea class="recipe-discribe" name="description" value="{{stage.description}}" ></textarea>
+
+            <h3 class="title-second recipe-title-second">Zdjęcie:</h3>
+                <label class="picture">
+                <input class="input-file" type="file" name="image" value="{{stage.image}}" accept="image/*">
+                <i class="fa-solid fa-image"></i>
+                </label>
+          </div>
+          <!-- cooking_time:<input type="number" name="cooking_time" value="{{stage.cooking_time}}">
         description:<input type="text" name="description" value="{{stage.description}}">
         image:<input type="file" name="image" value="{{stage.image}}" accept="image/*">
 
@@ -174,11 +259,14 @@
             recipe_id <input type="text" name="recipe_id" value="{{recipe_id}}">
             ACTION: <input type="text" name="ACTION" value="{{ACTION}}">
         </div>
-        <hr>
-        <button type="submit" name="{{RECIPE_FORM_STATE}}" value="{{RECIPE_FORM_STATE_STAGE}}">Następny etap</button>
-        <button type="submit" name="{{RECIPE_FORM_STATE}}" value="{{RECIPE_FORM_STATE_LAST_STAGE}}">Zapisz</button>
+        <hr>-->
+      </div> 
+      <div class="step2-row2">
+        <button type="submit" name="{{RECIPE_FORM_STATE}}" value="{{RECIPE_FORM_STATE_STAGE}}" class="recipe-btn recipe-btn-color">Dodaj etap</button>
+        <button type="submit" name="{{RECIPE_FORM_STATE}}" value="{{RECIPE_FORM_STATE_LAST_STAGE}}" class="recipe-btn recipe-btn-size">Dalej</button>
+      </div>
     </form>
-</div>
+    {% if error %}<div class="error-info"> Błędne dane</div>{% endif %}
 <script>
 var number_of_fields_max=5
 function autocompleteForTitle(inp, arr) {

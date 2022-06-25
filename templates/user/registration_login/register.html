@@ -1,28 +1,26 @@
-{% extends 'home.html' %}
+{% extends 'main.html' %} {% block content %}
+<main class="main">
+	<div class="main-login">
+		<h1 class="title">Zarejestuj się</h1>
+		<form method="POST" action="" class="form-register" autocomplete="off">
+			{% csrf_token %} {% for field in form %}
 
-<h3>Register</h3>
-{% block content %}
-<form method="POST" action="">
-    {% csrf_token %}
-    {% for field in form %}
-    <p>
-        {{ field.label_tag }}<br>
-        {{ field }}
-        {% if field.help_text %}
-        <smal style="display:none">{{ field.help_text }}</smal>
-        {% endif %}
-        {% for error in field.errors %}
-    <p style="color: red"> {{error}}</p>
-    {% endfor %}
-    </p>
-    {% endfor %}
-    <input type="submit" value="Sing Up">
-    <div class='d-flex justify-content-center links'>
-        <br><br>
-        Already have an account? <a href="{% url 'login' %}" }
-                                    class="ml-2">Log in</a>
-
-    </div>
-
-</form>
+			<div class="form__div-register">
+				<span class="form-label">{{ field.label_tag }} </span>
+				<span class="register-input">{{ field }}</span>
+			</div>
+			{% if field.help_text %}
+            <p>
+			<smal style="display: none">{{ field.help_text }}</smal>
+			{% endif %} {% for error in field.errors %}
+			<p style="color: red">{{error}}</p>
+			{% endfor %}</p> {% endfor %} 
+			<input
+				type="submit"
+				value="Zarejestuj się"
+				class="form-button form-button-register"
+			/>
+		</form>
+	</div>
+</main>
 {% endblock %}
