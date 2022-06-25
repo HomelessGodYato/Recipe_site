@@ -27,6 +27,10 @@ urlpatterns = [
                        name = "password_reset_confirm"),
                   path('reset_password_complete/',auth_views.PasswordResetCompleteView.as_view(template_name ='user/reset_password/reset_password_complete.html' ),
                        name="password_reset_complete"),
+                  path('edit_password/',auth_views.PasswordChangeView.as_view(template_name ='user/modifications/change_password.html',success_url = reverse_lazy('password_change_done') ),
+                       name="change_password"),
+                 path('edit_password/done/',auth_views.PasswordChangeDoneView.as_view(template_name = 'user/modifications/change_password_done.html'),
+                      name = 'password_change_done'),
                   # -------------------------------------------RECIPE----------------------------------------------
                   path('recipe/', views.recipe_show_all_view, name="recipe_show_all"),
                   path('recipe/<str:id>', views.recipe_show_view, name="recipe_show"),
