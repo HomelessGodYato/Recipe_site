@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.conf.urls.static import static
+from django.contrib.auth import views as auth_views
 from django.urls import path
 
 from . import views
@@ -7,7 +8,7 @@ from .views import *
 
 urlpatterns = [
                   path('', views.home_page, name="home"),
-
+                  # -------------------------------------------USER------------------------------------------------
                   path('register/', views.register_page, name="register"),
                   path('login/', views.login_page, name="login"),
                   path('logout/', views.logout_user, name="logout"),
@@ -18,7 +19,14 @@ urlpatterns = [
                   path('activate/<uidb64>[0-9A-Za-z_\-]+/<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20}/$',
                        views.activation, name='activate'),
                   path('user_edit/', views.user_edit_view, name="edit_user"),
-
+                  path('reset_password/',auth_views.PasswordResetView.as_view(template_name = 'user/reset_password/reset_password.html'),
+                       name="reset_password"),
+                  path('reset_password_sent/',auth_views.PasswordResetDoneView.as_view(template_name = 'user/reset_password/reset_password_sent.html'),
+                       name = "password_reset_done"),
+                  path('reset/<uidb64>/<token>',auth_views.PasswordResetConfirmView.as_view(template_name = 'user/reset_password/reset_password_new_password.html'),
+                       name = "password_reset_confirm"),
+                  path('reset_password_complete/',auth_views.PasswordResetCompleteView.as_view(template_name ='user/reset_password/reset_password_complete.html' ),
+                       name="password_reset_complete"),
                   # -------------------------------------------RECIPE----------------------------------------------
                   path('recipe/', views.recipe_show_all_view, name="recipe_show_all"),
                   path('recipe/<str:id>', views.recipe_show_view, name="recipe_show"),

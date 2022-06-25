@@ -9,11 +9,11 @@ from django.db.models.signals import post_save
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    bio = models.CharField(max_length=200, default="")
-    facebook_link = models.URLField(default="")
-    instagram_link = models.URLField(default="")
-    twitter_link = models.URLField(default="")
-    youtube_link = models.URLField(default="")
+    bio = models.CharField(max_length=200, default="", null=True, blank=True)
+    facebook_link = models.URLField(default="", null=True, blank=True)
+    instagram_link = models.URLField(default="", null=True, blank=True)
+    twitter_link = models.URLField(default="", null=True, blank=True)
+    youtube_link = models.URLField(default="", null=True, blank=True)
     profile_pic = models.ImageField(null=True, blank=True, default='default/default.PNG', upload_to='profile_pics')
 
     def save(self, *args, **kwargs):
