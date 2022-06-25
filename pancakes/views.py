@@ -74,7 +74,7 @@ def register_page(request):
                 form = CreateUserForm(request.POST)
 
             return render(request, 'user/registration_login/register.html', {'form': form})
-        messages.success(request, 'Account created successfully')
+        messages.success(request, 'Account created successfuly')
     return render(request, 'user/registration_login/register.html', {'form':form})
 
 
@@ -216,7 +216,7 @@ def tag_delete_view(request, id):
         if action == ACTION_DELETE:
             print("ACTION_DELETE")
             recipe_tag_controller.delete(id)
-            return redirect("home")
+            return redirect("tag_show_all")
 
     object = recipe_tag_controller.find_one_by_id(id)
     if object is None:
@@ -299,7 +299,7 @@ def category_delete_view(request, id):
         if action == ACTION_DELETE:
             print("ACTION_DELETE")
             recipe_category_controller.delete(id)
-            return redirect("home")
+            return redirect("category_show_all")
 
     object = recipe_category_controller.find_one_by_id(id)
     if object is None:
@@ -454,10 +454,26 @@ def recipe_title_name_show_all_view(request, title_name=''):
     }
     return render(request, 'recipe/recipe_show_all.html', context)
 
-def recipe_title_name_show_all_view2(request):
+
+def recipe_title_name_from_form_show_all_view(request):
     title_name = request.POST.get(TITLE)
     return recipe_title_name_show_all_view(request, title_name)
 
+
+def recipe_user_id_show_all_view(request, id=0):
+    user_object = User.objects.get(id=id)
+    recipe_list = []
+    error = ''
+    if user_object is not None:
+        recipe_list = recipe_controller.find_all_by_user(user_object)
+    else:
+        error = ERROR_THERE_IS_NOT_AUTHOR.format(id)
+
+    context = {
+        RECIPES_LIST: recipe_controller.DTO_list(recipe_list),
+        ERROR: error
+    }
+    return render(request, 'recipe/recipe_show_all.html', context)
 
 def recipe_show_view(request, id):
     object = recipe_controller.find_one_by_id(id)
