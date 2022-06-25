@@ -54,6 +54,7 @@ def register_page(request):
                 user = form.save(commit=False)
                 user.is_active = False
                 user.save()
+                messages.success(request, 'Account created succesfully')
 
                 current_site = get_current_site(request)
                 mail_subject = 'Activate your account.'
@@ -70,9 +71,11 @@ def register_page(request):
                 email.send()
                 return render(request, 'user/registration_login/confirm.html')
             else:
-                form = CreateUserForm()
-    context = {"form": form}
-    return render(request, 'user/registration_login/register.html', context)
+                form = CreateUserForm(request.POST)
+
+            return render(request, 'user/registration_login/register.html', {'form': form})
+        messages.success(request, 'Account created successfully')
+    return render(request, 'user/registration_login/register.html', {'form':form})
 
 
 def activation(request, uidb64, token):

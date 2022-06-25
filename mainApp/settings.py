@@ -153,6 +153,18 @@ EMAIL_HOST_USER = 'pieceofcake1337@gmail.com'
 EMAIL_HOST_PASSWORD = 'uxsuoztxojnbdoct'
 EMAIL_PORT = 587
 
+try:
+    from django.contrib.messages import constants as messages
+    MESSAGE_TAGS = {
+        messages.DEBUG: 'alert-info',
+        messages.INFO: 'alert-info',
+        messages.SUCCESS: 'alert-success',
+        messages.WARNING: 'alert-warning',
+        messages.ERROR: 'alert-danger',
+    }
+except Exception as e:
+    pass
+
 import django_heroku
 
 django_heroku.settings(locals())

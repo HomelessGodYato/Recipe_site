@@ -1,20 +1,18 @@
-{% extends 'main.html' %} {% block content %}
+{% extends 'main.html' %}
+{% block content %}
 <main class="main">
 	<div class="main-login">
 		<h1 class="title">Zarejestuj się</h1>
+		{{ form.non_field_errors }}
 		<form method="POST" action="" class="form-register" autocomplete="off">
+
 			{% csrf_token %} {% for field in form %}
 
 			<div class="form__div-register">
 				<span class="form-label">{{ field.label_tag }} </span>
 				<span class="register-input">{{ field }}</span>
 			</div>
-			{% if field.help_text %}
-            <p>
-			<smal style="display: none">{{ field.help_text }}</smal>
-			{% endif %} {% for error in field.errors %}
-			<p style="color: red">{{error}}</p>
-			{% endfor %}</p> {% endfor %} 
+			{% endfor %}
 			<input
 				type="submit"
 				value="Zarejestuj się"
