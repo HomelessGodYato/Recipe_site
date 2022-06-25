@@ -1,8 +1,22 @@
-<div>
-    {{error}}
-    <form action="./{{tag.id}}" method="post" autocomplete="off" enctype="multipart/form-data">
-        {% csrf_token %}
-        tytył:<input type="text" name="title" value="{{tag.title}}">
-        <button type="submit" name="ACTION" value="{{ACTION}}">Zapisz</button>
-    </form>
-</div>
+<main class="main">
+	<div class="main-login">
+		<h1 class="title">TAG</h1>
+        <form action="./{{tag.id}}" method="POST" class="form-login" enctype="multipart/form-data" autocomplete="off">
+			{% csrf_token %}
+            {% if error %}
+			<p id="messages" class="message">{{error}}</p>
+			{% endif %}
+			<div class="form__div">
+				<input
+					type="text"
+					name="title"
+					class="form-control login-input"
+                    value="{{tag.title}}"
+					autocomplete="off"
+				/>
+				<label for="" class="form-label">Tytuł</label>
+			</div>
+            <button type="submit" name="ACTION" value="{{ACTION}}" class="form-button form-button-login" >ZAPISZ</button>
+		</form>
+	</div>
+</main>

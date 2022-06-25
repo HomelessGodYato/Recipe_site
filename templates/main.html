@@ -181,6 +181,16 @@ parameters: - page_title - specifies the title of the page. The default value is
 								<div class="panel-text">panel użytkownika</div>
 							</div>
 							<ul class="dropdown">
+								{% if user.is_superuser %}
+									<li class="second-dropdown">Administrator
+										<ul class="sec-dropdown sec-dropdown-special2">
+											<li><a href="{% url 'category_create'  %}">Dodanie kategorii</a></li>
+											<li><a href="{% url 'category_show_all'  %}">Kategorie</a></li>
+											<li><a href="{% url 'tag_create'   %}">Dodanie tagu</a></li>
+											<li><a href="{% url 'tag_show_all'   %}">Tagi</a></li>
+										</ul>
+									</li>
+								{% endif %}
 								<li class="profile-l">
 									<a href="{% url 'login' %}">Profil</a>
 								</li>

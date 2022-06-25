@@ -162,9 +162,11 @@ body {
 	text-align: center;
 }
 .sec-dropdown-special{
-	top:-300%;
+	top:-500%;
 }
-
+.sec-dropdown-special2{
+	top:-120%;
+}
 .second-dropdown:hover {
 	background-color: rgb(170, 24, 23);
 	color: gold;
@@ -1227,6 +1229,7 @@ body {
 	background-color: rgb(203, 140, 118);
 	font-size: 30px;
 	text-decoration: none;
+	margin-left:20px;
 }
 .show-all-cards {
 	display: flex;
@@ -1275,6 +1278,26 @@ body {
 .show-card:hover {
 	transform: scale(1.1);
 }
+.show-card-one-container {
+	display: flex;
+	align-items: center;
+    justify-content: center;
+	width: 350px;
+	max-height: 120px;
+	margin-bottom: 30px;
+	background-color: #ccc;
+	border: 2px solid #666;
+	border-radius: 8px;
+	overflow: hidden;
+	transition: transform 0.5s;
+}
+.show-card-one-container:hover {
+	transform: scale(1.1);
+}
+.show-card-one {
+    height:100%
+	width:100%
+}
 .card-link {
 	display: flex;
 	flex-direction: column;
@@ -1322,6 +1345,7 @@ body {
 	text-align: center;
 	text-transform: uppercase;
 }
+
 @media (min-width: 576px) {
 	.layer {
 		flex-direction: row;

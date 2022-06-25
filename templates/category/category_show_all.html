@@ -1,16 +1,23 @@
 {% extends 'main.html' %}
-
 {% block content %}
-
-<h1>categories</h1>
-
-<div>
-    {% for category in categories_list %}
-
-    {% include "category/category_show_template.html" with category=category%}
-
-    {% endfor %}
-</div>
-
-
+<main class="main">
+	<div class="show-all-cards">
+        <div class="card-title">
+            <h1 class="title-card">Kategirie:</h1>
+		</div>
+		<div class="show-cards">
+            {% for category in categories_list %}
+                <div class="show-card-one-container">
+                    <div class="show-card-one" >
+                        <a href="{% url 'category_show' id=category.id %}" class="card-link">
+                            <div class="card-body">
+                                <h3 class="card-body-title">{{category.title}}</h3>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+	</div>
+</main>
 {% endblock content %}

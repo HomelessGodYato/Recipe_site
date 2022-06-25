@@ -58,7 +58,11 @@
         </div>
     </div>
         <div class="show-bot">
-			<a href="{% url 'home' %}" class="show-back">Powrót</a>
+            {% if user.is_authenticated and user.id == recipe.author.id %}
+                <a href="{% url 'recipe_update' id=recipe.id %}" class="show-back">Edytuj</a>
+                <a href="{% url 'recipe_delete' id=recipe.id %}" class="show-back">Usuń</a>
+            {% endif %}
+            <a href="{% url 'home' %}" class="show-back">Powrót</a>
 		</div>
 	<!-- <hr>
     <h1>Przepis</h1>

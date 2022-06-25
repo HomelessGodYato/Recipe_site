@@ -10,6 +10,7 @@ from .models import UserProfile
 
 
 class CreateUserForm(UserCreationForm):
+
     username = forms.CharField(label='Username', min_length=5, max_length=150)
     email = forms.EmailField(label='Email')
     first_name = forms.CharField(label='First name', max_length=250)
