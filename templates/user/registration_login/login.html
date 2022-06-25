@@ -32,7 +32,7 @@
 			<p id="messages" class="message">{{message}}</p>
 			{% endfor %}
 			<div class="buttons-login">
-				<div class="btn-login"><a href="#">Odzyskiwanie hasła</a></div>
+				<div class="btn-login"><a href="{% url 'reset_password' %}">Odzyskiwanie hasła</a></div>
 				<div class="btn-login">
 					<a href="{% url 'register' %}" class="ml-2">Zarejestuj się</a>
 				</div>
