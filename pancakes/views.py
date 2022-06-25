@@ -74,7 +74,7 @@ def register_page(request):
                 form = CreateUserForm(request.POST)
 
             return render(request, 'user/registration_login/register.html', {'form': form})
-        messages.success(request, 'Account created successfully')
+        messages.success(request, 'Account created successfuly')
     return render(request, 'user/registration_login/register.html', {'form':form})
 
 
