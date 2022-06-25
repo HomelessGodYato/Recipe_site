@@ -763,12 +763,21 @@ class RecipeController:
             return None
 
     def find_all_by_title(self, title):
-        if SHOW_LOGGING: print(self.CONTROLLER_NAME, "find_all_by_title", title)
+        if SHOW_LOGGING: print(self.CONTROLLER_NAME, "find_all_by_title", title.lower())
         try:
-            objects_set = Recipe.objects.filter(title__contains=title)
+            objects_set = Recipe.objects.filter(title__icontains=title.lower())
             return objects_set
         except Recipe.DoesNotExist:
             return None
+
+    def find_all_by_user(self, user):
+        if SHOW_LOGGING: print(self.CONTROLLER_NAME, "find_all_by_user", user)
+        try:
+            objects_set = Recipe.objects.filter(author=user)
+            return objects_set
+        except Recipe.DoesNotExist:
+            return None
+
 
     def find_one_by_id(self, id):
         if SHOW_LOGGING: print(self.CONTROLLER_NAME, "find_one_by_id", id)

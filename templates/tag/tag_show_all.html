@@ -1,16 +1,23 @@
 {% extends 'main.html' %}
-
 {% block content %}
-
-<h1>tagi</h1>
-
-<div>
-    {% for tag in tags_list %}
-
-    {% include "tag/tag_show_template.html" with tag=tag%}
-
-    {% endfor %}
-</div>
-
-
+<main class="main">
+	<div class="show-all-cards">
+        <div class="card-title">
+            <h1 class="title-card">Tagi:</h1>
+		</div>
+		<div class="show-cards">
+            {% for tag in tags_list %}
+                <div class="show-card-one-container">
+                    <div class="show-card-one" >
+                        <a href="{% url 'tag_show' id=tag.id %}" class="card-link">
+                            <div class="card-body">
+                                <h3 class="card-body-title">{{tag.title}}</h3>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+	</div>
+</main>
 {% endblock content %}

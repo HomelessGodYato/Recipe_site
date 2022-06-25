@@ -1,9 +1,18 @@
 {% extends 'main.html' %}
-
 {% block content %}
-
-<h1>tag</h1>
-
-{% include "tag/tag_show_template.html" with tag=tag %}
-
+<main class="main">
+	<div class="second-row">
+		<div class="second-column">
+			<div class="second-column-top">
+				<h3 class="title-profile-second">tag</h3>
+				<p>Nazwa: {{tag.title}}</p>
+			</div>
+			<div class="second-column-bot">
+				<h3 class="title-profile-second">Edycja</h3>
+				<a href="{% url 'tag_update' id=tag.id %}" class="profile-change-link">Zmień dane</a>
+				<a href="{% url 'tag_delete' id=tag.id %}" class="profile-change-link">Usuń</a>
+			</div>
+		</div>
+	</div>
+</main>
 {% endblock content %}

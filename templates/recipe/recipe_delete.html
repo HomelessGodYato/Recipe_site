@@ -2,18 +2,21 @@
 {% extends 'main.html' %}
 
 {% block content %}
-
-    <h1>usuwanie przepisu</h1>
-
-    {% if error%}
-        {{error}}
-    {% else  %}
-        <p>Czy na pewno chcesz usunąć przepis?</p>
-            <form action="./{{recipe.id}}" method="post" autocomplete="off" >
+    <main class="main">
+        <div class="main-login">
+            {% if error%}
+                <p class="info">{{error}}</p>
+                <p><a href="{% url 'home'  %}" class="btn btn-outline-primary comeback">Wróć do strony głównej</a></p>
+            {% else  %}
+            <form action="./{{recipe.id}}" class="form-delete" method="post" autocomplete="off" >
                 {% csrf_token %}
-                <button type="submit" name="ACTION" value="{{ACTION}}">Usuń</button>
+                <p class="info">Czy na pewno chcesz usunąć przepis?</p>
+                <button type="submit" name="ACTION" value="{{ACTION}}" class="btn btn-danger btn-delete">Usuń</button>
             </form>
-        {% include "recipe/recipe_show_template.html" with recipe=recipe %}
-    {% endif %}
+            <br><p class="info">Chcę zatrzymać Przepis</p>
+            <p><a href="{% url 'recipe_show' id=recipe.id %}" class="btn btn-outline-primary comeback">Wróć do przepisu</a></p>
+            {% endif %}
+        </div>
+    </main>
 
 {% endblock content %}
