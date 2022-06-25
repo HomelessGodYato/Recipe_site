@@ -45,6 +45,7 @@ ERROR_INVALID_ID = "Nie ma {} o id {}"
 
 ERROR_THERE_IS_NOT_CATEGORY = "Nie ma przepisów z kategorią o nazwie: '{}'"
 ERROR_THERE_IS_NOT_TAG = "Nie ma przepisów z tagiem o nazwie: '{}'"
+ERROR_THERE_IS_NOT_AUTHOR = "Nie ma przepisów od użytkownika o id: '{}'"
 ERROR_THERE_IS_NOT_TITLE = "Nie ma przepisów z pasującym słowem: '{}'"
 
 NUMBER_OF_CATEGORIES = "number_of_categories"

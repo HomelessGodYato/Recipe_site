@@ -1227,6 +1227,7 @@ body {
 	background-color: rgb(203, 140, 118);
 	font-size: 30px;
 	text-decoration: none;
+	margin-left:20px;
 }
 .show-all-cards {
 	display: flex;
