@@ -475,6 +475,7 @@ def recipe_user_id_show_all_view(request, id=0):
     }
     return render(request, 'recipe/recipe_show_all.html', context)
 
+
 def recipe_show_view(request, id):
     object = recipe_controller.find_one_by_id(id)
     context = {
@@ -968,6 +969,12 @@ def recipe_delete_view(request, id):
     if object is None:
         context = {
             ERROR: ERROR_INVALID_ID.format("przepisu", id),
+        }
+        return render(request, 'recipe/recipe_delete.html', context)
+
+    if request.user != object.author:
+        context = {
+            ERROR: ERROR_AUTHOR.format(id),
         }
         return render(request, 'recipe/recipe_delete.html', context)
 

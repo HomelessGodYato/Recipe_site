@@ -42,6 +42,7 @@ ERROR_TOO_SHORT = "{} musi mieć przynajmniej {} znaki"
 ERROR_TOO_LONG = "{} może mieć maksymalnie {} znaków"
 ERROR_IS_LESS_THAN_ZERO = "{} musi być dodatnie"
 ERROR_INVALID_ID = "Nie ma {} o id {}"
+ERROR_AUTHOR = "Nie jesteś autorem przepisu o id {}"
 
 ERROR_THERE_IS_NOT_CATEGORY = "Nie ma przepisów z kategorią o nazwie: '{}'"
 ERROR_THERE_IS_NOT_TAG = "Nie ma przepisów z tagiem o nazwie: '{}'"
