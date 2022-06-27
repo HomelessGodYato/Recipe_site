@@ -3,7 +3,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 
-from .models import UserProfile
+from .models import UserProfile, Article, ArticleImage, ArticleComment
 
 
 # ===========================================================================
@@ -98,3 +98,46 @@ class UserForm(forms.ModelForm):
 class CustomCategory(forms.ModelMultipleChoiceField):
     def label_from_instance(self, category):
         return "%s" % category.title
+
+# ============================================================================
+
+class ArticleSearchForm(forms.Form):
+    phrase = forms.CharField(label="", min_length=2, max_length=40)
+
+    class Meta:
+        fields = ['phrase']
+
+
+class ArticleForm(forms.ModelForm):
+    title = forms.CharField(label="", min_length=3, max_length=254,
+                            widget=forms.Textarea(attrs={'class': 'article_input_title',
+                                                         'placeholder': 'Tytuł...',
+                                                         'style': 'resize:none;'}))
+    description = forms.CharField(label="", min_length=10, max_length=8191,
+                                  widget=forms.Textarea(attrs={'class': 'article_input_descrip', 'style': 'resize:none;'}))
+
+    class Meta:
+        model = Article
+        fields = ['title', 'description']
+
+
+class ArticleImageForm(forms.ModelForm):
+    image = forms.ImageField(
+        label="",
+        widget=forms.ClearableFileInput(
+            attrs={'multiple': True, 'id': 'image_field', 'accept': 'image/png, image/jpeg', 'max_length': 6}),
+        required=False,
+    )
+
+    class Meta:
+        model = ArticleImage
+        fields = ('image',)
+
+
+class ArticleCommentForm(forms.ModelForm):
+    description = forms.CharField(label="", min_length=2, max_length=8191,
+                                  widget=forms.Textarea(attrs={'class': 'comment_input_descrip', 'style': 'resize:none;'}))
+
+    class Meta:
+        model = ArticleComment
+        fields = ['description']

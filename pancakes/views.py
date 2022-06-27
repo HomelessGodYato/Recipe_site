@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import EmailMessage
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
@@ -17,8 +17,9 @@ from django.views.generic.edit import DeleteView
 from .constant import *
 from .controllers import recipe_ingredient_controller, recipe_image_controller, \
     recipe_stage_controller, recipe_stage_recipe_ingredient_controller, recipe_controller, recipe_tag_controller, \
-    recipe_category_controller
-from .forms import CreateUserForm, UserEditForm, ProfileUpdateForm
+    recipe_category_controller, article_controller, article_comment_controller, article_image_controller
+from .forms import CreateUserForm, UserEditForm, ProfileUpdateForm, ArticleSearchForm, ArticleForm, ArticleImageForm, \
+    ArticleCommentForm
 from .tokens import account_activation_token
 
 
@@ -983,3 +984,307 @@ def recipe_delete_view(request, id):
         ACTION: ACTION_DELETE
     }
     return render(request, 'recipe/recipe_delete.html', context)
+
+
+# =====================================ARTICLE=================================================
+
+def add_article(request):
+    if not request.user.is_authenticated:
+        return redirect('user')
+
+    template = "forum/add_article.html"
+    article_form = ArticleForm()
+    image_form = ArticleImageForm()
+
+    context = {
+        ARTICLE_FORM: article_form,
+        IMAGE_FORM: image_form,
+    }
+
+    if request.POST.get(ACTION_CREATE_ARTICLE):
+        if not request.user.is_authenticated:
+            return redirect('user')
+        form = ArticleForm(request.POST)
+        if form.is_valid():
+            images = request.FILES.getlist(IMAGE)
+            article_controller.save_article_from_the_form(form, request.user, images)
+
+            return HttpResponseRedirect('../forum/1')
+
+        context[ERROR] = form.errors
+        return render(request, template, context)
+
+    return render(request, template, context)
+
+
+def forum(request, page):
+    ARTICLES_COUNT_PER_PAGE = 5
+    articles_count = article_controller.get_count_of_all_articles()
+    COUNT_OF_ALL_PAGES = get_pages_count(articles_count, ARTICLES_COUNT_PER_PAGE)
+    page_nr = int(page)
+
+    template = "forum/forum.html"
+
+    articles = article_controller.get_articles_by_page_number(page_nr, ARTICLES_COUNT_PER_PAGE)
+
+    articles_dtos = article_controller.DTO_list(articles)
+
+    for article_dto in articles_dtos:
+        if len(article_dto[TITLE]) > 150:
+            article_dto[TITLE] = article_dto[TITLE][0:150] + " (...)"
+
+        if len(article_dto[DESCRIPTION]) > 400:
+            article_dto[DESCRIPTION] = article_dto[DESCRIPTION][0:400] + " (...)"
+
+        article_controller.set_is_user_creator(article_dto, request.user)
+        article_comment_controller.set_is_user_creator(article_dto[COMMENTS], request.user)
+
+    search_form = ArticleSearchForm()
+    comment_form = ArticleCommentForm()
+    context = {
+        ARTICLES: articles_dtos,
+        SEARCH_FORM: search_form,
+        COMMENT_FORM: comment_form,
+        PAGES_COUNT: COUNT_OF_ALL_PAGES,
+        NEXT_PAGE_NUMBER: page_nr + 1,
+        PREV_PAGE_NUMBER: page_nr - 1,
+        NOT_SEARCHING: True
+    }
+
+    if not request.user.is_authenticated:
+        context = {
+            ARTICLES: articles_dtos,
+            SEARCH_FORM: search_form,
+        }
+
+    if request.method == "POST":
+        if request.POST.get(ACTION_SEARCH_ARTICLES):
+            search_form = ArticleSearchForm(request.POST)
+            if search_form.is_valid():
+                phrase = search_form.cleaned_data['phrase']
+                phrase_search_string = phrase.strip().lower()
+                articles_dtos = article_controller.get_articles_by_search_phrase(phrase)
+
+                for article_dto in articles_dtos:
+                    if len(article_dto[TITLE]) > 150:
+                        article_dto[TITLE] = article_dto[TITLE][0:150] + " (...)"
+
+                    if len(article_dto[DESCRIPTION]) > 400:
+                        article_dto[DESCRIPTION] = article_dto[DESCRIPTION][0:400] + " (...)"
+
+                    article_controller.set_is_user_creator(article_dto, request.user)
+                    article_comment_controller.set_is_user_creator(article_dto[COMMENTS], request.user)
+
+                context[ARTICLES] = articles_dtos
+                context[NOT_SEARCHING] = False
+
+                if len(articles_dtos) == 0:
+                    context = {
+                        NO_RESULTS: NO_RESULTS_INFO.format(phrase),
+                        SEARCH_FORM: search_form,
+                        PAGES_COUNT: COUNT_OF_ALL_PAGES
+                    }
+
+                return render(request, template, context)
+
+            context[ERROR] = search_form.errors
+            return render(request, template, context)
+
+        article_id = request.POST.get(ACTION_DELETE_ARTICLE)
+        if article_id:
+            article = article_controller.get_article_by_id(article_id)
+            if article.author == request.user:
+                article.delete()
+            return HttpResponseRedirect(request.path_info)
+
+        comment_id = request.POST.get(ACTION_DELETE_COMMENT)
+        if comment_id:
+            comment = article_comment_controller.get_comment_by_id(comment_id)
+            if comment.author == request.user or comment.article.author == request.user:
+                comment.delete()
+            return HttpResponseRedirect(request.path_info)
+
+    return render(request, template, context)
+
+
+def get_main_comments_view(request, context, template, article_id):
+    if not request.user.is_authenticated:
+        return redirect('user')
+
+    article_dto = article_controller.get_article_by_id(article_id)
+
+    comment_form = ArticleCommentForm(request.POST)
+    if comment_form.is_valid():
+        article_comment_controller.save_comment_from_the_form(
+            comment_form,
+            request.user,
+            article_dto,
+            None
+        )
+
+        return HttpResponseRedirect(request.path_info)
+
+    context[ERROR] = comment_form.errors
+    return render(request, template, context)
+
+
+def get_replies_view(request, context, template, comment_id):
+    if not request.user.is_authenticated:
+        return redirect('user')
+
+    parent_comment = article_comment_controller.get_comment_by_id(comment_id)
+
+    comment_form = ArticleCommentForm(request.POST)
+    if comment_form.is_valid():
+        article_comment_controller.save_comment_from_the_form(
+            comment_form,
+            request.user,
+            parent_comment.article,
+            parent_comment
+        )
+
+        return HttpResponseRedirect(request.path_info)
+
+    context[ERROR] = comment_form.errors
+    return render(request, template, context)
+
+
+def article(request, pk):
+    article = article_controller.get_article_by_id(pk)
+
+    article_dto = article_controller.DTO(article)
+    comment_form = ArticleCommentForm()
+
+    article_controller.set_is_user_creator(article_dto, request.user)
+    article_comment_controller.set_is_user_creator(article_dto[COMMENTS], request.user)
+
+    context = {
+        ARTICLE: article_dto,
+        COMMENT_FORM: comment_form,
+        IS_USER_AUTHENTICATED: request.user.is_authenticated
+    }
+
+    template = "forum/article.html"
+
+    if request.POST.get(ACTION_TRY_TO_ADD_COMMENT) or request.POST.get(ACTION_TRY_TO_ADD_REPLY):
+        return redirect('user')
+
+    article_id = request.POST.get(ACTION_DELETE_ARTICLE)
+    if article_id:
+        article = article_controller.get_article_by_id(article_id)
+        if article.author == request.user:
+            article.delete()
+        return HttpResponseRedirect('../../forum/1')
+
+    comment_id = request.POST.get(ACTION_DELETE_COMMENT)
+    if comment_id:
+        comment = article_comment_controller.get_comment_by_id(comment_id)
+        if comment.author == request.user or comment.article.author == request.user:
+            comment.delete()
+        return HttpResponseRedirect(request.path_info)
+
+    article_id = request.POST.get(ACTION_CREATE_COMMENT)
+    if article_id:
+        return get_main_comments_view(request, context, template, pk)
+
+    comment_id = request.POST.get(ACTION_CREATE_COMMENT_REPLY)
+    if comment_id:
+        return get_replies_view(request, context, template, int(comment_id))
+
+    return render(request, template, context)
+
+
+def get_pages_count(articles_count, articles_count_per_page):
+    if articles_count % articles_count_per_page == 0:
+        return articles_count // articles_count_per_page
+
+    return (articles_count // articles_count_per_page) + 1
+
+
+def my_articles(request):
+    if not request.user.is_authenticated:
+        return redirect('user')
+
+    template = "forum/my_articles.html"
+
+    my_articles = article_controller.get_articles_by_user(request.user)
+    my_articles_dtos = article_controller.DTO_list(my_articles)
+
+    for article_dto in my_articles_dtos:
+        if len(article_dto[TITLE]) > 150:
+            article_dto[TITLE] = article_dto[TITLE][0:150] + " (...)"
+
+        if len(article_dto[DESCRIPTION]) > 400:
+            article_dto[DESCRIPTION] = article_dto[DESCRIPTION][0:400] + " (...)"
+
+        article_controller.set_is_user_creator(article_dto, request.user)
+        article_comment_controller.set_is_user_creator(article_dto[COMMENTS], request.user)
+
+    comment_form = ArticleCommentForm()
+    context = {
+        MY_ARTICLES: my_articles_dtos,
+        COMMENT_FORM: comment_form,
+        IS_USER_AUTHENTICATED: request.user.is_authenticated
+    }
+
+    article_id = request.POST.get(ACTION_DELETE_ARTICLE)
+    if article_id:
+        article = article_controller.get_article_by_id(article_id)
+        if article.author == request.user:
+            article.delete()
+        return HttpResponseRedirect(request.path_info)
+
+    comment_id = request.POST.get(ACTION_DELETE_COMMENT)
+    if comment_id:
+        comment = article_comment_controller.get_comment_by_id(comment_id)
+        if comment.author == request.user or comment.article.author == request.user:
+            comment.delete()
+        return HttpResponseRedirect(request.path_info)
+
+    article_id = request.POST.get(ACTION_CREATE_COMMENT)
+    if article_id:
+        return get_main_comments_view(request, context, template, int(article_id))
+
+    comment_id = request.POST.get(ACTION_CREATE_COMMENT_REPLY)
+    if comment_id:
+        return get_replies_view(request, context, template, int(comment_id))
+
+    return render(request, template, context)
+
+
+def edit_article(request, pk):
+    article = article_controller.get_article_by_id(pk)
+
+    if request.user != article.author:
+        return HttpResponseRedirect('forum')
+
+    images = article_image_controller.get_images_by_article(article)
+
+    edit_form = ArticleForm(instance=article)
+    edit_images_form = ArticleImageForm()
+
+    context = {
+        IMAGES: images,
+        EDIT_FORM: edit_form,
+        EDIT_IMAGES_FORM: edit_images_form
+    }
+
+    template = "forum/edit_article.html"
+
+    if request.method == "POST":
+
+        if request.POST.get(ACTION_REJECT_CHANGES):
+            return HttpResponseRedirect('../forum/1')
+
+        if request.POST.get(ACTION_ACCEPT_CHANGES):
+            edit_form = ArticleForm(request.POST, instance=article)
+            if edit_form.is_valid():
+                images = request.FILES.getlist(IMAGE)
+                article_controller.save_article_from_the_form(edit_form, request.user, images)
+
+                return HttpResponseRedirect('../forum/1')
+
+            context[ERROR] = edit_form.errors
+            return render(request, template, context)
+
+    return render(request, template, context)

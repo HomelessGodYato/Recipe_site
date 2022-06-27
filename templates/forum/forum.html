@@ -36,9 +36,11 @@
                     </form>
                 </div>
                 {% if no_results %}
-                    <p>{{ no_results }}</p>
+                    <p class="noresults">{{ no_results }}</p>
                 {% endif %}
-                <p class="main_text">FORUM</p>
+                {% if not no_results %}
+                    <p class="main_text">FORUM</p>
+                {% endif %}
                 <div class="container_articles">
                     {% for article in articles %}
                         <div class="article_box">

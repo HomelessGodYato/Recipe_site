@@ -629,3 +629,12 @@ li
     display: inline-block;
     margin-left: 10px;
 }
+
+.noresults
+{
+    font-weight: bold;
+    font-size: 24px;
+    display: block;
+    margin-left: 60px;
+    margin-top: 60px;
+}
