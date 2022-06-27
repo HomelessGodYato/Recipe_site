@@ -31,7 +31,7 @@
         <button id="button_to_add_reply{{ comment.id }}" onclick="show_comment_reply_input('{{ comment.id }}')" class="comment_reply_button">Odpowiedz</button>
     {% else %}
         <form action="" method="post">
-            <button type="submit" name="ACTION_TRY_TO_ADD_REPLY" value="{{ article.id }})">Odpowiedz</button>
+            <button type="submit" name="ACTION_TRY_TO_ADD_REPLY" value="{{ article.id }})" class="comment_reply_button">Odpowiedz</button>
         </form>
     {% endif %}
     {% if comment.sub_comments_count > 0 %}
