@@ -1,0 +1,47 @@
+<head>
+    <link rel="stylesheet" href="../../static/css/forum.css">
+
+    <script>
+        function showRejectWindow() {
+            const rejectWindow = document.getElementById("rejected")
+            if (rejectWindow.classList.contains("hide"))
+            {
+                rejectWindow.classList.remove("hide");
+                rejectWindow.classList.add("show");
+            }
+        }
+
+        function hideRejectWindow() {
+            const rejectWindow = document.getElementById("rejected")
+            if (rejectWindow.classList.contains("show"))
+            {
+                rejectWindow.classList.remove("show");
+                rejectWindow.classList.add("hide");
+            }
+        }
+    </script>
+</head>
+
+{% extends 'main.html' %}
+
+{% block content %}
+    <div class="main">
+        <div class="add_article_box">
+            <div class="article_form_container">
+                <form action="" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {{ edit_form }}
+                    {{ edit_images_form }}
+                    <button type="submit" name="ACTION_ACCEPT_CHANGES" value="EDIT_ARTICLE" class="article_input_accept">Zapisz</button>
+                    <button type="button" onclick="showRejectWindow()" class="article_input_reject">Odrzuć</button>
+                    <div id="rejected" class="delete_article hide">
+                        <p class="delete_article_text">Czy na pewno chcesz odrzucić zmiany?</p>
+                        <button type="submit" name="ACTION_REJECT_CHANGES" value="NOT_EDIT_ARTICLE" class="delete_article_yes_button">TAK</button>
+                        <button type="button" onclick="hideRejectWindow()" class="delete_article_no_button">NIE</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+

@@ -1,0 +1,111 @@
+<head>
+    <link rel="stylesheet" href="../../static/css/forum.css">
+    <!--<link class="jsbin" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1/themes/base/jquery-ui.css" rel="stylesheet" type="text/css"/>
+    <script class="jsbin" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+    <script class="jsbin" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.0/jquery-ui.min.js"></script>-->
+</head>
+
+{% extends 'main.html' %}
+
+{% block content %}
+    <div class="main">
+        <div class="add_article_box">
+            <div class="article_form_container">
+                <form action="" method="post" enctype="multipart/form-data" class="article_form">
+                    {% csrf_token %}
+                    {{ article_form }}
+                    {{ image_form }}
+                    <button type="submit" name="ACTION_CREATE_ARTICLE" value="CREATE_ARTICLE" class="article_input_button">Dodaj wpis</button>
+                </form>
+            </div>
+            <div id="img_box"></div>
+        </div>
+    </div>
+{% endblock content %}
+
+<!--<script>
+    const image_field = document.getElementById('image_field')
+    const imgBox = document.getElementById('img_box')
+    const images = new DataTransfer()
+
+    image_field.addEventListener("change", function () {
+        showAddedImages()
+    })
+
+     function showAddedImages() {
+
+        const image_boxes = Array.from(document.getElementsByClassName('to_delete'));
+        image_boxes.forEach(box => {
+          box.remove();
+        });
+
+        const files = image_field.files
+        for (let i = 0; i < files.length; i++) {
+            const url = URL.createObjectURL(files[i])
+            let img = document.createElement("img");
+            img.src = url
+            let div = document.createElement("div");
+            div.classList.add("image_div", "to_delete")
+
+            div.id = "div" + i
+            img.onload = (e) => {
+                const height = e.target.height;
+                const width = e.target.width;
+                if (height > width) {
+                    img.className = "image_same_height"
+                }
+                else {
+                    img.className = "image_same_width"
+                }
+            }
+            div.appendChild(img)
+            let cross = document.createElement("img");
+            cross.id = "cross" + i
+            cross.src = "../../static/img/delete-image.png"
+            cross.className = "cross"
+
+            cross.onclick = function () {
+                removeFileFromFileList(i)
+            }
+            div.appendChild(cross)
+            imgBox.appendChild(div);
+
+            images.items.add(files[i])
+        }
+    }
+
+    function updateAllImages() {
+        image_field.files = images.files
+    }
+
+    function removeFileFromFileList(index) {
+      const dt = new DataTransfer()
+      const image_field = document.getElementById('image_field')
+      const { files } = image_field
+
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i]
+        if (index !== i)
+        {
+            dt.items.add(file)
+        }
+        else
+        {
+            document.getElementById('div' + index).remove()
+            for (let j = i + 1; j < files.length; j++)
+            {
+                let cross = document.getElementById('cross' + j)
+
+                cross.onclick = function () {
+                    removeFileFromFileList(j-1)
+                }
+                cross.id = "cross" + (j-1)
+
+                let div = document.getElementById('div' + j)
+                div.id = 'div' + (j-1)
+            }
+        }
+      }
+      image_field.files = dt.files
+    }
+</script>-->

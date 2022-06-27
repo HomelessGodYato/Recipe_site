@@ -1,0 +1,83 @@
+<head>
+    <link rel="stylesheet" href="../../static/css/forum.css">
+
+    <script>
+        function showConfirmDeleteArticleWindow(id) {
+            const confirmDeleteWindow = document.getElementById("article_delete_window" + id)
+            if (confirmDeleteWindow.classList.contains("hide"))
+            {
+                confirmDeleteWindow.classList.remove("hide");
+                confirmDeleteWindow.classList.add("show");
+            }
+        }
+
+        function hideConfirmDeleteArticleWindow(id) {
+            const confirmDeleteWindow = document.getElementById("article_delete_window" + id)
+            if (confirmDeleteWindow.classList.contains("show"))
+            {
+                confirmDeleteWindow.classList.remove("show");
+                confirmDeleteWindow.classList.add("hide");
+            }
+        }
+    </script>
+</head>
+
+{% extends 'main.html' %}
+
+{% block content %}
+    <div class="main">
+        <div class="overflow_div">
+            <div class="search_articles_box">
+                <div class="search_box">
+                    <form action="" method="post" class="search_form">
+                        {% csrf_token %}
+                        {{ search_form }}
+                        <button type="submit" name="ACTION_SEARCH_ARTICLES" value="SEARCH_ARTICLES" id="search_button">Wyszukaj</button>
+                    </form>
+                </div>
+                {% if no_results %}
+                    <p>{{ no_results }}</p>
+                {% endif %}
+                <p class="main_text">FORUM</p>
+                <div class="container_articles">
+                    {% for article in articles %}
+                        <div class="article_box">
+                            <div class="article_author">
+                                <p class="profile_name">{{article.author.username}}</p>
+                                <img src="{{ article.author.userprofile.profile_pic.url }}" alt="profile_pic" class="profile_picture"/>
+                            </div>
+                            <div class="article_content">
+                                <p class="title_text">{{article.title}}</p>
+                                <p>{{article.description}}</p>
+                            </div>
+                            {% if article.is_creator %}
+                                <a href="{% url 'edit_article' article.id %}"><img src="../../static/img/edit-icon.png" height="25px" alt="edit-icon" class="edit_icon"/></a>
+                                <img src="../../static/img/delete-icon.png" height="25px" alt="delete-icon" class="thrash_icon" onclick="showConfirmDeleteArticleWindow('{{ article.id }}')"/>
+                                <div id="article_delete_window{{ article.id }}" class="delete_article hide">
+                                    <form action="" method="post">
+                                        <p class="delete_article_text">Czy na pewno chcesz usunąć ten wpis?</p>
+                                        <button type="submit" name="ACTION_DELETE_ARTICLE" value="{{ article.id }}" class="delete_article_yes_button">TAK</button>
+                                        <button type="button" onclick="hideConfirmDeleteArticleWindow('{{ article.id }}')" class="delete_article_no_button">NIE</button>
+                                    </form>
+                                </div>
+                            {% endif %}
+                            <a href="{% url 'article' article.id %}" class="more_content">Więcej...</a>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% if not_searching %}
+                {% if prev_page_number > 0 %}
+                    <a href="../{{ prev_page_number }}">
+                        <img src="../../static/img/left-arrow.png" height="25px" alt="left-arrow" class="left_arrow"/>
+                    </a>
+                {% endif %}
+                {% if next_page_number <= pages_count %}
+                    <a href="../{{ next_page_number }}">
+                        <img src="../../static/img/right-arrow.png" height="25px" alt="right-arrow" class="right_arrow"/>
+                    </a>
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
+{% endblock content %}
