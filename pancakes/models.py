@@ -54,8 +54,9 @@ class Article(models.Model):
 class ArticleComment(models.Model):
     author = models.ForeignKey(to=User, on_delete=models.CASCADE)
     article = models.ForeignKey(to=Article, on_delete=models.CASCADE, null=False)
-    date_create = models.DateTimeField(auto_now_add=True)
     description = models.CharField(max_length=8191)
+    comment = models.ForeignKey("self", on_delete=models.CASCADE, blank=True, null=True)
+    date_create = models.DateTimeField(auto_now_add=True)
 
 
 class ArticleImage(models.Model):

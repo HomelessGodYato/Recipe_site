@@ -1,0 +1,91 @@
+<head>
+    <link rel="stylesheet" href="../../static/css/forum.css">
+</head>
+
+<li class="comment_list_position">
+    <img src="{{ article.author.userprofile.profile_pic.url }}" height="50px" alt="profile_pic" class="comment_author_image"/>
+    <div class="author_descrip_comment">
+        <p class="comment_username">{{comment.author.username}}</p>
+        <p class="comment_descrip">{{comment.description}}</p>
+    </div>
+
+    {% if article.is_creator or comment.is_creator %}
+        <img src="../../static/img/delete-icon.png" height="25px" alt="delete-icon" class="thrash_icon" onclick="showConfirmDeleteCommentWindow('{{ comment.id }}')"/>
+        <div id="comment_delete_window{{ comment.id }}" class="delete_comment hide">
+            <form action="" method="post">
+                <p class="delete_article_text">Czy na pewno chcesz usunąć ten komentarz?</p>
+                <button type="submit" name="ACTION_DELETE_COMMENT" value="{{ comment.id }}" class="delete_article_yes_button">TAK</button>
+                <button type="button" onclick="hideConfirmDeleteCommentWindow('{{ comment.id }}')" class="delete_article_no_button">NIE</button>
+            </form>
+        </div>
+    {% endif %}
+        <div id="comment{{ comment.id }}" class="hide">
+            <form action="" method="post" class="form_comment">
+                {% csrf_token %}
+                {{ comment_form }}
+                <button type="submit" name="ACTION_CREATE_COMMENT_REPLY" value="{{ comment.id }}" class="comment_send_button">Dodaj</button>
+            </form>
+        </div>
+    {% if is_user_authenticated %}
+        <br/>
+        <button id="button_to_add_reply{{ comment.id }}" onclick="show_comment_reply_input('{{ comment.id }}')" class="comment_reply_button">Odpowiedz</button>
+    {% else %}
+        <form action="" method="post">
+            <button type="submit" name="ACTION_TRY_TO_ADD_REPLY" value="{{ article.id }})" class="comment_reply_button">Odpowiedz</button>
+        </form>
+    {% endif %}
+
+    {% if comment.sub_comments_count > 0 %}
+        <button type="button"  id="show_more_button{{ comment.id }}" class="show_more_button" onclick="showCommentSubList('{{ comment.id }}')">Pokaż więcej</button>
+        <ul class="comment_sub_list hide" id="comment_sub_list{{ comment.id }}">
+            {% for sub_comment in comment.sub_comments %}
+                {% with comment=sub_comment template_name="forum/forum_recursive_comments.html" %}
+                    {% include template_name %}
+                {% endwith %}
+            {% endfor %}
+        </ul>
+    {% endif %}
+</li>
+
+<script>
+    function show_comment_reply_input(id)
+    {
+        let button = document.getElementById("button_to_add_reply" + id);
+        let reply_form = document.getElementById("comment" + id);
+        if (reply_form.classList.contains("hide"))
+        {
+            reply_form.classList.remove("hide");
+            reply_form.classList.add("show");
+            button.classList.add("hide");
+        }
+    }
+
+    function showConfirmDeleteCommentWindow(id) {
+        const confirmDeleteWindow = document.getElementById("comment_delete_window" + id)
+        if (confirmDeleteWindow.classList.contains("hide"))
+        {
+            confirmDeleteWindow.classList.remove("hide");
+            confirmDeleteWindow.classList.add("show");
+        }
+    }
+
+    function hideConfirmDeleteCommentWindow(id) {
+        const confirmDeleteWindow = document.getElementById("comment_delete_window" + id)
+        if (confirmDeleteWindow.classList.contains("show"))
+        {
+            confirmDeleteWindow.classList.remove("show");
+            confirmDeleteWindow.classList.add("hide");
+        }
+    }
+
+    function showCommentSubList(id) {
+        const sub_comment_list = document.getElementById("comment_sub_list" + id)
+        const show_more_button = document.getElementById("show_more_button" + id)
+        if (sub_comment_list.classList.contains("hide"))
+        {
+            show_more_button.classList.add("hide");
+            sub_comment_list.classList.remove("hide");
+            sub_comment_list.classList.add("show");
+        }
+    }
+</script>

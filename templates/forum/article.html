@@ -1,0 +1,92 @@
+<head>
+    <link rel="stylesheet" href="../../static/css/forum.css">
+
+    <script>
+        function show_article_comment_input(id)
+        {
+            let button = document.getElementById("button_to_add_comment" + id);
+            let comment_form = document.getElementById("article" + id);
+            if (comment_form.classList.contains("hide"))
+            {
+                comment_form.classList.remove("hide");
+                comment_form.classList.add("show");
+                button.classList.add("hide");
+            }
+        }
+
+        function showConfirmDeleteArticleWindow(id) {
+            const confirmDeleteWindow = document.getElementById("article_delete_window" + id)
+            if (confirmDeleteWindow.classList.contains("hide"))
+            {
+                confirmDeleteWindow.classList.remove("hide");
+                confirmDeleteWindow.classList.add("show");
+            }
+        }
+
+        function hideConfirmDeleteArticleWindow(id) {
+            const confirmDeleteWindow = document.getElementById("article_delete_window" + id)
+            if (confirmDeleteWindow.classList.contains("show"))
+            {
+                confirmDeleteWindow.classList.remove("show");
+                confirmDeleteWindow.classList.add("hide");
+            }
+        }
+    </script>
+</head>
+
+{% extends 'main.html' %}
+
+{% block content %}
+    <div class="main">
+        <div class="overflow_div">
+            <div class="article_container">
+                <p class="author_info">Użytkownik {{article.author.username}} napisał:</p>
+                <img src="{{ article.author.userprofile.profile_pic.url }}" height="150px" alt="profile_pic" class="profile_picture_article"/>
+                <p class="article_title">{{article.title}}</p>
+                <p class="article_description">{{article.description}}</p>
+                <div class="images">
+                    {% for image in article.images %}
+                         <img src="{{image.image.url}}" alt="{{image.id}}" class="article_image" ">
+                    {% endfor %}
+                </div>
+
+                {% if article.is_creator %}
+                    <a href="{% url 'edit_article' article.id %}"><img src="../../static/img/edit-icon.png" height="25px" alt="edit-icon" class="edit_icon"/></a>
+                    <img src="../../static/img/delete-icon.png" height="25px" alt="delete-icon" class="thrash_icon" onclick="showConfirmDeleteArticleWindow('{{ article.id }}')" />
+                    <div id="article_delete_window{{ article.id }}" class="delete_article hide">
+                        <form action="" method="post">
+                            <p class="delete_article_text">Czy na pewno chcesz usunąć ten wpis?</p>
+                            <button type="submit" name="ACTION_DELETE_ARTICLE" value="{{ article.id }}" class="delete_article_yes_button">TAK</button>
+                            <button type="button" onclick="hideConfirmDeleteArticleWindow('{{ article.id }}')" class="delete_article_no_button">NIE</button>
+                        </form>
+                    </div>
+                {% endif %}
+
+                <div class="comments">
+                    {% if is_user_authenticated %}
+                        <div id="article{{ article.id }}" class="hide">
+                            <form action="" method="post" class="form_comment">
+                                {% csrf_token %}
+                                <label id="move">
+                                    {{ comment_form }}
+                                    <button type="submit" name="ACTION_CREATE_COMMENT" value="{{ article.id }}" class="comment_send_button">Dodaj</button>
+                                </label>
+                            </form>
+                        </div>
+
+                        <button id="button_to_add_comment{{ article.id }}" onclick="show_article_comment_input('{{ article.id }}')" class="add_comm_button">Dodaj odpowiedź</button>
+                    {% else %}
+                        <form action="" method="post">
+                            <button type="submit" name="ACTION_TRY_TO_ADD_COMMENT" value="{{ article.id }})" class="add_comm_button">Dodaj odpowiedź</button>
+                        </form>
+                    {% endif %}
+                    <ul class="comment_list">
+                        {% for comment in article.comments %}
+                            {%include "forum/forum_recursive_comments.html" %}
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

@@ -1,5 +1,7 @@
+import re
+from django.utils.timezone import now
 from .models import RecipeIngredient, RecipeImage, RecipeStageRecipeIngredient, RecipeStage, Recipe, \
-    RecipeCategory, RecipeTag, RecipeRecipeCategory, RecipeRecipeTag
+    RecipeCategory, RecipeTag, RecipeRecipeCategory, RecipeRecipeTag, Article, ArticleComment, ArticleImage
 from .constant import *
 
 SHOW_LOGGING = False
@@ -874,3 +876,161 @@ recipe_category_controller = RecipeCategoryController()
 recipe_image_controller = RecipeImageController()
 recipe_stage_recipe_ingredient_controller = RecipeStageRecipeIngredientController()
 recipe_stage_controller = RecipeStageController()
+
+
+# =========================================ARTICLE==============================================
+
+
+class ArticleController:
+    def __init__(self):
+        self.CONTROLLER_NAME = "ArticleController"
+        self.TITLE_MIN_LENGTH = 3
+        self.TITLE_MAX_LENGTH = 254
+        self.DESCRIPTION_MIN_LENGTH = 10
+        self.DESCRIPTION_MAX_LENGTH = 8191
+
+    def DTO(self, article):
+        if article is not None:
+            comments = ArticleComment.objects.filter(article=article, comment=None).order_by("-date_create")
+            images = ArticleImage.objects.filter(article=article)
+
+            comments_dto = article_comment_controller.DTO_list(comments)
+            images_dto = article_image_controller.DTO_list(images)
+
+            return {
+                ID: article.id,
+                AUTHOR: article.author,
+                TITLE: article.title,
+                DESCRIPTION: article.description,
+                DATE_CREATE: article.date_create,
+                COMMENTS: comments_dto,
+                IMAGES: images_dto,
+                IS_CREATOR: False
+            }
+
+        return None
+
+    def DTO_list(self, articles):
+        return [self.DTO(article) for article in articles]
+
+    def set_is_user_creator(self, article_dto, user):
+        if article_dto[AUTHOR]== user:
+            article_dto[IS_CREATOR] = True
+
+    def get_articles_by_page_number(self, page_nr, posts_count_per_page):
+        return Article.objects.all().order_by('-date_create')[
+               (page_nr - 1) * posts_count_per_page:page_nr * posts_count_per_page]
+
+    def get_articles_by_search_phrase(self, phrase):
+        articles = Article.objects.all().order_by('-date_create')
+
+        search_phrase = f".*{phrase}.*"
+        matching_articles = [article for article in articles
+                             if re.search(search_phrase, article.title.lower())
+                             or re.search(search_phrase, article.description.lower())]
+
+        articles_dtos = self.DTO_list(matching_articles)
+        return articles_dtos
+
+    def get_article_by_id(self, id):
+        return Article.objects.get(id=id)
+
+    def get_articles_by_user(self, user):
+        return Article.objects.filter(author=user).order_by('-date_create')
+
+    def get_count_of_all_articles(self):
+        return len(Article.objects.all())
+
+    def save_article_from_the_form(self, article_form_object, user, images):
+        article = article_form_object.save(commit=False)
+        article.author = user
+        article.date_create = now()
+        article.save()
+
+        article_image_controller.save_images_from_the_form(article, images)
+
+
+class ArticleImageController:
+    def __init__(self):
+        self.CONTROLLER_NAME = "ArticleImageController"
+        self.IMAGES_MAX_COUNT = 6
+
+    def DTO(self, image):
+        if image is not None:
+
+            return {
+                ID: image.id,
+                ARTICLE: image.article,
+                IMAGE: image.image
+            }
+
+        return None
+
+    def DTO_list(self, images):
+        return [self.DTO(image) for image in images]
+
+    def get_images_by_article(self, article):
+        return ArticleImage.objects.filter(article=article)
+
+    def save_images_from_the_form(self, article, images):
+        for image in images:
+            ArticleImage.objects.create(article=article, image=image)
+
+    def delete_images_from_article(self, article):
+        images = ArticleImage.objects.filter(article=article)
+
+        for image in images:
+            image.delete()
+
+
+class ArticleCommentController:
+    def __init__(self):
+        self.CONTROLLER_NAME = "ArticleCommentController"
+        self.DESCRIPTION_MIN_LENGTH = 10
+        self.DESCRIPTION_MAX_LENGTH = 8191
+
+    def DTO(self, comment):
+        if comment is not None:
+            sub_comments = ArticleComment.objects.filter(comment=comment).order_by("-date_create")
+            sub_comments_dto = self.DTO_list(sub_comments)
+
+            return {
+                ID: comment.id,
+                AUTHOR: comment.author,
+                DESCRIPTION: comment.description,
+                DATE_CREATE: comment.date_create,
+                SUB_COMMENTS: sub_comments_dto,
+                SUB_COMMENTS_COUNT: len(sub_comments_dto),
+                IS_CREATOR: False
+            }
+
+        return None
+
+    def DTO_list(self, comments):
+        return [self.DTO(comment) for comment in comments]
+
+    def set_is_user_creator(self, comments_dtos, user):
+        for comment_dto in comments_dtos:
+            if comment_dto[AUTHOR] == user:
+                comment_dto[IS_CREATOR] = True
+            if article_comment_controller.has_sub_comments(comment_dto):
+                self.set_is_user_creator(comment_dto[SUB_COMMENTS], user)
+
+    def has_sub_comments(self, comment_dto):
+        return len(comment_dto[SUB_COMMENTS]) != 0
+
+    def get_comment_by_id(self, id):
+        return ArticleComment.objects.get(id=id)
+
+    def save_comment_from_the_form(self, comment_form_object, user, article, parent_comment):
+        comment = comment_form_object.save(commit=False)
+        comment.article = article
+        comment.author = user
+        comment.comment = parent_comment
+        comment.date_create = now()
+        comment.save()
+
+
+article_controller = ArticleController()
+article_image_controller = ArticleImageController()
+article_comment_controller = ArticleCommentController()
