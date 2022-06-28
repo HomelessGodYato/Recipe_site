@@ -1022,16 +1022,7 @@ def forum(request, page):
     articles_count = article_controller.get_count_of_all_articles()
     COUNT_OF_ALL_PAGES = get_pages_count(articles_count, ARTICLES_COUNT_PER_PAGE)
 
-    try:
-        page_nr = int(page)
-    except:
-        return HttpResponseRedirect('../../forum/1')
-
-    if page_nr < 1:
-        return HttpResponseRedirect('../../forum/1')
-
-    if page_nr > COUNT_OF_ALL_PAGES:
-        return HttpResponseRedirect(f'../../forum/{COUNT_OF_ALL_PAGES}')
+    page_nr = int(page)
 
     template = "forum/forum.html"
 
