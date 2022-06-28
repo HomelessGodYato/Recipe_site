@@ -1280,6 +1280,10 @@ def edit_article(request, pk):
             edit_form = ArticleForm(request.POST, instance=article)
             if edit_form.is_valid():
                 images = request.FILES.getlist(IMAGE)
+
+                if len(images) > 0:
+                    article_image_controller.delete_images_from_article(article)
+
                 article_controller.save_article_from_the_form(edit_form, request.user, images)
 
                 return HttpResponseRedirect('../forum/1')

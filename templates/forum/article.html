@@ -80,7 +80,7 @@
                             <button type="submit" name="ACTION_TRY_TO_ADD_COMMENT" value="{{ article.id }})" class="add_comm_button">Dodaj odpowiedź</button>
                         </form>
                     {% endif %}
-                    <ul>
+                    <ul class="comment_list">
                         {% for comment in article.comments %}
                             {%include "forum/forum_recursive_comments.html" %}
                         {% endfor %}

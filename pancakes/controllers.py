@@ -976,6 +976,12 @@ class ArticleImageController:
         for image in images:
             ArticleImage.objects.create(article=article, image=image)
 
+    def delete_images_from_article(self, article):
+        images = ArticleImage.objects.filter(article=article)
+
+        for image in images:
+            image.delete()
+
 
 class ArticleCommentController:
     def __init__(self):
