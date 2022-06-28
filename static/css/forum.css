@@ -212,9 +212,7 @@ form.search_form button
 .container_articles
 {
     width: 86%;
-    margin-left: auto;
-    margin-right: auto;
-    margin-top: 20px;
+    margin: 20px auto 50px;
     background-color: #ddd;
     content: "";
     display: table;

@@ -76,7 +76,7 @@ def register_page(request):
 
             return render(request, 'user/registration_login/register.html', {'form': form})
         messages.success(request, 'Account created successfuly')
-    return render(request, 'user/registration_login/register.html', {'form':form})
+    return render(request, 'user/registration_login/register.html', {'form': form})
 
 
 def activation(request, uidb64, token):
@@ -1021,7 +1021,17 @@ def forum(request, page):
     ARTICLES_COUNT_PER_PAGE = 5
     articles_count = article_controller.get_count_of_all_articles()
     COUNT_OF_ALL_PAGES = get_pages_count(articles_count, ARTICLES_COUNT_PER_PAGE)
-    page_nr = int(page)
+
+    try:
+        page_nr = int(page)
+    except:
+        return HttpResponseRedirect('../../forum/1')
+
+    if page_nr < 1:
+        return HttpResponseRedirect('../../forum/1')
+
+    if page_nr > COUNT_OF_ALL_PAGES:
+        return HttpResponseRedirect(f'../../forum/{COUNT_OF_ALL_PAGES}')
 
     template = "forum/forum.html"
 
@@ -1150,6 +1160,19 @@ def get_replies_view(request, context, template, comment_id):
 
 
 def article(request, pk):
+    try:
+        pk = int(pk)
+    except:
+        return HttpResponseRedirect('../../forum/1')
+
+    if pk < 1:
+        return HttpResponseRedirect('../../forum/1')
+
+    article = article_controller.get_article_by_id(pk)
+
+    if article is None:
+        return HttpResponseRedirect('../../forum/1')
+
     article = article_controller.get_article_by_id(pk)
 
     article_dto = article_controller.DTO(article)
@@ -1253,10 +1276,21 @@ def my_articles(request):
 
 
 def edit_article(request, pk):
+    try:
+        pk = int(pk)
+    except:
+        return HttpResponseRedirect('../../forum/1')
+
+    if pk < 1:
+        return HttpResponseRedirect('../../forum/1')
+
     article = article_controller.get_article_by_id(pk)
 
+    if article is None:
+        return HttpResponseRedirect('../../forum/1')
+
     if request.user != article.author:
-        return HttpResponseRedirect('forum')
+        return HttpResponseRedirect('../../forum/1')
 
     images = article_image_controller.get_images_by_article(article)
 
@@ -1274,7 +1308,7 @@ def edit_article(request, pk):
     if request.method == "POST":
 
         if request.POST.get(ACTION_REJECT_CHANGES):
-            return HttpResponseRedirect('../forum/1')
+            return HttpResponseRedirect('../../forum/1')
 
         if request.POST.get(ACTION_ACCEPT_CHANGES):
             edit_form = ArticleForm(request.POST, instance=article)

@@ -933,7 +933,10 @@ class ArticleController:
         return articles_dtos
 
     def get_article_by_id(self, id):
-        return Article.objects.get(id=id)
+        try:
+            return Article.objects.get(id=id)
+        except:
+            return None
 
     def get_articles_by_user(self, user):
         return Article.objects.filter(author=user).order_by('-date_create')
