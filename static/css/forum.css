@@ -571,11 +571,6 @@ form.search_form button
 
 }
 
-.comment_li
-{
-    position: relative;
-}
-
 #move
 {
     margin-left: 20px;
@@ -626,4 +621,16 @@ form.search_form button
     display: block;
     margin-left: 60px;
     margin-top: 60px;
+}
+
+.comment_list
+{
+    list-style-type: none;
+    margin-left: 20px;
+}
+
+.comment_list_position
+{
+    position: relative;
+    margin-top: 15px;
 }

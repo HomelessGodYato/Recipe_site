@@ -2,7 +2,7 @@
     <link rel="stylesheet" href="../../static/css/forum.css">
 </head>
 
-<li class="comment_li">
+<li class="comment_list_position">
     <img src="{{ article.author.userprofile.profile_pic.url }}" height="50px" alt="profile_pic" class="comment_author_image"/>
     <div class="author_descrip_comment">
         <p class="comment_username">{{comment.author.username}}</p>
@@ -35,7 +35,7 @@
         </form>
     {% endif %}
     {% if comment.sub_comments_count > 0 %}
-        <ul>
+        <ul class="comment_list">
             {% for sub_comment in comment.sub_comments %}
                 {% with comment=sub_comment template_name="forum/forum_recursive_comments.html" %}
                     {% include template_name %}
