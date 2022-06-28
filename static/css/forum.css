@@ -642,3 +642,15 @@ form.search_form button
     position: relative;
     margin-top: 15px;
 }
+
+.show_more_button
+{
+    padding: 6px;
+    margin-top: 10px;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    background-color: #d79696;
+    color: #4f1818;
+    font-weight: bold;
+}

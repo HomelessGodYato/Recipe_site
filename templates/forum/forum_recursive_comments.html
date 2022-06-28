@@ -34,8 +34,10 @@
             <button type="submit" name="ACTION_TRY_TO_ADD_REPLY" value="{{ article.id }})" class="comment_reply_button">Odpowiedz</button>
         </form>
     {% endif %}
+
     {% if comment.sub_comments_count > 0 %}
-        <ul class="comment_sub_list">
+        <button type="button"  id="show_more_button{{ comment.id }}" class="show_more_button" onclick="showCommentSubList('{{ comment.id }}')">Pokaż więcej</button>
+        <ul class="comment_sub_list hide" id="comment_sub_list{{ comment.id }}">
             {% for sub_comment in comment.sub_comments %}
                 {% with comment=sub_comment template_name="forum/forum_recursive_comments.html" %}
                     {% include template_name %}
@@ -73,6 +75,17 @@
         {
             confirmDeleteWindow.classList.remove("show");
             confirmDeleteWindow.classList.add("hide");
+        }
+    }
+
+    function showCommentSubList(id) {
+        const sub_comment_list = document.getElementById("comment_sub_list" + id)
+        const show_more_button = document.getElementById("show_more_button" + id)
+        if (sub_comment_list.classList.contains("hide"))
+        {
+            show_more_button.classList.add("hide");
+            sub_comment_list.classList.remove("hide");
+            sub_comment_list.classList.add("show");
         }
     }
 </script>
