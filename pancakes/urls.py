@@ -74,7 +74,7 @@ urlpatterns = [
                   path('forum/<page>/', views.forum, name="forum"),
                   path('article/<str:pk>/', views.article, name="article"),
                   path('ask_question/', views.add_article, name="add_article"),
-                  path('article_edit/<str:pk>', views.edit_article, name="edit_article"),
+                  path('article_edit/<str:pk>/', views.edit_article, name="edit_article"),
                   path('my_articles/', views.my_articles, name="my_articles"),
 
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

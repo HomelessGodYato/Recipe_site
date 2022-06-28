@@ -228,6 +228,7 @@ form.search_form button
     width: 86%;
     margin-left: auto;
     margin-right: auto;
+    margin-bottom: 50px;
     background-color: #ddd;
     content: "";
     display: table;
@@ -628,6 +629,13 @@ form.search_form button
     list-style-type: none;
     margin-left: 20px;
 }
+
+.comment_sub_list
+{
+    list-style-type: none;
+    margin-left: 20px;
+}
+
 
 .comment_list_position
 {

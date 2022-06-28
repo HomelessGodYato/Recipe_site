@@ -35,7 +35,7 @@
         </form>
     {% endif %}
     {% if comment.sub_comments_count > 0 %}
-        <ul class="comment_list">
+        <ul class="comment_sub_list">
             {% for sub_comment in comment.sub_comments %}
                 {% with comment=sub_comment template_name="forum/forum_recursive_comments.html" %}
                     {% include template_name %}

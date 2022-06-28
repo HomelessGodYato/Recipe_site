@@ -1286,7 +1286,7 @@ def edit_article(request, pk):
 
                 article_controller.save_article_from_the_form(edit_form, request.user, images)
 
-                return HttpResponseRedirect('../forum/1')
+                return HttpResponseRedirect('../../forum/1')
 
             context[ERROR] = edit_form.errors
             return render(request, template, context)
