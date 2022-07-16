@@ -1,7 +1,7 @@
 
 # Desription
 
-This is university project for Software Engineering and Data Bases classes.
+This is university project for Software Engineering and Data Bases classes.  
 All user features was implemented by me:
 1. Login.
 2. Registration.
@@ -10,7 +10,7 @@ All user features was implemented by me:
 5. Password reset.
 6. Password reset confirmation email.
 7. Password edit.
-8. Account delete.
+8. Account delete.  
 Rest of features was implemented by my teammates.
 
 ## Technologies
