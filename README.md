@@ -11,6 +11,7 @@ All user features was implemented by me:
 6. Password reset confirmation email.
 7. Password edit.
 8. Account delete.  
+
 Rest of features was implemented by my teammates.
 
 ## Technologies
