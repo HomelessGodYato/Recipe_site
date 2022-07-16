@@ -1,9 +1,20 @@
 ~~# Pancakes
 
-## Useful and powerful links:
+# Desription
 
-* [Trello](https://trello.com/b/OrTDRL2A/projekt-przepi%C5%9Bnik)
-* [Produkcja](https://pancakes42.herokuapp.com)
+This is university project for Software Engineering and Data Bases classes.
+All user featurs was implemented by me:
+
+1. Login.
+2. Registration.
+3. Confirmation email.
+4. Personal data edit.
+5. Password reset.
+6. Password reset confirmation email.
+7. Password edit.
+8. Account delete.
+
+Rest of features was implemented by my teammates.
 
 ## Technologies
 * Python 3.10.2
