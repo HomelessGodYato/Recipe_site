@@ -1,4 +1,3 @@
-~~# Pancakes
 
 # Desription
 
@@ -31,7 +30,7 @@ Rest of features was implemented by my teammates.
 
 1. clone repository
 
-         git clone https://github.com/PRz-IO/p01gr02-przepisy-zespol-gr02.git
+         git clone https://github.com/HomelessGodYato/Recipe_site.git
 
 2. Start container
 
